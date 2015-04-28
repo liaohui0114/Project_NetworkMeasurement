@@ -1,0 +1,59 @@
+create database networkmeasurement;
+use networkmeasurement;
+
+create table node(
+nodeId int primary key,
+nodeName varchar(50),
+nodeIp varchar(16)
+);
+
+create table protocol(
+protocolId int primary key,
+protocolName varchar(10)
+);
+
+create table active(
+id int primary key,
+startNode int,
+endNode int,
+proId int,
+createTime timestamp,
+bandwidth float,
+delay float,
+jitter float,
+loss float,
+congestion bool,
+avail bool,
+
+
+foreign key(proId) references protocol(protocolId),
+foreign key(startNode) references node(nodeId),
+foreign key(endNode) references node(nodeId)
+);
+
+create table passive(
+id int primary key,
+startNode int,
+endNode int,
+createTime timestamp,
+bandwidth float,
+throughput float,
+rtt float,
+loss float,
+cpu float,
+momory float,
+foreign key(startNode) references node(nodeId),
+foreign key(endNode) references node(nodeId)
+);
+
+create table link(
+linkId int primary key,
+nodeA int,
+nodeB int,
+bandwidth float,
+foreign key(nodeA) references node(nodeId),
+foreign key(nodeB) references node(nodeId)
+);
+
+
+

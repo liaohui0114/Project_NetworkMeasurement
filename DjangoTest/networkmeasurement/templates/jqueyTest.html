@@ -1,0 +1,75 @@
+<html>
+	<head>
+		 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>sublimeTest</title>
+
+	</head>
+	<body>
+		<div>
+			<select>
+				<option>shanghaijiaotongdaxue</option>
+				<option>huadongshifandaxue</option>
+			</select>
+		<form method="post" enctype="multipart/form-data">
+
+		{% for name in form.startNode %}
+		{{name}}
+		<!-- <select>
+			<option>{{name}}</option>
+		</select> -->
+		{% endfor %}
+		{% for name in form.endNode %}
+		{{name}}
+		<!-- <select>
+			<option>{{name}}</option>
+		</select> -->
+		{% endfor %}
+		<input type="submit" value="submit">
+		</form>
+		</div>
+		</div>
+		<div id="div_slideup">
+			<p> click me and disappear</p>
+			<p>click me and disappear two</p>
+		</div>
+		<div id="p_h1">between p and h1 </div>
+		<div id="p_slideup">slide p </div>
+		<h1>hide h1</h1>
+
+		<ol>
+			<li>liaohui</li>
+			<li> chenwenhao</li>
+		</ol>
+		<div>
+			<input type="text" id ="input_focus" value="get focus" />
+		</div>
+		<button id="pHideBtn">Hide p</button>
+		<div>
+			<button id="button_fadeIn"> double click FadeIn P </button>
+		</div>
+
+		<div>
+			<A href="www.baidu.com" id="herf_baidu"> <b>baidu</b> </A><br>
+			<button id="button_html">html()</button><br/>
+			<button id="button_attr">attr()</button>
+		</div>
+		
+
+		<div> <button id="button_addcss">add CSS</button></div>
+		<div><button id="button_createDiv">create div</button></div>
+		<div><button id="button_ajax">jquery ajax to get data from database</button>
+		<div id="div_hide"></div>
+		<div id="div_mysql"></div>
+	<!-- 	
+		<div>
+			<button id="button_animate">开始动画</button>
+			<p>默认情况下，所有 HTML 元素的位置都是静态的，并且无法移动。如需对位置进行操作，记得首先把元素的 CSS position 属性设置为 relative、fixed 或 absolute。</p>
+			<div id="div_animate" style="background:#98bf21;height:100px;width:200px;position:absolute;">HELLO</div><br/>
+		</div>
+ -->
+	<script type="text/javascript" src="assets/netFile/js/jquery-1.11.2.js"></script>
+	<script type="text/javascript" src="assets/netFile/js/js_jqueryTest.js"></script>
+	<link rel="stylesheet" type="text/css" href="assets/netFile/css/css_jqueryTest.css" />
+
+	</body>
+</html>

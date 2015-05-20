@@ -1,0 +1,52 @@
+<html >
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>测试</title>
+
+<!--javascript-->
+<script src="assets/js/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="assets/netFile/uploadify/jquery.uploadify.min.js" type="text/javascript"></script>
+<link rel="stylesheet" href="assets/netFile/uploadify/uploadify.css">
+
+      <script type="text/javascript">
+      $(function(){
+      	//using uploadify.js to show progressBar when unloading
+      	$("#id_upload").uploadify({
+      		swf:'assets/netFile/uploadify/uploadify.swf',
+      		uploader:'action/uploadAction',
+      		progressData:'speed',   //or percentage
+      		method:'post',
+      		buttonText: '选择文件',
+      		fileObjName:'uploadFile',
+      		auto:'true',
+      		removeCompleted:false,
+      		fileSizeLimit : '10GB',
+      		onUploadStart:function(file){
+      			alert('start upload!');
+      		},
+      		onUploadProgress:function(file, bytesUploaded, bytesTotal, totalBytesUploaded, totalBytesTotal) {
+            $('#id_progress').html(bytesUploaded + ' bytes uploaded of ' + bytesTotal + ' bytes.');
+        	},
+      		onUploadSuccess:function(file,data,response){
+      			alert("success!");
+      		},
+      		onCancel:function(file){
+      			alert("cancel upload!");
+      		}
+      	});
+      });
+
+      </script>
+<!--end javascript-->
+</head>
+<body>
+<table>
+ <tr> 
+
+
+      <input type="file" name="upload" id="id_upload" value="upload"/>
+      <div id="id_progress"></div>
+</tr>
+</table>
+</body>
+</html>

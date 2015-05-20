@@ -29,8 +29,9 @@ urlpatterns = patterns('',
     url(r'^test/$','networkmeasurement.views.testFunc'),
     url(r'test/operateDB','networkmeasurement.views.operateDB'),
     #action following
-    url(r'protocol/jsonAction','networkmeasurement.action.JsonAction.JsonAction'),  #ajax json from page
+    url(r'action/SingleAction','networkmeasurement.action.JsonAction.SingleAction'),  #ajax json from page to test point to point network condition
     url(r'action/uploadAction','networkmeasurement.action.JsonAction.UploadAction'),  #uploadAction
+    url(r'action/OverallAction','networkmeasurement.action.JsonAction.OverallAction'),  #overallAction
     
     
     

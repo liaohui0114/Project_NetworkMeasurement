@@ -22,6 +22,7 @@
     
     <!-- by liaohui -->
     <script src="assets/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="assets/netFile/js/highcharts.js"></script>
     <script type="text/javascript" src="assets/netFile/js/udp.js"></script>
     <!-- end by liaohui -->
     
@@ -931,9 +932,12 @@
                             <h1>Graph</h1>
 
                         </div>
+                        <!--  liaohui, display active charts:we get latest 10 times bandwidth of startNode from db -->
+                        <div id="id_div_activeChart"></div>
 
                     </div>
                 </div>
+                
             </div>
             <!-- Node to Node Result Display Table -->
             <div class="row" id="NodeDisplayID" style="display:none">
@@ -1081,12 +1085,222 @@
                                 </a>
                             </div>
                         </div>
+                        <!-- liaohui: display overall datas -->
+                        <div class="panel-body">                            
+                            <div>
+                                <!-- Basic Table -->
+                                <strong>带宽矩阵</strong>
+
+                                <table class="table table-hover" id="id_table_bandwidth">
+                                    <thead>
+                                        <tr>
+                                            <th>带宽</th>
+                                            <!-- thead -->
+                                            <!--
+                                            <th>带宽</th>
+                                            <th>上交</th>
+                                            <th>华师</th>
+                                            <th>复旦</th>
+                                            <th>同济</th>
+                                            -->
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr>
+                                            <!-- body -->
+                                            <!--
+                                            <th>上交</th>
+                                            <td>1000Mbps</td>
+                                            <td>100Mbp</td>
+                                            <td>90Mbps</td>
+                                            <td>80Mbps</td>
+                                            -->
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            <div>
+                                <!-- Basic Table -->
+                                <strong>Delay</strong>
+
+                                <table class="table table-hover" id="id_table_delay">
+                                    <thead>
+                                        <tr>
+                                            <th>delay</th>
+                                            <!-- thead -->
+                                            <!--
+                                            <th>带宽</th>
+                                            <th>上交</th>
+                                            <th>华师</th>
+                                            <th>复旦</th>
+                                            <th>同济</th>
+                                            -->
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr>
+                                            <!-- body -->
+                                            <!--
+                                            <th>上交</th>
+                                            <td>1000Mbps</td>
+                                            <td>100Mbp</td>
+                                            <td>90Mbps</td>
+                                            <td>80Mbps</td>
+                                            -->
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            <div>
+                                <!-- Basic Table -->
+                                <strong>Jitter</strong>
+
+                                <table class="table table-hover" id="id_table_jitter">
+                                    <thead>
+                                        <tr>
+                                            <th>Jitter</th>
+                                            <!-- thead -->
+                                            <!--
+                                            <th>带宽</th>
+                                            <th>上交</th>
+                                            <th>华师</th>
+                                            <th>复旦</th>
+                                            <th>同济</th>
+                                            -->
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr>
+                                            <!-- body -->
+                                            <!--
+                                            <th>上交</th>
+                                            <td>1000Mbps</td>
+                                            <td>100Mbp</td>
+                                            <td>90Mbps</td>
+                                            <td>80Mbps</td>
+                                            -->
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            <div>
+                                <!-- Basic Table -->
+                                <strong>Loss</strong>
+
+                                <table class="table table-hover" id="id_table_loss">
+                                    <thead>
+                                        <tr>
+                                            <th>Loss</th>
+                                            <!-- thead -->
+                                            <!--
+                                            <th>带宽</th>
+                                            <th>上交</th>
+                                            <th>华师</th>
+                                            <th>复旦</th>
+                                            <th>同济</th>
+                                            -->
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr>
+                                            <!-- body -->
+                                            <!--
+                                            <th>上交</th>
+                                            <td>1000Mbps</td>
+                                            <td>100Mbp</td>
+                                            <td>90Mbps</td>
+                                            <td>80Mbps</td>
+                                            -->
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            <div>
+                                <!-- Basic Table -->
+                                <strong>Congestion</strong>
+
+                                <table class="table table-hover" id="id_table_congestion">
+                                    <thead>
+                                        <tr>
+                                            <th>Congestion</th>
+                                            <!-- thead -->
+                                            <!--
+                                            <th>带宽</th>
+                                            <th>上交</th>
+                                            <th>华师</th>
+                                            <th>复旦</th>
+                                            <th>同济</th>
+                                            -->
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr>
+                                            <!-- body -->
+                                            <!--
+                                            <th>上交</th>
+                                            <td>1000Mbps</td>
+                                            <td>100Mbp</td>
+                                            <td>90Mbps</td>
+                                            <td>80Mbps</td>
+                                            -->
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            <div>
+                                <!-- Basic Table -->
+                                <strong>Availability</strong>
+
+                                <table class="table table-hover" id="id_table_availability">
+                                    <thead>
+                                        <tr>
+                                            <th>Availability</th>
+                                            <!-- thead -->
+                                            <!--
+                                            <th>带宽</th>
+                                            <th>上交</th>
+                                            <th>华师</th>
+                                            <th>复旦</th>
+                                            <th>同济</th>
+                                            -->
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr>
+                                            <!-- body -->
+                                            <!--
+                                            <th>上交</th>
+                                            <td>1000Mbps</td>
+                                            <td>100Mbp</td>
+                                            <td>90Mbps</td>
+                                            <td>80Mbps</td>
+                                            -->
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        <!-- liaohui: display overall datas -->
+
+                        <!-- liaohui:hide-->
+                        <!--
                         <div class="panel-body">
 
                             <div class="row">
                                 <div class="col-sm-6">
 
-                                    <!-- Basic Table -->
+                                    
                                     <strong>带宽矩阵</strong>
 
                                     <table class="table table-hover">
@@ -1137,7 +1351,7 @@
                                 </div>
                                 <div class="col-sm-6">
 
-                                    <!-- Basic Table -->
+                                    
                                     <strong>时延矩阵</strong>
 
                                     <table class="table table-hover">
@@ -1190,7 +1404,7 @@
                             <div class="row">
                                 <div class="col-sm-6">
 
-                                    <!-- Basic Table -->
+                                    
                                     <strong>丢包矩阵</strong>
 
                                     <table class="table table-hover">
@@ -1241,7 +1455,7 @@
                                 </div>
                                 <div class="col-sm-6">
 
-                                    <!-- Basic Table -->
+                                    
                                     <strong>可用性矩阵</strong>
 
                                     <table class="table table-hover">
@@ -1289,6 +1503,8 @@
 
                                 </div>
                             </div>
+                        -->
+                            <!-- -end hide() -->
                             <div class="vspacer v3"></div>
 
                         </div>

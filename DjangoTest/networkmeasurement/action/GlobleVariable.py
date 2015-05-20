@@ -87,7 +87,7 @@ def ReadIperfUDPFile(filePath = FILE_PATH_UDP):
     lastLineStr = lineStr  # get string of last line in file
     while lineStr:
         lastLineStr = lineStr
-        print 'lastLineStr',lastLineStr
+        #print 'lastLineStr',lastLineStr
         lineStr = f.readline()
     f.close()  #close open
     print lastLineStr
@@ -108,7 +108,7 @@ def ReadIperfUDPFile(filePath = FILE_PATH_UDP):
         
         bandwidth = tmpList[7]+tmpList[8]  #get bandwidth
         jitter =  tmpList[9] + tmpList[10]  #get jitter
-        loss = tmpList[13][1:-1]   #delete ( and ) to get loss
+        loss = tmpList[12][1:-1]   #delete ( and ) to get loss
         networkDict[NETWORK_BANDWITH] = bandwidth
         networkDict[NETWORK_JITTER] = jitter
         networkDict[NETWORK_LOSS] = loss

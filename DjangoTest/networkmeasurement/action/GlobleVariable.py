@@ -100,15 +100,17 @@ def ReadIperfUDPFile(filePath = FILE_PATH_UDP):
         networkDict[NETWORK_AVAIL] = 'NO'  #not available to connect
         networkDict[NETWORK_CONGESTION] = ''
     else:
-        tmpList = lastLineStr.split()  #split by ' '
+        tmpStr= lastLineStr.split('sec') #using 'sec' to split lastLineStr
+        print "tmpStr:",tmpStr
+        tmpList = tmpStr[1].split()  #split by ' '  to get data that we truely need
         ##testtest
         for index,value in enumerate(tmpList):
             print '[index:%d][value:%s]'%(index,value)
         ###
         
-        bandwidth = tmpList[7]+tmpList[8]  #get bandwidth
-        jitter =  tmpList[9] + tmpList[10]  #get jitter
-        loss = tmpList[12][1:-1]   #delete ( and ) to get loss
+        bandwidth = tmpList[2]+tmpList[3]  #get bandwidth
+        jitter =  tmpList[4] + tmpList[5]  #get jitter
+        loss = tmpList[7][1:-1]   #delete ( and ) to get loss
         networkDict[NETWORK_BANDWITH] = bandwidth
         networkDict[NETWORK_JITTER] = jitter
         networkDict[NETWORK_LOSS] = loss

@@ -8,6 +8,7 @@ $(document).ready(function(){
 		Udp_ajax_post_single("udp",$("#id_startNode").val(),$("#id_endNode").val(),$("#id_startNode option:selected").text(),$("#id_endNode option:selected").text());		
 
 		$("#NodeDisplayID").show();//show table of single table
+		DisplayNodePath();//draw path diagram
 		$("#PathDisplayID").show();
 		$("#OverallDisplayID").hide(); //show tables of overall network testing
 	});
@@ -241,4 +242,117 @@ function DisplayActiveChart(chartData,chartTime){
         },
         series: chartData  // the data which chart truely need,type []
     });
+}
+
+function DisplayNodePath()
+{
+	//alert("DisplayNodePath");
+	var radius = 15;
+	var offet = 40;
+	var nodedic = {"nodeA":{"x":50+offet,"y":100+offet},
+					"nodeB":{"x":150+offet,"y":100+offet},
+					"nodeC":{"x":250+offet,"y":100+offet},
+					"nodeD":{"x":100+offet,"y":200+offet},
+					"nodeE":{"x":200+offet,"y":200+offet},
+					"nodeF":{"x":300+offet,"y":200+offet}};
+
+	///////init  draw pic/////////
+	/////clear canvas///////
+	var can = document.getElementById('id_canvas_router');
+	var clearNode = can.getContext('2d');
+	clearNode.fillStyle = "black";
+	clearNode.strokeStyle = "black";
+	clearNode.lineWidth = 1;
+	clearNode.clearRect(0,0,1024,400);
+	
+	////////end clear canvas///////////
+	//alert("pathDisplay2 after clear");
+	var node = can.getContext('2d');
+	var nodeText = can.getContext('2d');
+	nodeText.font = "10px Arial";
+	
+	var imgWidth = 60; //width 60px
+	for (var key in nodedic)
+	{
+	var img = document.getElementById("id_img_router");
+	node.drawImage(img,nodedic[key].x,nodedic[key].y,imgWidth,imgWidth);
+		nodeText.fillText(key,nodedic[key].x+10,nodedic[key].y+10);
+	}
+	//default line: nodeA-nodeB-nodeC,nodeA-nodeD-nodeE-nodeF
+	//alert("after for");
+	var cxt = can.getContext('2d');
+	//cxt.moveTo(0,0);
+	//cxt.lineTo(nodedic.nodeA.x-radius,nodedic.nodeA.y-radius);
+	cxt.beginPath();
+	cxt.moveTo(nodedic.nodeA.x+imgWidth,nodedic.nodeA.y+imgWidth/2);
+	cxt.lineTo(nodedic.nodeB.x,nodedic.nodeB.y+imgWidth/2);
+	cxt.moveTo(nodedic.nodeB.x+imgWidth,nodedic.nodeB.y+imgWidth/2);
+	cxt.lineTo(nodedic.nodeC.x,nodedic.nodeC.y+imgWidth/2);
+	
+	cxt.moveTo(nodedic.nodeA.x+imgWidth/2,nodedic.nodeA.y+imgWidth);
+	cxt.lineTo(nodedic.nodeD.x,nodedic.nodeD.y);
+	cxt.moveTo(nodedic.nodeD.x+imgWidth,nodedic.nodeD.y+imgWidth/2);
+	cxt.lineTo(nodedic.nodeE.x,nodedic.nodeE.y+imgWidth/2);
+	cxt.moveTo(nodedic.nodeE.x+imgWidth,nodedic.nodeE.y+imgWidth/2);
+	cxt.lineTo(nodedic.nodeF.x,nodedic.nodeF.y+imgWidth/2);
+	cxt.closePath();
+	cxt.stroke();
+	
+	////////end init////////////////
+	
+	
+	var nodeArray = new Array("nodeA","nodeB","nodeF","nodeG");
+	var nodeCircle = document.getElementById("id_canvas_router").getContext('2d');
+	var nodeLine = document.getElementById("id_canvas_router").getContext('2d');
+	var img = document.getElementById("id_img_router");
+	var lineX = 0;
+	var lineY = 0;
+	var isStart = true;
+	
+	
+	for (var i in nodeArray)
+	{
+	
+		//如果字典nodedic 存在关键字的话
+		if(nodedic[nodeArray[i]])
+		{
+			//alert("key="+nodeArray[i]);
+			
+			// 如果是第一个点的话
+			if (isStart)
+			{
+				//alert("isStart="+isStart+"\n node_x="+nodedic[nodeArray[i]].x);				
+				
+				nodeCircle.drawImage(img,nodedic[nodeArray[i]].x-imgWidth,nodedic[nodeArray[i]].y-imgWidth,imgWidth,imgWidth);				
+				
+				//to get (x,y) of startNode
+				lineX = nodedic[nodeArray[i]].x-imgWidth+imgWidth/2;
+				lineY = nodedic[nodeArray[i]].y-imgWidth+imgWidth/2;
+				
+				isStart = false;
+			}
+			
+			
+			nodeCircle.drawImage(img,nodedic[nodeArray[i]].x,nodedic[nodeArray[i]].y,60,60);
+			
+			
+			
+			nodeLine.beginPath();
+			nodeLine.moveTo(lineX,lineY);
+			nodeLine.lineTo(nodedic[nodeArray[i]].x+imgWidth/2,nodedic[nodeArray[i]].y+imgWidth/2);
+			//draw line from (lineX,lineY) to (nodedic[nodeArray[i]].x,nodedic[nodeArray[i]].y)
+			lineX = nodedic[nodeArray[i]].x+imgWidth/2;
+			lineY = nodedic[nodeArray[i]].y+imgWidth/2;
+			//update(lineX,lineY),move to next node
+			nodeLine.closePath();
+			nodeLine.strokeStyle="green";
+			nodeLine.lineWidth=4
+			nodeLine.stroke();		
+			
+			
+		}
+		
+	}
+	
+
 }

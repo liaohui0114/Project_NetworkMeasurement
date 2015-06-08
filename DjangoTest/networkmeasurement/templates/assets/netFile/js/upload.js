@@ -6,7 +6,7 @@ $(document).ready(function(){
 //using uploadify.js to show progressBar when unloading
 	$("#id_upload_btn").uploadify({
 		'swf':'assets/netFile/uploadify/uploadify.swf',
-		'uploader':'action/uploadAction',
+		'uploader':'action/UploadAction',
 		'progressData':'speed',   //or percentage
 		'method':'post',
 		'buttonText': '选择文件',

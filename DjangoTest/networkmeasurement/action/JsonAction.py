@@ -6,6 +6,7 @@ import json,os
 from  GlobleVariable import *
 from Client import *
 from networkmeasurement.models import SchoolNode
+from time import sleep
 
 #DEFAULT SETTING
 DEFAULT_UDP_COND = {NETWORK_BANDWITH:'100(Mbs)',NETWORK_DELAY:'0(ms)',NETWORK_JITTER:'0.1(ms)',NETWORK_LOSS:'0(%)',NETWORK_CONGESTION:'NO',NETWORK_AVAIL:'YES'}
@@ -15,9 +16,12 @@ DEFAULT_OVERALL_COND = {NETWORK_BANDWITH:'',NETWORK_DELAY:'',NETWORK_JITTER:'',N
 def SingleAction(request):
     print 'SingleAction'
     if request.method == "POST":
+        print 'SingleAction,if request.method == POST '
         tmp = request.POST
-        for i,j in tmp.items():
-            print i,j  #print msg from front page
+        print tmp
+        ##在apache部署后需要注释下面两行才能继续执行，在/var/log/apache2/error.log只打印一行就卡住了？？？？下面的一些在for循环中的print也是，注释后才能正常执行
+        #for i,j in tmp.items():
+        #    print i,j  #print msg from front page
 #         netMsg = Client();
 #         for key,value in netMsg.items():
 #             DEFAULT_UDP_COND[key] = value #set true attribute
@@ -30,13 +34,15 @@ def SingleAction(request):
         chartTime = [1,2,3,4,5,6,7,8,9,10]
         print chartData
         reMsg = {"single":DEFAULT_UDP_COND,"chart":{"chartData":chartData,"chartTime":chartTime}}   #we will decode this format by .js
+        sleep(4) #for test
         return HttpResponse(json.dumps(reMsg), content_type="application/json")
-
+    print 'end SingleAction'
 #function:to get overall datas
 def OverallAction(request):
     print 'OverallAction'
     #{NETWORK_BANDWITH:'100(Mbs)',NETWORK_DELAY:'0(ms)',NETWORK_JITTER:'0.1(ms)',NETWORK_LOSS:'0(%)',NETWORK_CONGESTION:'NO',NETWORK_AVAIL:'YES'}
     if request.method == "POST":
+        print 'OverallAction,if'
         allNodes = SchoolNode.objects.all() #to get all node infos in database
         
         #overallDic format:
@@ -52,18 +58,19 @@ def OverallAction(request):
             overallDic[NETWORK_CONGESTION][itemA.nodeName]={}
             overallDic[NETWORK_AVAIL][itemA.nodeName]={}
             for itemB in allNodes:
-                print 'nodeA:',itemA.nodeName,'nodeB:',itemB.nodeName
+                #print 'nodeA:',itemA.nodeName,'nodeB:',itemB.nodeName
                 overallDic[NETWORK_BANDWITH][itemA.nodeName][itemB.nodeName]=''
                 overallDic[NETWORK_DELAY][itemA.nodeName][itemB.nodeName]=''
                 overallDic[NETWORK_JITTER][itemA.nodeName][itemB.nodeName]=''
                 overallDic[NETWORK_LOSS][itemA.nodeName][itemB.nodeName]=''
                 overallDic[NETWORK_CONGESTION][itemA.nodeName][itemB.nodeName]=''
                 overallDic[NETWORK_AVAIL][itemA.nodeName][itemB.nodeName]=''
-                        
+                      
         print overallDic
+        print 'end for one'
         for start in allNodes:
             for end in allNodes:
-                print 'start:',start.nodeName,'end:',end.nodeName
+                #print 'start:',start.nodeName,'end:',end.nodeName
                 #if two different nodes
                 if start.nodeName != end.nodeName:
                     tmp_cond = {NETWORK_BANDWITH:'100(Mbs)',NETWORK_DELAY:'0(ms)',NETWORK_JITTER:'0.1(ms)',NETWORK_LOSS:'0(%)',NETWORK_CONGESTION:'NO',NETWORK_AVAIL:'YES'}
@@ -77,7 +84,8 @@ def OverallAction(request):
                     overallDic[NETWORK_CONGESTION][start.nodeName][end.nodeName] = tmp_cond[NETWORK_CONGESTION]
                     overallDic[NETWORK_AVAIL][start.nodeName][end.nodeName] = tmp_cond[NETWORK_AVAIL]
         
-        print overallDic            
+        print overallDic
+        print 'end for two'            
                     
         for i,j in request.POST.items():
             print i,j

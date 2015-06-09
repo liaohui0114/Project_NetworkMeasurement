@@ -4,6 +4,7 @@ from django.contrib import admin
 #liaohui
 from django.conf import settings 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
 #liaohui
 extrapatterns = patterns('',
     url(r'udp/$','networkmeasurement.views.udpFunc'),
@@ -14,7 +15,7 @@ extrapatterns = patterns('',
 
 urlpatterns = patterns('',
     # Examples:
-    # url(r'^$', 'DjangoTest.views.home', name='home'),
+    url(r'^$','networkmeasurement.views.udpFunc'),#init html
     # url(r'^blog/', include('blog.urls')),
     url(r'assets/(?P<path>.*)$','django.views.static.serve',{'document_root':settings.STATIC_PATH}),#liaohui,it's ok,why?
     #url(r'/assets/(?P<path>.*)$','django.views.static.serve',{'document_root':settings.STATIC_PATH}),

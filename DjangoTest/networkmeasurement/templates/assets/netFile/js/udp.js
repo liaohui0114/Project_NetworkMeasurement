@@ -31,6 +31,7 @@ function Udp_ajax_post_single(protocol,startIp,endIp,startNodeName,endNodeName)
 	alert("Udp_ajax_post_single!\n");
 	$.ajax({
 		url:"/action/SingleAction",
+		//async: false, //if we want to lock the screen
 		data:{
 			"startNodeIp":startIp,
 			"endNodeIp":endIp,
@@ -41,14 +42,19 @@ function Udp_ajax_post_single(protocol,startIp,endIp,startNodeName,endNodeName)
 		},
 		type:'POST',//action:post or get
 		dataType:'json',
+		beforeSend:function(){
+			//alert("beforeSend!");
+			showCover();
+		},
 		success:function(data){
+			hideCover(); 
 			alert("success!\n");
 			//x = eval(data); decode json type
 			var chartData,chartTime;
 			$.each(data,function(i,item){
 				//i is key and item is value
 				
-				alert("i:"+i+";item:"+item);
+				//alert("i:"+i+";item:"+item);
 				//alert(data[i].bandwidth); //data.i.bandwidth is wrong
 				if("single" == i) //to get table data
 				{
@@ -97,6 +103,7 @@ function Udp_ajax_post_single(protocol,startIp,endIp,startNodeName,endNodeName)
 
 		},
 		error:function(xhr,type){
+			hideCover();
 			alert("fail!");
 		}
 	});
@@ -114,7 +121,12 @@ function Udp_ajax_post_overall(protocol)
 		},
 		type:'POST',
 		dataType:'json',
+		beforeSend:function(){
+			//alert("beforeSend!");
+			showCover();
+		},
 		success:function(data){
+			hideCover();
 			alert("success!!!!\n");
 			// $.each(data,function(i,item){
 			// 	//i is key and item is value
@@ -159,6 +171,7 @@ function Udp_ajax_post_overall(protocol)
 
 		},
 		error:function(xhr,type){
+			hideCover();
 			alert("fail!");
 			$("#OverallDisplayID").hide();
 		}
@@ -355,4 +368,39 @@ function DisplayNodePath()
 	}
 	
 
+}
+
+//show div: #id_div_cover
+function showCover()
+{
+	var docHeight = $(document).height(); //获取窗口高度
+	//var docWidth = $(document).width();
+			  
+	$('#id_div_cover')
+	.height(docHeight)
+	.css({
+	  'opacity': .9, //透明度
+	  'position': 'absolute',
+	  'top': 0,
+	  'left': 0,
+	  'background-color': 'black',
+	  'width': '100%',
+	  'z-index': 5000 //保证这个悬浮层位于其它内容之上
+	});
+	$('#id_img_cover').css({
+	  'opacity': .9, //透明度
+	  'position': 'absolute',
+	  'top': 200,  //from top
+	  'left': 300,  //from left
+	  'background-color': 'black',
+	});
+
+	$('#id_div_cover').show();   //show the div
+
+
+}
+//hide div: #id_div_cover
+function hideCover()
+{				    
+	setTimeout(function(){$('#id_div_cover').fadeOut('slow')}, 1000); //设置1秒后覆盖层自动淡出
 }

@@ -1,4 +1,5 @@
 $(document).ready(function(){
+
 	$("#id_startNode").addClass("form-control");
 	$("#id_endNode").addClass("form-control");
 
@@ -19,6 +20,8 @@ $(document).ready(function(){
 		$("#PathDisplayID").hide();
 		$("#OverallDisplayID").show();
 	});
+
+	SetDate();
 })
 
 //protocol: protocol type;1.TCP;2.UDP;3.ICMP;
@@ -44,10 +47,10 @@ function Udp_ajax_post_single(protocol,startIp,endIp,startNodeName,endNodeName)
 		dataType:'json',
 		beforeSend:function(){
 			//alert("beforeSend!");
-			showCover();
+			showCover(); //在数据发送前，显示遮罩層，锁定屏幕
 		},
 		success:function(data){
-			hideCover(); 
+			hideCover(); //在成功收到数据，隐藏遮罩層，解锁屏幕
 			alert("success!\n");
 			//x = eval(data); decode json type
 			var chartData,chartTime;
@@ -103,7 +106,7 @@ function Udp_ajax_post_single(protocol,startIp,endIp,startNodeName,endNodeName)
 
 		},
 		error:function(xhr,type){
-			hideCover();
+			hideCover();//失败后，隐藏遮罩層，解锁屏幕
 			alert("fail!");
 		}
 	});
@@ -370,7 +373,7 @@ function DisplayNodePath()
 
 }
 
-//show div: #id_div_cover
+//show div: #id_div_cover；添加遮罩层（该元素弹出在并在最前端显示）
 function showCover()
 {
 	var docHeight = $(document).height(); //获取窗口高度
@@ -403,4 +406,73 @@ function showCover()
 function hideCover()
 {				    
 	setTimeout(function(){$('#id_div_cover').fadeOut('slow')}, 1000); //设置1秒后覆盖层自动淡出
+}
+
+
+
+/////////copy from internet to formate Date() like "yyyy-MM-dd hh:mm:ss"
+Date.prototype.Format = function (fmt) { //author: meizz 
+    var o = {
+        "M+": this.getMonth() + 1, //月份 
+        "d+": this.getDate(), //日 
+        "h+": this.getHours(), //小时 
+        "m+": this.getMinutes(), //分 
+        "s+": this.getSeconds(), //秒 
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+        "S": this.getMilliseconds() //毫秒 
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
+///////////end format/////////////////////////
+
+//use datepicker to get datetime
+function SetDate()
+{
+	var d = new Date();
+	//ct = d.Format("yyyy-MM-dd hh:mm:ss")
+	ct = d.Format("yyyy-MM-dd");
+	//alert(ct);
+	$("#id_input_startTime").val(ct+" 00:00:00");
+	$("#id_input_endTime").val(ct+" 23:59:59");
+
+	$("#id_input_startTime").datepicker({//添加日期选择功能  
+            numberOfMonths:1,//显示几个月  
+            dateFormat: 'yy-mm-dd',//日期格式 
+
+            showButtonPanel:true,//是否显示按钮面板  
+            clearText:"清除",//清除日期的按钮名称  
+            closeText:"关闭",//关闭选择框的按钮名称 
+            maxDate: new Date(),
+            yearSuffix: '年', //年的后缀  
+            showMonthAfterYear:true,//是否把月放在年的后面  
+            monthNames: ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'],  
+            dayNames: ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'],  
+            dayNamesShort: ['周日','周一','周二','周三','周四','周五','周六'],  
+            dayNamesMin: ['日','一','二','三','四','五','六'],
+            
+              
+            });
+
+	$("#id_input_endTime").datepicker({//添加日期选择功能  
+            numberOfMonths:1,//显示几个月  
+            dateFormat: 'yy-mm-dd',//日期格式 
+
+            showButtonPanel:true,//是否显示按钮面板  
+            clearText:"清除",//清除日期的按钮名称  
+            closeText:"关闭",//关闭选择框的按钮名称  
+            
+            maxDate: new Date(),
+            //changeMonth:true,
+            //changeYear:true,
+            yearSuffix: '年', //年的后缀  
+            showMonthAfterYear:true,//是否把月放在年的后面  
+            monthNames: ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'],  
+            dayNames: ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'],  
+            dayNamesShort: ['周日','周一','周二','周三','周四','周五','周六'],  
+            dayNamesMin: ['日','一','二','三','四','五','六']
+              
+            });
 }

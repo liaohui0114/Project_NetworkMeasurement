@@ -7,7 +7,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 #liaohui
 extrapatterns = patterns('',
-    url(r'udp/$','networkmeasurement.views.udpFunc'),
+    url(r'udp/$','networkmeasurement.views.UDPFunc'),
     url(r'upload/$','networkmeasurement.views.UploadFunc'), 
     url(r'download/$','networkmeasurement.views.DownloadFunc'),
 )
@@ -15,15 +15,16 @@ extrapatterns = patterns('',
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$','networkmeasurement.views.udpFunc'),#init html
+    url(r'^$','networkmeasurement.views.UDPFunc'),#init html
     # url(r'^blog/', include('blog.urls')),
     url(r'assets/(?P<path>.*)$','django.views.static.serve',{'document_root':settings.STATIC_PATH}),#liaohui,it's ok,why?
     #url(r'/assets/(?P<path>.*)$','django.views.static.serve',{'document_root':settings.STATIC_PATH}),
     #liaohui,it can not find resouces like:css etc if we change / to ^
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^udp/$','networkmeasurement.views.udpFunc'),
+    url(r'^udp/$','networkmeasurement.views.UDPFunc'),
     url(r'^upload/$','networkmeasurement.views.UploadFunc'),
     url(r'^download/$','networkmeasurement.views.DownloadFunc'),
+    url(r'^passive/$','networkmeasurement.views.PassiveFunc'),
     
     url(r'^(udp)|(upload)|(download)/',include(extrapatterns)),
     #include：think about this ,urls in extrapatterns will follow ^udp/,like:^udp/upload/$,udp/download/$

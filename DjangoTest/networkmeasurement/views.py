@@ -9,10 +9,12 @@ import json
 import networkmeasurement.action.MySqlOperation
 from networkmeasurement.action.MySqlOperation import TableSchoolNode
 from networkmeasurement.action import FormModule
+import time,datetime
+from django.utils.timezone import utc
 # Create your views here.
 
     
-def udpFunc(request):
+def UDPFunc(request):
     print 'view:udpFunc'
 #     t = Context({'liao':'liao'})
 #     return render_to_response("active-udp.html",t)
@@ -35,9 +37,9 @@ def udpFunc(request):
     #             else:
     #                 return HttpResponseRedirect('/login/')
     else:
-        print 'view:udpFunc,else!'
+        #print 'view:udpFunc,else!'
         form = FormModule.UDPForm()  #only call once??
-        print 'view:udpFunc,else end!'
+        #print 'view:udpFunc,else end!'
         
     return render_to_response("active-udp.html",{'form':form})   
     
@@ -49,7 +51,38 @@ def DownloadFunc(request):
     t = Context({'liao':'liao'})
     return render_to_response("updown-download.html",t)
 
+def PassiveFunc(request):
+    print 'view:PassiveFunc'
+#     t = Context({'liao':'liao'})
+#     return render_to_response("active-udp.html",t)
+    if request.method == 'POST':
+            print 'liaohui,get post from json'
+            form = FormModule.PassiveForm(request.POST)
+            if form.is_valid():                
+                print "liaohui,isvalid",form
+                return HttpResponse(json.dumps({"LIAOHUI":"LIAOHUI"}), content_type="application/json")
+                #username = uf.cleaned_data["username"]
+                #passwd = uf.cleaned_data["passwd"]
+                #print username,passwd
+                #b operation
+    #             user = User.objects.filter(username__exact=username,password__exact=passwd) #to judge if there exist same username in db
+    #             if user:
+    #                 #set cookies,use HttpResponse instance
+    #                 response =  HttpResponseRedirect('/index/')                
+    #                 response.set_cookie('username', username, 3600)
+    #                 return response
+    #             else:
+    #                 return HttpResponseRedirect('/login/')
+    else:
+        form = FormModule.PassiveForm()  #only call once??
+    return render_to_response("passive.html",{'form':form})
+    print 'view:PassiveFunc end!'
+        
+        
 def testFunc(request):
+    #tmp = models.Passive(bandwidth=2048,throughput=12,rtt=10,loss=0,cpu=52.3,memory=256,endNode_id=2,startNode_id=3)
+    #print datetime.datetime.fromtimestamp(time.time())
+    #tmp.save()
 #      tb = TableSchoolNode('192.168.1.152','上海交通大学')
 #      tb.InsertNode()
 #     t = Context({'liao':'liao'})

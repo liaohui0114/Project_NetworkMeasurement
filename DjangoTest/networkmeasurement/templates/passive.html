@@ -24,6 +24,10 @@
     <script src="assets/js/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="assets/netFile/js/highcharts.js"></script>
     <script type="text/javascript" src="assets/netFile/js/udp.js"></script>
+    <script type="text/javascript" src="assets/netFile/js/jquery-ui.js"></script>
+    <link rel="stylesheet" href="assets/netFile/js/jquery-ui.css">
+
+
     <!-- end by liaohui -->
     
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -197,7 +201,7 @@
                 <ul id="main-menu" class="main-menu">
                     <!-- add class "multiple-expanded" to allow multiple submenus to open -->
                     <!-- class "auto-inherit-active-class" will automatically add "active" class for parent elements who are marked already with class "active" -->
-                    <li class="opened active">
+                    <li >
                         <a href="tables-basic.html">
                             <i class="linecons-database"></i>
                             <span class="title">主动测量</span>
@@ -208,7 +212,7 @@
                                     <span class="title">TCP Protocol</span>
                                 </a>
                             </li>
-                            <li class="active">
+                            <li>
                                 <a href="/udp/">
                                     <span class="title">UDP Protocol</span>
                                 </a>
@@ -220,13 +224,13 @@
                             </li>
                         </ul>
                     </li>
-                    <li>
+                    <li class="opened active">
                         <a href="tables-basic.html">
                             <i class="linecons-database"></i>
                             <span class="title">被动测量</span>
                         </a>
                         <ul>
-                            <li>
+                            <li  class="active">
                                 <a href="/passive/">
                                     <span class="title"> SNMP Protocol</span>
                                 </a>
@@ -786,23 +790,23 @@
             <div class="page-title">
 
                 <div class="title-env">
-                    <h1 class="title">UDP Protocol 主动测量</h1>
-                    <p class="description">Using UDP protocol to test network condition</p>
+                    <h1 class="title">被动测量</h1>
+                    <p class="description">Using SNMP protocol to test network condition</p>
                 </div>
 
                 <div class="breadcrumb-env">
 
                     <ol class="breadcrumb bc-1">
                         <li>
-                            <a href="dashboard-1.html"><i class="fa-home"></i>主动测量</a>
+                            <a href="dashboard-1.html"><i class="fa-home"></i>被动测量</a>
                         </li>
                         <li>
 
-                            <a href="tables-basic.html">UDP</a>
+                            <a href="/passive/">SNMP</a>
                         </li>
                         <li class="active">
 
-                            <strong>UDP Protocol</strong>
+                            <strong>SNMP Protocol</strong>
                         </li>
                     </ol>
 
@@ -868,30 +872,17 @@
                                     {% for item in form.endNode %}
                                     {{item}}
                                     {% endfor%}
+ 				                   </br>
+                                    <label class="control-label"><strong>Start Time</strong></label></br>
+                                    <input class="form-control" type="text" id="id_input_startTime" readonly="readonly"/> 
+ 				                   </br>
+                                    <label class="control-label"><strong>End Time</strong></label></br>                     
+                                    <input class="form-control" type="text" id="id_input_endTime" readonly="readonly"/> 
+                                    </br>
                                 </div>
                             </form>
                             <div class="form-group">
-                                <button type="submit" class="btn btn-success" id="id_btn_single">端到端测量</button>
-                                <button type="submit" class="btn btn-success" id="id_btn_overall">全局测量</button>
-                                <!--
-                                <script language="javascript">
-                                    function nodeTestFunc() {
-                                        alert("端到端测量！");
-                                        document.getElementById("NodeDisplayID").style.display = "block";//显示
-                                        document.getElementById("PathDisplayID").style.display = "block";//显示
-                                        document.getElementById("OverallDisplayID").style.display = "none";//隐藏
-                                    }
-                                    function overallTestFunc() {
-                                        alert("全局测量！");
-                                        document.getElementById("NodeDisplayID").style.display = "none"//隐藏且不占用空间
-                                        document.getElementById("PathDisplayID").style.display = "none"//隐藏
-                                        //document.getElementById("NodeDisplayID").style.visibility="hidden";//隐藏
-                                        //document.getElementById("PathDisplayID").style.visibility="visible";//隐藏
-                                        document.getElementById("OverallDisplayID").style.display = "block";//隐藏
-                                    }
-
-                                </script>
-                                -->
+                                <button type="submit" class="btn btn-success" id="id_btn_passive" style="width:100px">测量</button>
 
                             </div>
 

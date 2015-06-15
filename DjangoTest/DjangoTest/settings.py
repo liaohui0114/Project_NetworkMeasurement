@@ -83,14 +83,16 @@ DATABASES = {
 #LANGUAGE_CODE = 'en-us' #liaohui
 LANGUAGE_CODE = 'zh-cn' #liaohui
 
-TIME_ZONE = 'UTC'
+#TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai' #BY LIAOHUI,it means UTC+8
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
-
+#USE_TZ = True 
+USE_TZ = False ##by liaohui to deal with timezone problem
+#if we don't change this,we must use datetime.datetime.now().replace(tzinfo = utc) to insert into database,otherwise datetime in db my lay off 8 hours
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/

@@ -10,6 +10,7 @@ extrapatterns = patterns('',
     url(r'udp/$','networkmeasurement.views.UDPFunc'),
     url(r'upload/$','networkmeasurement.views.UploadFunc'), 
     url(r'download/$','networkmeasurement.views.DownloadFunc'),
+    url(r'passive/$','networkmeasurement.views.PassiveFunc'),
 )
 ###################
 
@@ -28,12 +29,13 @@ urlpatterns = patterns('',
     
     url(r'^(udp)|(upload)|(download)/',include(extrapatterns)),
     #include：think about this ,urls in extrapatterns will follow ^udp/,like:^udp/upload/$,udp/download/$
-    url(r'^test/$','networkmeasurement.views.testFunc'),
-    url(r'test/operateDB','networkmeasurement.views.operateDB'),
+    #url(r'^test/$','networkmeasurement.views.testFunc'),
+    #url(r'test/operateDB','networkmeasurement.views.operateDB'),
     #action following
     url(r'action/SingleAction','networkmeasurement.action.JsonAction.SingleAction'),  #ajax json from page to test point to point network condition
     url(r'action/UploadAction','networkmeasurement.action.JsonAction.UploadAction'),  #uploadAction
     url(r'action/OverallAction','networkmeasurement.action.JsonAction.OverallAction'),  #overallAction
+    url(r'action/PassiveAction','networkmeasurement.action.JsonAction.PassiveAction'),  #PassiveAction
     
     
     

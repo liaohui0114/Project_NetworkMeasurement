@@ -24,10 +24,9 @@ class UDPForm(forms.Form):
     def __init__(self):
         super(UDPForm,self).__init__()  #it's important,or we will get error no attribute fields  
         print 'UDPForm Init!'
-        print 'UDPForm'
         snAll = SchoolNode.objects.all()
         nodeMsg = [ (sn.nodeIp,sn.nodeName) for sn in SchoolNode.objects.all() ]
-        print tuple(nodeMsg)
+        #print tuple(nodeMsg)
         nodeChoice = tuple(nodeMsg)
         print nodeChoice
         startNode = forms.ChoiceField(widget=forms.Select,choices=nodeChoice)
@@ -43,7 +42,7 @@ class PassiveForm(forms.Form):
         print 'PassiveForm Init!'
         snAll = SchoolNode.objects.all()
         nodeMsg = [ (sn.nodeIp,sn.nodeName) for sn in SchoolNode.objects.all() ]
-        print tuple(nodeMsg)
+        #print tuple(nodeMsg)
         nodeChoice = tuple(nodeMsg)
         print nodeChoice
         startNode = forms.ChoiceField(widget=forms.Select,choices=nodeChoice)

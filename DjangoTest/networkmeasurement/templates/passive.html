@@ -23,7 +23,7 @@
     <!-- by liaohui -->
     <script src="assets/js/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="assets/netFile/js/highcharts.js"></script>
-    <script type="text/javascript" src="assets/netFile/js/udp.js"></script>
+    <script type="text/javascript" src="assets/netFile/js/passive.js"></script>
     <script type="text/javascript" src="assets/netFile/js/jquery-ui.js"></script>
     <link rel="stylesheet" href="assets/netFile/js/jquery-ui.css">
 
@@ -897,12 +897,12 @@
                 <img id="id_img_cover" src="assets/netFile/pic/loading.gif" style="vertical-align:middle;"/>
             </div>
 
-            <!-- Path Display -->
-            <div class="row" id="PathDisplayID" style="display:none">
+            <!-- Chart Display -->
+            <div class="row" id="ChartDisplayID" style="display:none">
                 <div class="col-md-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Path Tracing</h3>
+                            <h3 class="panel-title">Statistics</h3>
 
                             <div class="panel-options">
                                 <a href="#">
@@ -924,594 +924,44 @@
                             </div>
                         </div>
                         <div class="panel-body">
-
-
-                            <h1>Graph</h1>
-                            <img id="id_img_router" src="assets/netFile/pic/router.png"  width="60" height="60" style="display:none;" />
-                            <canvas id="id_canvas_router" width="1024px" height="400px" style="border:dashed 2px #CCC">Your browser does not support the HTML5 canvas tag.</canvas>
+                        <!--  liaohui, display active charts:we get latest 10 times bandwidth of startNode from db -->
+                        <h1>BandWidth</h1>
+                        <div id="id_div_chart_bandwidth"></div>
 
                         </div>
+                        <div class="panel-body">
                         <!--  liaohui, display active charts:we get latest 10 times bandwidth of startNode from db -->
-                        <h1>Chart</h1>
-                        <div id="id_div_activeChart"></div>
+                        <h1>ThroughPut</h1>
+                        <div id="id_div_chart_throughput"></div>
+
+                        <div class="panel-body">
+                        <!--  liaohui, display active charts:we get latest 10 times bandwidth of startNode from db -->
+                        <h1>Loss</h1>
+                        <div id="id_div_chart_loss"></div>
+
+                        <div class="panel-body">
+                        <!--  liaohui, display active charts:we get latest 10 times bandwidth of startNode from db -->
+                        <h1>RTT</h1>
+                        <div id="id_div_chart_rtt"></div>
+
+                        <div class="panel-body">
+                        <!--  liaohui, display active charts:we get latest 10 times bandwidth of startNode from db -->
+                        <h1>CPU</h1>
+                        <div id="id_div_chart_cpu"></div>
+
+                        <div class="panel-body">
+                        <!--  liaohui, display active charts:we get latest 10 times bandwidth of startNode from db -->
+                        <h1>Memory</h1>
+                        <div id="id_div_chart_memory"></div>
+
+                        </div>
+                        
 
                     </div>
                 </div>
                 
             </div>
-            <!-- Node to Node Result Display Table -->
-            <div class="row" id="NodeDisplayID" style="display:none">
-                <div class="col-md-12">
-
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Result Display</h3>
-
-                            <div class="panel-options">
-                                <a href="#">
-                                    <i class="linecons-cog"></i>
-                                </a>
-
-                                <a href="#" data-toggle="panel">
-                                    <span class="collapse-icon">&ndash;</span>
-                                    <span class="expand-icon">+</span>
-                                </a>
-
-                                <a href="#" data-toggle="reload">
-                                    <i class="fa-rotate-right"></i>
-                                </a>
-
-                                <a href="#" data-toggle="remove">
-                                    &times;
-                                </a>
-                            </div>
-                        </div>
-                        <div class="panel-body">
-
-                            <div class="table-responsive" data-pattern="priority-columns" data-focus-btn-icon="fa-asterisk" data-sticky-table-header="true" data-add-display-all-btn="true" data-add-focus-btn="true">
-                                <!--
-                                <table id="example-1" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                                -->
-                                <table id="id_table_single" cellspacing="0" class="table table-small-font table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th data-priority="1">节点</th>
-                                            <th data-priority="3">IP</th>
-                                            <th data-priority="1">带宽</th>
-                                            <th data-priority="3">延迟</th>
-                                            <th data-priority="1">抖动</th>
-                                            <th data-priority="3">丢包</th>
-                                            <th data-priority="1">拥塞</th>
-                                            <th data-priority="3">可用性</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th id="id_table_single_endNode"></th>
-                                            <td id="id_table_single_endNodeIp"></td>
-                                            <td id="id_table_single_bandwidth"></td>
-                                            <td id="id_table_single_delay"></td>
-                                            <td id="id_table_single_jitter"></td>
-                                            <td id="id_table_single_loss"></td>
-                                            <td id="id_table_single_congestion"></td>
-                                            <td id="id_table_single_availability"></td>
-                                        </tr>
-                                        <!-- <tr>
-                                            <th>上交</th>
-                                            <td>192.168.1.152</td>
-                                            <td>100Mps</td>
-                                            <td>20.3(us)</td>
-                                            <td>1.4(us)</td>
-                                            <td>0.9%</td>
-                                            <td>否</td>
-                                            <td>连通</td>
-                                        </tr>
-                                        <tr>
-                                            <th>华师</span></th>
-                                            <td>192.168.1.152</td>
-                                            <td>100Mps</td>
-                                            <td>20.3(us)</td>
-                                            <td>1.4(us)</td>
-                                            <td>0.9%</td>
-                                            <td>否</td>
-                                            <td>连通</td>
-                                        </tr>
-                                        <tr>
-                                            <th>复旦</th>
-                                            <td>192.168.1.152</td>
-                                            <td>100Mps</td>
-                                            <td>20.3(us)</td>
-                                            <td>1.4(us)</td>
-                                            <td>0.9%</td>
-                                            <td>否</td>
-                                            <td>连通</td>
-                                        </tr>
-                                        <tr>
-                                            <th>同济</th>
-                                            <td>192.168.1.152</td>
-                                            <td>100Mps</td>
-                                            <td>20.3(us)</td>
-                                            <td>1.4(us)</td>
-                                            <td>0.9%</td>
-                                            <td>否</td>
-                                            <td>连通</td>
-                                        </tr>
- -->
-                                    </tbody>
-                                </table>
-
-                            </div>
-
-                            <script type="text/javascript">
-                                // This JavaScript Will Replace Checkboxes in dropdown toggles
-                                jQuery(document).ready(function ($) {
-                                    setTimeout(function () {
-                                        $(".checkbox-row input").addClass('cbr');
-                                        cbr_replace();
-                                    }, 0);
-                                });
-                            </script>
-
-
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <!-- Overall Result Display Table -->
-            <div class="row" id="OverallDisplayID" style="display:none">
-                <div class="col-md-12">
-
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Overall Result Display</h3>
-
-                            <div class="panel-options">
-                                <a href="#">
-                                    <i class="linecons-cog"></i>
-                                </a>
-
-                                <a href="#" data-toggle="panel">
-                                    <span class="collapse-icon">&ndash;</span>
-                                    <span class="expand-icon">+</span>
-                                </a>
-
-                                <a href="#" data-toggle="reload">
-                                    <i class="fa-rotate-right"></i>
-                                </a>
-
-                                <a href="#" data-toggle="remove">
-                                    &times;
-                                </a>
-                            </div>
-                        </div>
-                        <!-- liaohui: display overall datas -->
-                        <div class="panel-body">                            
-                            <div>
-                                <!-- Basic Table -->
-                                <strong>带宽矩阵</strong>
-
-                                <table class="table table-hover" id="id_table_bandwidth">
-                                    <thead>
-                                        <tr>
-                                            <th>带宽</th>
-                                            <!-- thead -->
-                                            <!--
-                                            <th>带宽</th>
-                                            <th>上交</th>
-                                            <th>华师</th>
-                                            <th>复旦</th>
-                                            <th>同济</th>
-                                            -->
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        <tr>
-                                            <!-- body -->
-                                            <!--
-                                            <th>上交</th>
-                                            <td>1000Mbps</td>
-                                            <td>100Mbp</td>
-                                            <td>90Mbps</td>
-                                            <td>80Mbps</td>
-                                            -->
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                            </div>
-                            <div>
-                                <!-- Basic Table -->
-                                <strong>Delay</strong>
-
-                                <table class="table table-hover" id="id_table_delay">
-                                    <thead>
-                                        <tr>
-                                            <th>delay</th>
-                                            <!-- thead -->
-                                            <!--
-                                            <th>带宽</th>
-                                            <th>上交</th>
-                                            <th>华师</th>
-                                            <th>复旦</th>
-                                            <th>同济</th>
-                                            -->
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        <tr>
-                                            <!-- body -->
-                                            <!--
-                                            <th>上交</th>
-                                            <td>1000Mbps</td>
-                                            <td>100Mbp</td>
-                                            <td>90Mbps</td>
-                                            <td>80Mbps</td>
-                                            -->
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                            </div>
-                            <div>
-                                <!-- Basic Table -->
-                                <strong>Jitter</strong>
-
-                                <table class="table table-hover" id="id_table_jitter">
-                                    <thead>
-                                        <tr>
-                                            <th>Jitter</th>
-                                            <!-- thead -->
-                                            <!--
-                                            <th>带宽</th>
-                                            <th>上交</th>
-                                            <th>华师</th>
-                                            <th>复旦</th>
-                                            <th>同济</th>
-                                            -->
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        <tr>
-                                            <!-- body -->
-                                            <!--
-                                            <th>上交</th>
-                                            <td>1000Mbps</td>
-                                            <td>100Mbp</td>
-                                            <td>90Mbps</td>
-                                            <td>80Mbps</td>
-                                            -->
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                            </div>
-                            <div>
-                                <!-- Basic Table -->
-                                <strong>Loss</strong>
-
-                                <table class="table table-hover" id="id_table_loss">
-                                    <thead>
-                                        <tr>
-                                            <th>Loss</th>
-                                            <!-- thead -->
-                                            <!--
-                                            <th>带宽</th>
-                                            <th>上交</th>
-                                            <th>华师</th>
-                                            <th>复旦</th>
-                                            <th>同济</th>
-                                            -->
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        <tr>
-                                            <!-- body -->
-                                            <!--
-                                            <th>上交</th>
-                                            <td>1000Mbps</td>
-                                            <td>100Mbp</td>
-                                            <td>90Mbps</td>
-                                            <td>80Mbps</td>
-                                            -->
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                            </div>
-                            <div>
-                                <!-- Basic Table -->
-                                <strong>Congestion</strong>
-
-                                <table class="table table-hover" id="id_table_congestion">
-                                    <thead>
-                                        <tr>
-                                            <th>Congestion</th>
-                                            <!-- thead -->
-                                            <!--
-                                            <th>带宽</th>
-                                            <th>上交</th>
-                                            <th>华师</th>
-                                            <th>复旦</th>
-                                            <th>同济</th>
-                                            -->
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        <tr>
-                                            <!-- body -->
-                                            <!--
-                                            <th>上交</th>
-                                            <td>1000Mbps</td>
-                                            <td>100Mbp</td>
-                                            <td>90Mbps</td>
-                                            <td>80Mbps</td>
-                                            -->
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                            </div>
-                            <div>
-                                <!-- Basic Table -->
-                                <strong>Availability</strong>
-
-                                <table class="table table-hover" id="id_table_availability">
-                                    <thead>
-                                        <tr>
-                                            <th>Availability</th>
-                                            <!-- thead -->
-                                            <!--
-                                            <th>带宽</th>
-                                            <th>上交</th>
-                                            <th>华师</th>
-                                            <th>复旦</th>
-                                            <th>同济</th>
-                                            -->
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        <tr>
-                                            <!-- body -->
-                                            <!--
-                                            <th>上交</th>
-                                            <td>1000Mbps</td>
-                                            <td>100Mbp</td>
-                                            <td>90Mbps</td>
-                                            <td>80Mbps</td>
-                                            -->
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                            </div>
-                        <!-- liaohui: display overall datas -->
-
-                        <!-- liaohui:hide-->
-                        <!--
-                        <div class="panel-body">
-
-                            <div class="row">
-                                <div class="col-sm-6">
-
-                                    
-                                    <strong>带宽矩阵</strong>
-
-                                    <table class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>带宽</th>
-                                                <th>上交</th>
-                                                <th>华师</th>
-                                                <th>复旦</th>
-                                                <th>同济</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            <tr>
-                                                <td>上交</td>
-                                                <td>1000Mbps</td>
-                                                <td>100Mbp</td>
-                                                <td>90Mbps</td>
-                                                <td>80Mbps</td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>华师</td>
-                                                <td>100Mbps</td>
-                                                <td>1000Mbps</td>
-                                                <td>90Mbps</td>
-                                                <td>80Mbps</td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>复旦</td>
-                                                <td>100Mbps</td>
-                                                <td>100Mbp</td>
-                                                <td>1000Mbps</td>
-                                                <td>80Mbps</td>
-                                            </tr>
-                                            <tr>
-                                                <td>同济</td>
-                                                <td>1000Mbps</td>
-                                                <td>100Mbp</td>
-                                                <td>90Mbps</td>
-                                                <td>1000Mbps</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                </div>
-                                <div class="col-sm-6">
-
-                                    
-                                    <strong>时延矩阵</strong>
-
-                                    <table class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>时延</th>
-                                                <th>上交</th>
-                                                <th>华师</th>
-                                                <th>复旦</th>
-                                                <th>同济</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            <tr>
-                                                <td>上交</td>
-                                                <td>0.1us</td>
-                                                <td>10ms</td>
-                                                <td>23ms</td>
-                                                <td>50ms</td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>华师</td>
-                                                <td>50ms</td>
-                                                <td>0.5us</td>
-                                                <td>23ms</td>
-                                                <td>50ms</td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>复旦</td>
-                                                <td>30ms</td>
-                                                <td>10ms</td>
-                                                <td>0.3us</td>
-                                                <td>50ms</td>
-                                            </tr>
-                                            <tr>
-                                                <td>同济</td>
-                                                <td>20ms</td>
-                                                <td>10ms</td>
-                                                <td>23ms</td>
-                                                <td>0.2us</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-6">
-
-                                    
-                                    <strong>丢包矩阵</strong>
-
-                                    <table class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>丢包率</th>
-                                                <th>上交</th>
-                                                <th>华师</th>
-                                                <th>复旦</th>
-                                                <th>同济</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            <tr>
-                                                <td>上交</td>
-                                                <td>0.3%</td>
-                                                <td>0.5%</td>
-                                                <td>0.7%</td>
-                                                <td>1.3%</td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>华师</td>
-                                                <td>0.2%</td>
-                                                <td>0%</td>
-                                                <td>0.6%</td>
-                                                <td>0.7%</td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>复旦</td>
-                                                <td>1.0%</td>
-                                                <td>1.1%</td>
-                                                <td>0.1%</td>
-                                                <td>0.3%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>同济</td>
-                                                <td>0.9%</td>
-                                                <td>1.5%</td>
-                                                <td>0.4%</td>
-                                                <td>0%</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                </div>
-                                <div class="col-sm-6">
-
-                                    
-                                    <strong>可用性矩阵</strong>
-
-                                    <table class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>可用性</th>
-                                                <th>上交</th>
-                                                <th>华师</th>
-                                                <th>复旦</th>
-                                                <th>同济</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            <tr>
-                                                <td>上交</td>
-                                                <td>连通</td>
-                                                <td>连通</td>
-                                                <td>连通</td>
-                                                <td>连通</td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>华师</td>
-                                                <td>连通</td>
-                                                <td>连通</td>
-                                                <td>连通</td>
-                                                <td>连通</td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>连通</td>
-                                                <td>连通</td>
-                                                <td>连通</td>
-                                                <td>连通</td>
-                                            </tr>
-                                            <tr>
-                                                <td>连通</td>
-                                                <td>连通</td>
-                                                <td>连通</td>
-                                                <td>连通</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                </div>
-                            </div>
-                        -->
-                            <!-- -end hide() -->
-                            <div class="vspacer v3"></div>
-
-                        </div>
-
-                    </div>
-                </div>
-            </div>
+           
             <!-- Main Footer -->
             <!-- Choose between footer styles: "footer-type-1" or "footer-type-2" -->
             <!-- Add class "sticky" to  always stick the footer to the end of page (if page contents is small) -->

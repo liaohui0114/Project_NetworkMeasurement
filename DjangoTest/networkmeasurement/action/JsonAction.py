@@ -2,15 +2,16 @@
 
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
-import json,os
+import json,os,datetime
 from  GlobleVariable import *
 from Client import *
-from networkmeasurement.models import SchoolNode
+from networkmeasurement.models import SchoolNode,Passive
 from time import sleep
 
 #DEFAULT SETTING
 DEFAULT_UDP_COND = {NETWORK_BANDWITH:'100(Mbs)',NETWORK_DELAY:'0(ms)',NETWORK_JITTER:'0.1(ms)',NETWORK_LOSS:'0(%)',NETWORK_CONGESTION:'NO',NETWORK_AVAIL:'YES'}
 DEFAULT_OVERALL_COND = {NETWORK_BANDWITH:'',NETWORK_DELAY:'',NETWORK_JITTER:'',NETWORK_LOSS:'',NETWORK_CONGESTION:'',NETWORK_AVAIL:''}
+
 
 #function:to get point to point network cond
 def SingleAction(request):
@@ -114,3 +115,64 @@ def UploadAction(request):
             pass
         #return HttpResponse({"liaohui":"hui"},content_type="text/javascript")
         return HttpResponse(json.dumps({'liao':'hui','hui':'liao'}), content_type="application/json")
+
+
+#get paasive infos from database   
+def PassiveAction(request):
+    print 'PassiveAction'
+    if request.method == "POST":
+        print 'PassiveAction,if request.method == POST'
+        tmp = request.POST  #get infos posted from passive.js which datatype=json
+        #print tmp
+        start_ip = tmp["startNodeIp"]
+        end_ip = tmp["endNodeIp"]
+        start_name = tmp["startNodeName"]
+        end_name = tmp["endNodeName"]
+        start_time = tmp["startTime"]
+        end_time = tmp["endTime"]
+        #print start_ip,start_name,start_time,end_ip,end_name,end_time
+        
+        #to judge if node was in db
+        if SchoolNode.objects.filter(nodeName=start_name,nodeIp=start_ip).exists() and SchoolNode.objects.filter(nodeName=end_name,nodeIp=end_ip).exists():
+            start_node = SchoolNode.objects.get(nodeName=start_name,nodeIp=start_ip)
+            end_node = SchoolNode.objects.get(nodeName=end_name,nodeIp=end_ip)
+            print 'start_node',start_node
+            print 'end_node',end_node
+            #get all infos from db where createTime between start_time and end_time
+            msg = Passive.objects.filter(startNode=start_node,endNode=end_node,createTime__range=(start_time,end_time))
+            if msg.exists():
+                '''
+                chart type:
+                chartData = [{'name': '上海交通大学','data': [20, 21, 28.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 19.6]},
+                     {'name': '华东师范大学','data': [5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5]},
+                     {'name': '复旦大学','data': [3.5, 8.4, 13.5, 17.0, 18.6, 17.9, 14.3, 9.0, 3.9, 1.0]},
+                     {'name': '同济大学','data': [5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]}]
+                '''
+                bandwidth = {'name':'bandwidth','data':[]}
+                throughput = {'name':'throughput','data':[]}
+                loss = {'name':'loss','data':[]}
+                rtt = {'name':'rtt','data':[]}
+                cpu = {'name':'cpu','data':[]}
+                memory = {'name':'memory','data':[]}
+                createTime = []
+                for item in msg:
+                    
+                    print item.id,item.startNode,item.endNode,item.createTime
+                    bandwidth['data'].append(item.bandwidth)
+                    throughput['data'].append(item.throughput)
+                    loss['data'].append(item.loss)
+                    rtt['data'].append(item.rtt)
+                    memory['data'].append(item.memory)
+                    cpu['data'].append(item.cpu)
+                    createTime.append(time.mktime(item.createTime.timetuple())) #change to timestamp:time.mktime(item.createTime.timetuple())
+                    
+                rtnMsg = {'bandwidth':[bandwidth],'throughput':[throughput],'loss':[loss],'rtt':[rtt],'cpu':[cpu],'memory':[memory],'time':createTime}
+                print rtnMsg
+                return HttpResponse(json.dumps(rtnMsg), content_type="application/json")
+            else:
+                print 'passive objects not exists'
+                
+        else:
+            print 'school node not exists'
+            
+        

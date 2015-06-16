@@ -2,7 +2,7 @@
 from django.shortcuts import render, render_to_response
 from django.template import loader,Context
 from django.http import HttpResponse,HttpResponseRedirect
-from networkmeasurement import models
+#from networkmeasurement import models
 import os
 import MySQLdb
 import json
@@ -11,13 +11,12 @@ from networkmeasurement.action.MySqlOperation import TableSchoolNode
 from networkmeasurement.action import FormModule
 import time,datetime
 from django.utils.timezone import utc
+from models import *
 # Create your views here.
 
     
 def UDPFunc(request):
     print 'view:udpFunc'
-#     t = Context({'liao':'liao'})
-#     return render_to_response("active-udp.html",t)
     if request.method == 'POST':
             print 'liaohui,get post from json'
             form = FormModule.UDPForm(request.POST)
@@ -47,6 +46,7 @@ def UploadFunc(request):
     print 'view.Uploadfunc'
     t = Context({'liao':'liao'})
     return render_to_response("updown-upload.html",t)
+
 def DownloadFunc(request):
     t = Context({'liao':'liao'})
     return render_to_response("updown-download.html",t)
@@ -61,22 +61,11 @@ def PassiveFunc(request):
             if form.is_valid():                
                 print "liaohui,isvalid",form
                 return HttpResponse(json.dumps({"LIAOHUI":"LIAOHUI"}), content_type="application/json")
-                #username = uf.cleaned_data["username"]
-                #passwd = uf.cleaned_data["passwd"]
-                #print username,passwd
-                #b operation
-    #             user = User.objects.filter(username__exact=username,password__exact=passwd) #to judge if there exist same username in db
-    #             if user:
-    #                 #set cookies,use HttpResponse instance
-    #                 response =  HttpResponseRedirect('/index/')                
-    #                 response.set_cookie('username', username, 3600)
-    #                 return response
-    #             else:
-    #                 return HttpResponseRedirect('/login/')
     else:
         form = FormModule.PassiveForm()  #only call once??
+    
     return render_to_response("passive.html",{'form':form})
-    print 'view:PassiveFunc end!'
+    
         
         
 def testFunc(request):
@@ -87,6 +76,28 @@ def testFunc(request):
 #      tb.InsertNode()
 #     t = Context({'liao':'liao'})
 #     return render_to_response("jqueyTest.html",t)
+
+    #get() return on line ,filter return one or more lindes
+    #__gte >=,__lte:<=
+    #__startswidth:like "xxx%"
+    #__range=(a,b),between a and b
+    
+    if NetProtocol.objects.filter(protocolName='TCP'):
+        pt = NetProtocol.objects.get(protocolName='TCP')
+        print 'pt exists'
+    else:
+        print 'pt not exists'
+    #print pt.id,pt.protocolName
+    
+    ps = Active.objects.filter(protocol=pt)
+    if ps.exists():
+        print "exits"
+        for item in ps:
+            print item.createTime,item.startNode,item.endNode
+    else:
+        print 'not exits'
+    
+    
     if request.method == 'POST':
         form = FormModule.UDPForm(request.POST)
         if form.is_valid():

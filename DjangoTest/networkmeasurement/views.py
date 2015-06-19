@@ -14,10 +14,52 @@ from django.utils.timezone import utc
 from models import *
 # Create your views here.
 
+
+#function:to judge if the user have login already.If we can get the cookies which imply we have login
+def IsLogin(request):
+    print 'view:IsLogin'
+    username = request.COOKIES.get('username') #TO GET THE COOKIES
+    if username:
+        print ' login'
+        return True
+    else:
+        print 'not login'
+        return False
+
+
+def LoginFunc(request):
+    print 'view:LoginFunc'
+    if IsLogin(request):
+        return HttpResponseRedirect("/passive/")  #if user have login already,then redirect to passive.html
+    else:
+        if request.method == 'POST':
+            form = FormModule.LoginForm(request.POST)
+            if form.is_valid():                
+                username = form.cleaned_data["username"]
+                passwd = form.cleaned_data["passwd"]
+                print username,passwd
+                # operation
+                if username=="liaohui" and passwd=="liaohui":
+                     #set cookies,use HttpResponse instance
+                     response =  HttpResponseRedirect('/passive/')                
+                     response.set_cookie('username', username, 3600)  #set cookie imply that we have login
+                     return response
+                else:
+                     return HttpResponse("Wrong id or password,<a href='/login/'>login</login>")
+        else:
+            form = FormModule.LoginForm()  #only call once??
+        return render_to_response("login.html",{"form":form})
+    
+def LogoutFunc(request):
+    response = HttpResponse("You have already logout,<a href='login'>Login</a>")
+    if request.COOKIES.get('username'):
+        response.delete_cookie('username') #user HttpResponse instance to delete cookies
+    return response       
     
 def UDPFunc(request):
     print 'view:udpFunc'
-    if request.method == 'POST':
+    if IsLogin(request):
+        if request.method == 'POST':
             print 'liaohui,get post from json'
             form = FormModule.UDPForm(request.POST)
             if form.is_valid():                
@@ -27,20 +69,22 @@ def UDPFunc(request):
                 #passwd = uf.cleaned_data["passwd"]
                 #print username,passwd
                 #b operation
-    #             user = User.objects.filter(username__exact=username,password__exact=passwd) #to judge if there exist same username in db
-    #             if user:
-    #                 #set cookies,use HttpResponse instance
-    #                 response =  HttpResponseRedirect('/index/')                
-    #                 response.set_cookie('username', username, 3600)
-    #                 return response
-    #             else:
-    #                 return HttpResponseRedirect('/login/')
+        #             user = User.objects.filter(username__exact=username,password__exact=passwd) #to judge if there exist same username in db
+        #             if user:
+        #                 #set cookies,use HttpResponse instance
+        #                 response =  HttpResponseRedirect('/index/')                
+        #                 response.set_cookie('username', username, 3600)
+        #                 return response
+        #             else:
+        #                 return HttpResponseRedirect('/login/')
+        else:
+            #print 'view:udpFunc,else!'
+            form = FormModule.UDPForm()  #only call once??
+            #print 'view:udpFunc,else end!'
+            
+        return render_to_response("active-udp.html",{'form':form})
     else:
-        #print 'view:udpFunc,else!'
-        form = FormModule.UDPForm()  #only call once??
-        #print 'view:udpFunc,else end!'
-        
-    return render_to_response("active-udp.html",{'form':form})   
+        return HttpResponse("Please login first,<a href='/login/'>Login</a>")
     
 def UploadFunc(request):
     print 'view.Uploadfunc'

@@ -60,3 +60,7 @@ class PassiveForm(forms.Form):
 #     class Meta:
 #         model = SchoolNode
 #         fields = ['nodeIp','nodeName']
+
+class LoginForm(forms.Form):
+    username = forms.CharField()
+    passwd = forms.CharField(widget = forms.PasswordInput)

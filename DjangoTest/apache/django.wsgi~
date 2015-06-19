@@ -1,0 +1,24 @@
+import os
+
+import sys
+
+path = '/home/liaohui/workspace/DjangoTest'
+
+if path not in sys.path:
+
+    sys.path.insert(0, '/home/liaohui/workspace/DjangoTest')
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'DjangoTest.settings'
+
+import django.core.handlers.wsgi
+
+application = django.core.handlers.wsgi.WSGIHandler()
+
+import os
+import sys
+path = '/home/liaohui/workspace/DjangoTest'
+if path not in sys.path:
+    sys.path.insert(0, '/home/liaohui/workspace/DjangoTest')
+os.environ['DJANGO_SETTINGS_MODULE'] = 'DjangoTest.settings'
+import django.core.handlers.wsgi
+application = django.core.handlers.wsgi.WSGIHandler()

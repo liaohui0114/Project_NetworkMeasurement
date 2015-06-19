@@ -146,7 +146,6 @@ createTime: createTime of every point
 unit:Mps mps ,% or others
 */
 function DisplayActiveChart(chartId,chartTitle,chartData,createTime,unit){
-	var i = 0;
 
 	 $(chartId).highcharts({
 	 	chart: {

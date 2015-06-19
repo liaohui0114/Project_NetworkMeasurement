@@ -5,13 +5,32 @@ from django.shortcuts import render_to_response
 import json,os,datetime
 from  GlobleVariable import *
 from Client import *
-from networkmeasurement.models import SchoolNode,Passive
+from networkmeasurement.models import SchoolNode,Passive,Active
 from time import sleep
 
 #DEFAULT SETTING
 DEFAULT_UDP_COND = {NETWORK_BANDWITH:'100(Mbs)',NETWORK_DELAY:'0(ms)',NETWORK_JITTER:'0.1(ms)',NETWORK_LOSS:'0(%)',NETWORK_CONGESTION:'NO',NETWORK_AVAIL:'YES'}
 DEFAULT_OVERALL_COND = {NETWORK_BANDWITH:'',NETWORK_DELAY:'',NETWORK_JITTER:'',NETWORK_LOSS:'',NETWORK_CONGESTION:'',NETWORK_AVAIL:''}
 
+#function:获取图标信息，即获取各个节点的最近十条记录
+def GetSingleChart():
+    print 'GetSingleChart'
+    nodeInfo = SchoolNode.objects.all()
+    chartData = []
+    
+    if nodeInfo.exists():#to get all nodes info in DB
+        for i in nodeInfo:
+            tmpDic = {}
+            tmpDic['name']=i.nodeName
+            #print i.nodeName
+            cond = Active.objects.order_by('-id').filter(endNode=i)[:10]  #获取最后十个，即：按id降序排列，获取前十个
+            if cond.exists():
+                tmpDic['data'] = [item.bandwidth for item in cond] #here we only display bandwidth conditions
+                chartData.append(tmpDic)
+    
+    
+    print 'end GetSingleChart()'
+    return chartData
 
 #function:to get point to point network cond
 def SingleAction(request):
@@ -27,13 +46,14 @@ def SingleAction(request):
 #         for key,value in netMsg.items():
 #             DEFAULT_UDP_COND[key] = value #set true attribute
 #         print DEFAULT_UDP_COND
-        print 'chartData'
+        '''
         chartData = [{'name': '上海交通大学','data': [20, 21, 28.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 19.6]},
                      {'name': '华东师范大学','data': [5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5]},
                      {'name': '复旦大学','data': [3.5, 8.4, 13.5, 17.0, 18.6, 17.9, 14.3, 9.0, 3.9, 1.0]},
                      {'name': '同济大学','data': [5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]}]
+        '''
+        chartData = GetSingleChart()
         chartTime = [1,2,3,4,5,6,7,8,9,10]
-        print chartData
         reMsg = {"single":DEFAULT_UDP_COND,"chart":{"chartData":chartData,"chartTime":chartTime}}   #we will decode this format by .js
         sleep(4) #for test
         return HttpResponse(json.dumps(reMsg), content_type="application/json")
@@ -166,9 +186,9 @@ def PassiveAction(request):
                     cpu['data'].append(item.cpu)
                     createTime.append(time.mktime(item.createTime.timetuple())) #change to timestamp:time.mktime(item.createTime.timetuple())
                     
-                rtnMsg = {'bandwidth':[bandwidth],'throughput':[throughput],'loss':[loss],'rtt':[rtt],'cpu':[cpu],'memory':[memory],'time':createTime}
-                print rtnMsg
-                return HttpResponse(json.dumps(rtnMsg), content_type="application/json")
+                chartData = {'bandwidth':[bandwidth],'throughput':[throughput],'loss':[loss],'rtt':[rtt],'cpu':[cpu],'memory':[memory],'time':createTime}
+                print chartData
+                return HttpResponse(json.dumps(chartData), content_type="application/json")
             else:
                 print 'passive objects not exists'
                 

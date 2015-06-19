@@ -26,6 +26,7 @@ urlpatterns = patterns('',
     url(r'^upload/$','networkmeasurement.views.UploadFunc'),
     url(r'^download/$','networkmeasurement.views.DownloadFunc'),
     url(r'^passive/$','networkmeasurement.views.PassiveFunc'),
+    url(r'^login/$','networkmeasurement.views.LoginFunc'),
     
     url(r'^(udp)|(upload)|(download)/',include(extrapatterns)),
     #include：think about this ,urls in extrapatterns will follow ^udp/,like:^udp/upload/$,udp/download/$

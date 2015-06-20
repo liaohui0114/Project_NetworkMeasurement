@@ -115,7 +115,7 @@ function Udp_ajax_post_passive(startIp,endIp,startNodeName,endNodeName,startTime
 						var chartData = eval(item); //it's important that we must use 'eval()',why???  check up eval().It is said to avoid using eval() in Interne
 						var chartId = '#id_div_chart_'+i;
 						var chartTitle = i;
-						DisplayActiveChart(chartId,chartTitle,chartData,createTime,unit); // using plug-in:Highcharts  to display charts;
+						DisplayActiveChart(chartId,chartTitle,chartData,createTime,startTime,endTime,unit); // using plug-in:Highcharts  to display charts;
 				}
 				else
 				{
@@ -145,24 +145,28 @@ chartData:data for chart
 createTime: createTime of every point
 unit:Mps mps ,% or others
 */
-function DisplayActiveChart(chartId,chartTitle,chartData,createTime,unit){
+function DisplayActiveChart(chartId,chartTitle,chartData,createTime,startTime,endTime,unit){
 
 	 $(chartId).highcharts({
 	 	chart: {
           type: 'spline'
       },
         title: {
-            text: 'Result of Passive Network Condition:'+chartTitle,
+            text: 'Result of Network Condition by Passive Test:'+chartTitle,
             x: -20 //center
         },
         subtitle: {
-            text: 'subtitle: passive network_measurement by liaohui using highcharts!',
+            text: 'subtitle: Passive Network Condition between '+startTime+' and '+endTime,
             x: -20
         },
-        /*
+        
         xAxis: {
-            categories: createTime  // to show xAxis
-        },*/
+            categories: [],  // to show xAxis
+            title:
+            {
+            	text:'Index'
+            }
+        },
         yAxis: {
             title: {
                 text: chartTitle+unit

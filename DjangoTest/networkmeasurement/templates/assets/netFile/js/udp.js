@@ -230,11 +230,14 @@ function DisplayActiveChart(chartData,chartTime){
             x: -20 //center
         },
         subtitle: {
-            text: 'subtitle: liaohui:highcharts test!',
+            text: 'subtitle: Active Test!',
             x: -20
         },
         xAxis: {
-            categories: chartTime  // to show xAxis
+            categories: chartTime,  // to show xAxis
+            title: {
+                text: 'Index'
+            }
         },
         yAxis: {
             title: {

@@ -6,9 +6,9 @@
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<meta name="description" content="Xenon Boostrap Admin Panel" />
-	<meta name="author" content="" />
+	<meta name="author" content="wenhao" />
 	
-	<title>Xenon - File Upload</title>
+	<title>下载测试</title>
 
 	<link rel="stylesheet" href="http://fonts.useso.com/css?family=Arimo:400,700,400italic">
 	<link rel="stylesheet" href="assets/css/fonts/linecons/css/linecons.css">
@@ -180,11 +180,13 @@
 					</div>
 					
 					<!-- This will open the popup with user profile settings, you can use for any purpose, just be creative -->
+					<!--
 					<div class="settings-icon">
 						<a href="#" data-toggle="settings-pane" data-animate="true">
 							<i class="linecons-cog"></i>
 						</a>
 					</div>
+					-->
 					
 								
 				</header>
@@ -201,18 +203,18 @@
 						</a>
 						<ul>
 							<li>
-								<a href="tables-basic.html">
-									<span class="title">TCP Protocol</span>
+								<a href="/tcp/">
+									<span class="title">TCP 协议</span>
 								</a>
 							</li>
 							<li>
 								<a href="/udp/">
-									<span class="title">UDP Protocol</span>
+									<span class="title">UDP 协议</span>
 								</a>
 							</li>
 							<li>
-								<a href="tables-datatables.html">
-									<span class="title">ICMP Protocol</span>
+								<a href="/icmp/">
+									<span class="title">ICMP 协议</span>
 								</a>
 							</li>
 						</ul>
@@ -225,12 +227,13 @@
 						<ul>
 							<li>
 								<a href="/passive/">
-									<span class="title"> SNMP Protocol</span>
+									<span class="title"> SNMP 协议</span>
 								</a>
 							</li>
 							
 						</ul>
 					</li>
+					
 					
 					<li class="opened active">
 						<a href="tables-basic.html">
@@ -240,17 +243,19 @@
 						<ul>
 							<li class="active">
 								<a href="/upload/">
-									<span class="title"> upload</span>
+									<span class="title"> 上传测量</span>
 								</a>
 							</li>
 							<li >
 								<a href="/download/">
-									<span class="title"> download</span>
+									<span class="title"> 下载测量</span>
 								</a>
 							</li>
 						</ul>
 					</li>
 					
+					
+					<!--
 					<li>
 						<a href="dashboard-1.html">
 							<i class="linecons-cog"></i>
@@ -446,6 +451,7 @@
 							</li>
 						</ul>
 					</li>
+					-->
 				</ul>
 						
 			</div>
@@ -467,10 +473,12 @@
 					</li>
 					
 					<li class="dropdown hover-line">
+					<!--
 						<a href="#" data-toggle="dropdown">
 							<i class="fa-envelope-o"></i>
 							<span class="badge badge-green">15</span>
 						</a>
+						-->
 							
 						<ul class="dropdown-menu messages">
 							<li>
@@ -597,10 +605,12 @@
 					</li>
 					
 					<li class="dropdown hover-line">
+					<!--
 						<a href="#" data-toggle="dropdown">
 							<i class="fa-bell-o"></i>
 							<span class="badge badge-purple">7</span>
 						</a>
+						-->
 							
 						<ul class="dropdown-menu notifications">
 							<li class="top">
@@ -712,8 +722,8 @@
 				
 				<!-- Right links for user info navbar -->
 				<ul class="user-info-menu right-links list-inline list-unstyled">
-					
-					<li class="search-form"><!-- You can add "always-visible" to show make the search input visible -->
+					<!--
+					<li class="search-form">
 						
 						<form method="get" action="extra-search.html">
 							<input type="text" name="s" class="form-control search-field" placeholder="Type to search..." />
@@ -773,7 +783,7 @@
 							<i class="fa-comments-o"></i>
 						</a>
 					</li>
-					
+					-->
 				</ul>
 				
 			</nav>
@@ -781,18 +791,18 @@
 				
 				<div class="title-env">
 					<h1 class="title">上传下载测量</h1>
-					<p class="description">File uploading to test network condition!</p>
+					<p class="description">测试当前网络的上传速度，上传地址：上海交通大学结点!</p>
 				</div>
 				
 					<div class="breadcrumb-env">
 					
 								<ol class="breadcrumb bc-1">
 									<li>
-							<a href="dashboard-1.html"><i class="fa-home"></i>Home</a>
+							<a href="/upload/"><i class="fa-home"></i>Home</a>
 						</li>
 								<li>
 						
-										<a href="upload.html">upload-download</a>
+										<a href="/upload/">upload-download</a>
 								</li>
 							<li class="active">
 						
@@ -832,7 +842,7 @@
 			
 				<div class="panel-heading">
 					<h3 class="panel-title">
-						Custom Configuration <small>using callback methods</small>
+						文件上传 <small>测试当前文件上传至结点:上海交通大学的上传速度</small>
 					</h3>
 				</div>
 				
@@ -840,12 +850,12 @@
 					
 					<br />
 					<div class="row">
-						<div class="col-sm-3 text-center">
+						<div class="col-sm-3">
 						
 							<!-- <div id="advancedDropzone" class="droppable-area">
 								Drop Files Here
 							</div> -->
-							<input type="file" name="upload" id="id_upload_btn" value="upload"/>
+							<input type="file" name="upload" id="id_upload_btn"/>
 							
 
 								
@@ -857,10 +867,10 @@
 								<thead>
 									<tr>
 										<th width="1%" class="text-center">#</th>
-										<th width="30%">Name</th>
-										<th width="30%">Upload Progress</th>
-										<th width="20%">File Size</th>
-										<th>Status</th>
+										<th width="30%">文件名</th>
+										<th width="30%">上传进度</th>
+										<th width="20%">文件大小</th>
+										<th>状态</th>
 									</tr>
 								</thead>
 								<tbody>

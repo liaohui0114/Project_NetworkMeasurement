@@ -6,9 +6,9 @@
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<meta name="description" content="Xenon Boostrap Admin Panel" />
-	<meta name="author" content="" />
+	<meta name="author" content="wenhao" />
 	
-	<title>Xenon - Responsive Table</title>
+	<title>上传测试</title>
 
 	<link rel="stylesheet" href="http://fonts.useso.com/css?family=Arimo:400,700,400italic">
 	<link rel="stylesheet" href="assets/css/fonts/linecons/css/linecons.css">
@@ -179,12 +179,13 @@
 					</div>
 					
 					<!-- This will open the popup with user profile settings, you can use for any purpose, just be creative -->
+					<!--
 					<div class="settings-icon">
 						<a href="#" data-toggle="settings-pane" data-animate="true">
 							<i class="linecons-cog"></i>
 						</a>
 					</div>
-					
+					-->
 								
 				</header>
 						
@@ -200,18 +201,18 @@
 						</a>
 						<ul>
 							<li>
-								<a href="tables-basic.html">
-									<span class="title">TCP Protocol</span>
+								<a href="/tcp/">
+									<span class="title">TCP 协议</span>
 								</a>
 							</li>
 							<li>
 								<a href="/udp/">
-									<span class="title">UDP Protocol</span>
+									<span class="title">UDP 协议</span>
 								</a>
 							</li>
 							<li>
-								<a href="tables-datatables.html">
-									<span class="title">ICMP Protocol</span>
+								<a href="/icmp/">
+									<span class="title">ICMP 协议</span>
 								</a>
 							</li>
 						</ul>
@@ -223,8 +224,8 @@
 						</a>
 						<ul>
 							<li>
-								<a href="tables-responsive.html">
-									<span class="title"> SNMP Protocol</span>
+								<a href="/passive/">
+									<span class="title"> SNMP 协议</span>
 								</a>
 							</li>
 							
@@ -239,17 +240,18 @@
 						<ul>
 							<li>
 								<a href="/upload/">
-									<span class="title"> upload</span>
+									<span class="title"> 上传测量</span>
 								</a>
 							</li>
 							<li class="active">
 								<a href="/download/">
-									<span class="title"> download</span>
+									<span class="title"> 下载测量</span>
 								</a>
 							</li>
 						</ul>
 					</li>
 					
+					<!--
 					<li>
 						<a href="dashboard-1.html">
 							<i class="linecons-cog"></i>
@@ -445,6 +447,7 @@
 							</li>
 						</ul>
 					</li>
+					-->
 				</ul>
 						
 			</div>
@@ -466,10 +469,12 @@
 					</li>
 					
 					<li class="dropdown hover-line">
+					<!--
 						<a href="#" data-toggle="dropdown">
 							<i class="fa-envelope-o"></i>
 							<span class="badge badge-green">15</span>
 						</a>
+						-->
 							
 						<ul class="dropdown-menu messages">
 							<li>
@@ -596,10 +601,12 @@
 					</li>
 					
 					<li class="dropdown hover-line">
+					<!--
 						<a href="#" data-toggle="dropdown">
 							<i class="fa-bell-o"></i>
 							<span class="badge badge-purple">7</span>
 						</a>
+						-->
 							
 						<ul class="dropdown-menu notifications">
 							<li class="top">
@@ -711,8 +718,8 @@
 				
 				<!-- Right links for user info navbar -->
 				<ul class="user-info-menu right-links list-inline list-unstyled">
-					
-					<li class="search-form"><!-- You can add "always-visible" to show make the search input visible -->
+					<!--			
+					<li class="search-form">
 						
 						<form method="get" action="extra-search.html">
 							<input type="text" name="s" class="form-control search-field" placeholder="Type to search..." />
@@ -772,7 +779,7 @@
 							<i class="fa-comments-o"></i>
 						</a>
 					</li>
-					
+					-->
 				</ul>
 				
 			</nav>
@@ -780,18 +787,18 @@
 				
 				<div class="title-env">
 					<h1 class="title">上传下载测量</h1>
-					<p class="description">File uploading to test network condition!</p>
+					<p class="description">通过文件下载速度以及视频播放的流畅程度来表现当前网络状态!</p>
 				</div>
 				
 					<div class="breadcrumb-env">
 					
 								<ol class="breadcrumb bc-1">
 									<li>
-							<a href="dashboard-1.html"><i class="fa-home"></i>Home</a>
+							<a href="/download/"><i class="fa-home"></i>Home</a>
 						</li>
 								<li>
 						
-										<a href="download.html">upload-download</a>
+										<a href="/download/">upload-download</a>
 								</li>
 							<li class="active">
 						
@@ -808,8 +815,8 @@
 				
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h3 class="panel-title">Download Files Selection</h3>
-							
+							<h3 class="panel-title">下载文件</h3>							
+ 							<p class="description" style="font-size:14px">（文件地址：上海交通大学结点）</p>
 							<div class="panel-options">
 								<a href="#">
 									<i class="linecons-cog"></i>
@@ -833,11 +840,11 @@
 							
 							<form role="form">
 							<div class="form-group">
-									<label class="control-label"><strong>Download files</strong></label>								
+									<label class="control-label"><strong>文件大小选择</strong></label>								
 									<select class="form-control" id="id_select_downloadFile" >
 										<option></option>
 										<optgroup label="File Size">
-											<option value="assets/netFile/downloadFile/low.zip">File-low(1M)</option>
+											<option value="assets/netFile/downloadFile/low">File-low(1M)</option>
 											<option value="assets/netFile/downloadFile/middle">File-middle(10M)</option>
 											<option value="assets/netFile/downloadFile/high">File-high(100M)</option>
 										</optgroup>
@@ -860,8 +867,8 @@
 				
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h3 class="panel-title">Video Display</h3>
-							
+							<h3 class="panel-title">视频播放</h3>
+							<p class="description" style="font-size:14px">（文件地址：上海交通大学结点）</p>
 							<div class="panel-options">
 								<a href="#">
 									<i class="linecons-cog"></i>
@@ -886,7 +893,7 @@
 							<form role="form">
 							<div class="form-group">
 									
-									<label class="control-label"><strong>Videos Selection</strong></label>								
+									<label class="control-label"><strong>清晰度选择</strong></label>								
 									<select class="form-control" id="id_select_video">
 										<option></option>
 										<optgroup label="视屏格式">

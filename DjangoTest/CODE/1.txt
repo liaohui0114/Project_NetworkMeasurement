@@ -1,0 +1,15 @@
+PING 192.168.1.149 (192.168.1.149) 56(84) bytes of data.
+64 bytes from 192.168.1.149: icmp_req=1 ttl=64 time=0.240 ms
+64 bytes from 192.168.1.149: icmp_req=2 ttl=64 time=0.255 ms
+64 bytes from 192.168.1.149: icmp_req=3 ttl=64 time=0.191 ms
+64 bytes from 192.168.1.149: icmp_req=4 ttl=64 time=0.266 ms
+64 bytes from 192.168.1.149: icmp_req=5 ttl=64 time=0.269 ms
+64 bytes from 192.168.1.149: icmp_req=6 ttl=64 time=0.279 ms
+64 bytes from 192.168.1.149: icmp_req=7 ttl=64 time=0.280 ms
+64 bytes from 192.168.1.149: icmp_req=8 ttl=64 time=0.228 ms
+64 bytes from 192.168.1.149: icmp_req=9 ttl=64 time=0.260 ms
+64 bytes from 192.168.1.149: icmp_req=10 ttl=64 time=0.264 ms
+
+--- 192.168.1.149 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 8999ms
+rtt min/avg/max/mdev = 0.191/0.253/0.280/0.027 ms

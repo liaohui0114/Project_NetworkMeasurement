@@ -6,9 +6,9 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Xenon Boostrap Admin Panel" />
-    <meta name="author" content="" />
+    <meta name="author" content="wenhao" />
 
-    <title>Xenon - Responsive Table</title>
+    <title>被动测量</title>
 
     <link rel="stylesheet" href="http://fonts.useso.com/css?family=Arimo:400,700,400italic">
     <link rel="stylesheet" href="assets/css/fonts/linecons/css/linecons.css">
@@ -176,10 +176,12 @@
 
                     <!-- This will toggle the mobile menu and will be visible only on mobile devices -->
                     <div class="mobile-menu-toggle visible-xs">
+                    <!--
                         <a href="#" data-toggle="user-info-menu">
                             <i class="fa-bell-o"></i>
                             <span class="badge badge-success">7</span>
                         </a>
+                        -->
 
                         <a href="#" data-toggle="mobile-menu">
                             <i class="fa-bars"></i>
@@ -187,11 +189,13 @@
                     </div>
 
                     <!-- This will open the popup with user profile settings, you can use for any purpose, just be creative -->
+                    <!--
                     <div class="settings-icon">
                         <a href="#" data-toggle="settings-pane" data-animate="true">
                             <i class="linecons-cog"></i>
                         </a>
                     </div>
+                    -->
 
 
                 </header>
@@ -208,18 +212,18 @@
                         </a>
                         <ul>
                             <li>
-                                <a href="tables-basic.html">
-                                    <span class="title">TCP Protocol</span>
+                                <a href="/tcp/">
+                                    <span class="title">TCP 协议</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="/udp/">
-                                    <span class="title">UDP Protocol</span>
+                                    <span class="title">UDP 协议</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="tables-datatables.html">
-                                    <span class="title">ICMP Protocol</span>
+                                <a href="/icmp/">
+                                    <span class="title">ICMP 协议</span>
                                 </a>
                             </li>
                         </ul>
@@ -232,7 +236,7 @@
                         <ul>
                             <li  class="active">
                                 <a href="/passive/">
-                                    <span class="title"> SNMP Protocol</span>
+                                    <span class="title"> SNMP 协议</span>
                                 </a>
                             </li>
 
@@ -247,17 +251,17 @@
                         <ul>
                             <li>
                                 <a href="/upload/">
-                                    <span class="title"> upload</span>
+                                    <span class="title"> 上传测量</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="/download/">
-                                    <span class="title"> download</span>
+                                    <span class="title"> 下载测量</span>
                                 </a>
                             </li>
                         </ul>
                     </li>
-
+						<!--
                     <li>
                         <a href="dashboard-1.html">
                             <i class="linecons-cog"></i>
@@ -453,6 +457,7 @@
                             </li>
                         </ul>
                     </li>
+                    -->
                 </ul>
 
             </div>
@@ -474,10 +479,12 @@
                     </li>
 
                     <li class="dropdown hover-line">
+                    <!--
                         <a href="#" data-toggle="dropdown">
                             <i class="fa-envelope-o"></i>
                             <span class="badge badge-green">15</span>
                         </a>
+                        -->
 
                         <ul class="dropdown-menu messages">
                             <li>
@@ -606,10 +613,12 @@
                     </li>
 
                     <li class="dropdown hover-line">
+                    <!--
                         <a href="#" data-toggle="dropdown">
                             <i class="fa-bell-o"></i>
                             <span class="badge badge-purple">7</span>
                         </a>
+                        -->
 
                         <ul class="dropdown-menu notifications">
                             <li class="top">
@@ -721,9 +730,9 @@
 
                 <!-- Right links for user info navbar -->
                 <ul class="user-info-menu right-links list-inline list-unstyled">
-
+						<!--
                     <li class="search-form">
-                        <!-- You can add "always-visible" to show make the search input visible -->
+                       
 
                         <form method="get" action="extra-search.html">
                             <input type="text" name="s" class="form-control search-field" placeholder="Type to search..." />
@@ -783,7 +792,7 @@
                             <i class="fa-comments-o"></i>
                         </a>
                     </li>
-
+						-->
                 </ul>
 
             </nav>
@@ -791,7 +800,7 @@
 
                 <div class="title-env">
                     <h1 class="title">被动测量</h1>
-                    <p class="description">Using SNMP protocol to test network condition</p>
+                    <p class="description">通过被动监听网络上经过结点的数据包，获取网络性能状况，包括：吞吐率，丢包，往返时延，CPU，内存利用率等</p>
                 </div>
 
                 <div class="breadcrumb-env">
@@ -806,7 +815,7 @@
                         </li>
                         <li class="active">
 
-                            <strong>SNMP Protocol</strong>
+                            <strong>SNMP 协议</strong>
                         </li>
                     </ol>
 
@@ -819,8 +828,8 @@
 
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Node Selection</h3>
-
+                            <h3 class="panel-title">被动测量数据统计</h3>
+			     <p class="description" style="font-size:14px">（统计一段时间内起始结点至目标结点之间的被动测量网络性能信息）</p>
                             <div class="panel-options">
                                 <a href="#">
                                     <i class="linecons-cog"></i>
@@ -844,7 +853,7 @@
 
                             <form role="form" method="post" id="id_form_node">
                                 <div class="form-group">
-                                    <label class="control-label"><strong>Start Node</strong></label>
+                                    <label class="control-label"><strong>起始结点</strong></label>
                                     <!-- <select class="form-control" id="s2example-1">
                                         <option></option>
                                         <optgroup label="上海">
@@ -858,7 +867,7 @@
                                     {{item}}
                                     {% endfor%}
                                     </br>
-                                    <label class="control-label"><strong>End Node</strong></label>
+                                    <label class="control-label"><strong>目标结点</strong></label>
                                    <!--  <select class="form-control" id="s2example-2">
                                         <option></option>
                                         <optgroup label="上海">
@@ -873,10 +882,10 @@
                                     {{item}}
                                     {% endfor%}
  				                   </br>
-                                    <label class="control-label"><strong>Start Time</strong></label></br>
+                                    <label class="control-label"><strong>开始时间</strong></label></br>
                                     <input class="form-control" type="text" id="id_input_startTime" readonly="readonly"/> 
  				                   </br>
-                                    <label class="control-label"><strong>End Time</strong></label></br>                     
+                                    <label class="control-label"><strong>结束时间</strong></label></br>                     
                                     <input class="form-control" type="text" id="id_input_endTime" readonly="readonly"/> 
                                     </br>
                                 </div>
@@ -884,6 +893,8 @@
                             <div class="form-group">
                                 <button type="submit" class="btn btn-success" id="id_btn_passive" style="width:100px">测量</button>
 
+				<!-- to display tips -->
+				<div id="id_div_tip"></div>
                             </div>
 
                         </div>
@@ -902,7 +913,7 @@
                 <div class="col-md-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Statistics</h3>
+                            <h3 class="panel-title">数据统计</h3>
 
                             <div class="panel-options">
                                 <a href="#">
@@ -925,33 +936,33 @@
                         </div>
                         <div class="panel-body">
                         <!--  liaohui, display active charts:we get latest 10 times bandwidth of startNode from db -->
-                        <h1>BandWidth</h1>
+                        <h1>带宽</h1>
                         <div id="id_div_chart_bandwidth"></div>
 
                         </div>
                         <div class="panel-body">
                         <!--  liaohui, display active charts:we get latest 10 times bandwidth of startNode from db -->
-                        <h1>ThroughPut</h1>
+                        <h1>吞吐量</h1>
                         <div id="id_div_chart_throughput"></div>
 
                         <div class="panel-body">
                         <!--  liaohui, display active charts:we get latest 10 times bandwidth of startNode from db -->
-                        <h1>Loss</h1>
+                        <h1>丢包</h1>
                         <div id="id_div_chart_loss"></div>
 
                         <div class="panel-body">
                         <!--  liaohui, display active charts:we get latest 10 times bandwidth of startNode from db -->
-                        <h1>RTT</h1>
+                        <h1>往返时延RTT</h1>
                         <div id="id_div_chart_rtt"></div>
 
                         <div class="panel-body">
                         <!--  liaohui, display active charts:we get latest 10 times bandwidth of startNode from db -->
-                        <h1>CPU</h1>
+                        <h1>CPU利用率</h1>
                         <div id="id_div_chart_cpu"></div>
 
                         <div class="panel-body">
                         <!--  liaohui, display active charts:we get latest 10 times bandwidth of startNode from db -->
-                        <h1>Memory</h1>
+                        <h1>内存利用率</h1>
                         <div id="id_div_chart_memory"></div>
 
                         </div>

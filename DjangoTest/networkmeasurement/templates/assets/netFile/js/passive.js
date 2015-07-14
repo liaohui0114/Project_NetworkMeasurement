@@ -6,6 +6,25 @@ $(document).ready(function(){
 
 	//$("#id_btn_single").on("dblclick",function(){
 	//start single test
+	$("#id_btn_passive").hover(function()
+	{
+		$("#id_div_tip").css({
+	  'opacity': .5, //透明度
+	  'position': 'absolute',
+
+	  //'background-color': 'black',
+	  'color':'black',
+	  'font-weight ':700,
+	  //'width': '200px',
+	  //'height':'100px',
+	  'z-index': 5000 //保证这个悬浮层位于其它内容之上
+	}).html("选择链路：起始结点-目标结点，选择时间段：开始时间-结束时间，统计该段时间内特定链路的网络性能情况");
+	  $("#id_div_tip").show();
+	},function()
+	{
+		$("#id_div_tip").hide();
+	});
+	
 	$("#id_btn_passive").on("click",function(){
 		var st =  $("#id_input_startTime").val();
 		var et = $("#id_input_endTime").val();
@@ -38,7 +57,7 @@ $(document).ready(function(){
 //endNodeName:name of end node
 function Udp_ajax_post_passive(startIp,endIp,startNodeName,endNodeName,startTime,endTime)
 {
-	alert("Udp_ajax_post_passive!\n");
+	//alert("Udp_ajax_post_passive!\n");
 
 	
 	$.ajax({
@@ -60,7 +79,7 @@ function Udp_ajax_post_passive(startIp,endIp,startNodeName,endNodeName,startTime
 		},
 		success:function(data){
 			
-			alert("success!\n");
+			//alert("success!\n");
 
 			$("#ChartDisplayID").show();//show table of single table
 			var createTime;
@@ -131,7 +150,7 @@ function Udp_ajax_post_passive(startIp,endIp,startNodeName,endNodeName,startTime
 		},
 		error:function(xhr,type){
 			hideCover();//失败后，隐藏遮罩層，解锁屏幕
-			alert("fail!");
+			alert("Fail!");
 		}
 	});
 
@@ -152,11 +171,11 @@ function DisplayActiveChart(chartId,chartTitle,chartData,createTime,startTime,en
           type: 'spline'
       },
         title: {
-            text: 'Result of Network Condition by Passive Test:'+chartTitle,
+            text: '被动测量的网络性能状况:'+chartTitle,
             x: -20 //center
         },
         subtitle: {
-            text: 'subtitle: Passive Network Condition between '+startTime+' and '+endTime,
+            text: '统计 '+startTime+' 到 '+endTime+' 时间段内，通过被动测量获取某两个结点之间的网络性能状况',
             x: -20
         },
         

@@ -1,0 +1,33 @@
+BING	localhost (127.0.0.1) and 192.168.1.149 (192.168.1.149)
+	44 and 108 data bytes (1024 bits)
+192.168.1.149:  4.947Mbps 0.207ms 0.202148us/bit
+192.168.1.149:  3.821Mbps 0.268ms 0.261719us/bit
+192.168.1.149:  3.807Mbps 0.269ms 0.262695us/bit
+192.168.1.149:  4.146Mbps 0.247ms 0.241211us/bit
+192.168.1.149:  4.180Mbps 0.245ms 0.239258us/bit
+192.168.1.149:  4.971Mbps 0.206ms 0.201172us/bit
+192.168.1.149:  4.923Mbps 0.208ms 0.203125us/bit
+192.168.1.149:  5.172Mbps 0.198ms 0.193359us/bit
+192.168.1.149:  4.900Mbps 0.209ms 0.204102us/bit
+192.168.1.149:  4.923Mbps 0.208ms 0.203125us/bit
+192.168.1.149:  4.900Mbps 0.209ms 0.204102us/bit
+192.168.1.149:  4.876Mbps 0.210ms 0.205078us/bit
+192.168.1.149:  4.853Mbps 0.211ms 0.206055us/bit
+192.168.1.149:  4.741Mbps 0.216ms 0.210938us/bit
+192.168.1.149:  4.785Mbps 0.214ms 0.208984us/bit
+192.168.1.149:  4.808Mbps 0.213ms 0.208008us/bit
+192.168.1.149:  4.900Mbps 0.209ms 0.204102us/bit
+
+--- localhost statistics ---
+bytes   out    in   dup  loss	rtt (ms): min       avg       max   std dev
+   44  1000  1000          0%	        0.009     0.017     0.065     0.004
+  108  1000  1000          0%	        0.008     0.015     0.114     0.004
+
+--- 192.168.1.149 statistics ---
+bytes   out    in   dup  loss	rtt (ms): min       avg       max   std dev
+   44  1000  1000          0%	        0.099     0.117     0.321     0.023
+  108  1000  1000          0%	        0.308     0.337     0.913     0.035
+
+--- estimated link characteristics ---
+host			          bandwidth       ms
+192.168.1.149                        4.900Mbps       0.090

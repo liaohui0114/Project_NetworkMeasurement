@@ -1,23 +1,65 @@
 $(document).ready(function(){
-
 	$("#id_startNode").addClass("form-control");
 	$("#id_endNode").addClass("form-control");
+	$("#id_btn_single").hover(function()
+	{
+		$("#id_div_tip").css({
+	  'opacity': .5, //透明度
+	  'position': 'absolute',
+
+	  //'background-color': 'black',
+	  'color':'black',
+	  'font-weight ':700,
+	  //'width': '200px',
+	  //'height':'100px',
+	  'z-index': 5000 //保证这个悬浮层位于其它内容之上
+	}).html("测量起始结点到终止结点之间的网络性能情况,包括指标：带宽、时延、抖动、拥塞、可用性等");
+	  $("#id_div_tip").show();
+	},function()
+	{
+		$("#id_div_tip").hide();
+	});
+	$("#id_btn_overall").hover(function()
+	{
+		$("#id_div_tip").css({
+	  'opacity': .5, //透明度
+	  'position': 'absolute',
+
+	  //'background-color': 'black',
+	  'color':'black',
+	  'font-weight ':700,
+	  //'width': '200px',
+	  //'height':'100px',
+	  'z-index': 5000 //保证这个悬浮层位于其它内容之上
+	}).html("测量所有结点两两之间的网络性能情况,包括指标：带宽、时延、抖动、拥塞、可用性等，全局测量时间比较长，请耐心等候！");
+	  $("#id_div_tip").show();
+	},function()
+	{
+		$("#id_div_tip").hide();
+	});
 
 	//$("#id_btn_single").on("dblclick",function(){
 	//start single test
 	$("#id_btn_single").on("click",function(){
-		Udp_ajax_post_single("udp",$("#id_startNode").val(),$("#id_endNode").val(),$("#id_startNode option:selected").text(),$("#id_endNode option:selected").text());		
+		//alert($("#id_btn_single").val());
+		var protocol = $("#id_btn_single").val();//get protocol info
+		Udp_ajax_post_single(protocol,$("#id_startNode").val(),$("#id_endNode").val(),$("#id_startNode option:selected").text(),$("#id_endNode option:selected").text());		
 
 		$("#NodeDisplayID").show();//show table of single table
 		DisplayNodePath();//draw path diagram
 		$("#PathDisplayID").show();
+		$("#ChartDisplayID").show();
 		$("#OverallDisplayID").hide(); //show tables of overall network testing
 	});
 	//start overall test
 	$("#id_btn_overall").click(function(){
-		Udp_ajax_post_overall("udp");
+		var protocol = $("#id_btn_overall").val()
+		//$("#OverallDisplayID").show();
+		
+		Udp_ajax_post_overall(protocol);
 		$("#NodeDisplayID").hide();
 		$("#PathDisplayID").hide();
+		$("#ChartDisplayID").hide();
 		$("#OverallDisplayID").show();
 	});
 
@@ -30,7 +72,7 @@ $(document).ready(function(){
 //endNodeName:name of end node
 function Udp_ajax_post_single(protocol,startIp,endIp,startNodeName,endNodeName)
 {
-	alert("Udp_ajax_post_single!\n");
+	//alert("Udp_ajax_post_single!\n");
 	$.ajax({
 		url:"/action/SingleAction",
 		//async: false, //if we want to lock the screen
@@ -50,7 +92,7 @@ function Udp_ajax_post_single(protocol,startIp,endIp,startNodeName,endNodeName)
 		},
 		success:function(data){
 			hideCover(); //在成功收到数据，隐藏遮罩層，解锁屏幕
-			alert("success!\n");
+			//alert("success!\n");
 			//x = eval(data); decode json type
 			var chartData,chartTime;
 			$.each(data,function(i,item){
@@ -106,7 +148,11 @@ function Udp_ajax_post_single(protocol,startIp,endIp,startNodeName,endNodeName)
 		},
 		error:function(xhr,type){
 			hideCover();//失败后，隐藏遮罩層，解锁屏幕
-			alert("fail!");
+			alert("Fail!!Please check your network!");
+			$("#PathDisplayID").hide();
+			$("#ChartDisplayID").hide();
+			$("#OverallDisplayID").hide();
+			//alert("fail!");
 		}
 	});
 }
@@ -114,7 +160,7 @@ function Udp_ajax_post_single(protocol,startIp,endIp,startNodeName,endNodeName)
 //overall test
 function Udp_ajax_post_overall(protocol)
 {
-	alert("Udp_ajax_post_overall!\n");
+	//alert("Udp_ajax_post_overall!\n");
 	$.ajax({
 		url:"/action/OverallAction",
 		data:{
@@ -129,7 +175,7 @@ function Udp_ajax_post_overall(protocol)
 		},
 		success:function(data){
 			hideCover();
-			alert("success!!!!\n");
+			//alert("success!!!!\n");
 			// $.each(data,function(i,item){
 			// 	//i is key and item is value
 
@@ -162,11 +208,12 @@ function Udp_ajax_post_overall(protocol)
 						}					
 						
 						//$("#id_table_"+conditon).find('tbody').append("<tr><td>"+value+"</td></tr>");
-						thTmp += "<td>"+value+"</td>"
+						thTmp += "<td>"+value+"</td>";
 						//$("#id_table_"+conditon+" tbody tr").append("<td>"+value+"</td>");
 					});
 					isFirst = false;
 					$("#id_table_"+conditon).find('tbody').append("<tr>"+thTmp+"</tr>");
+					
 				});
 
 			});
@@ -174,8 +221,12 @@ function Udp_ajax_post_overall(protocol)
 		},
 		error:function(xhr,type){
 			hideCover();
-			alert("fail!");
 			$("#OverallDisplayID").hide();
+			$("#NodeDisplayID").hide();
+			$("#PathDisplayID").hide();
+			$("#ChartDisplayID").hide();
+			
+			alert("Fail!!Please check your network!");
 		}
 	});
 }
@@ -226,11 +277,11 @@ function DisplayActiveChart(chartData,chartTime){
 	//#id_div_activeChart: the div to show chart
 	 $('#id_div_activeChart').highcharts({
         title: {
-            text: 'Bandwidth Condition of the lastest 10 times',
+            text: '起始结点最近10次测量结果数据统计',
             x: -20 //center
         },
         subtitle: {
-            text: 'subtitle: Active Test!',
+            text: '测量指标：最大发送带宽!',
             x: -20
         },
         xAxis: {

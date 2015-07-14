@@ -67,7 +67,7 @@ WSGI_APPLICATION = 'DjangoTest.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'liaohui',
+        'NAME': 'network',
         'USER': 'root',
         'PASSWORD':'root',
         'HOST':'127.0.0.1',

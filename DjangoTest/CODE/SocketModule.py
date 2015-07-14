@@ -59,7 +59,7 @@ class TCPClient(object):
         try:
             print 'start recv msg'
             #self.m_socket.settimeout(NETWORK_TIME_OUT)
-            self.m_socket.settimeout(25) #10s
+            #self.m_socket.settimeout(25) #10s
             msg = self.m_socket.recv(SOCKET_BUFFER_SIZE)  #receive msg from server which packet size is SOCKET_BUFFER_SIZE
             print 'end recvMsg'
             #print 'end recv msg,msg=',msg

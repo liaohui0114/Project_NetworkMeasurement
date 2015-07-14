@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -8,7 +8,7 @@
     <meta name="description" content="Xenon Boostrap Admin Panel" />
     <meta name="author" content="wenhao" />
 
-    <title>UDP主动测量</title>
+    <title>TCP主动测量</title>
 
     <link rel="stylesheet" href="http://fonts.useso.com/css?family=Arimo:400,700,400italic">
     <link rel="stylesheet" href="assets/css/fonts/linecons/css/linecons.css">
@@ -44,7 +44,6 @@
         <a href="#" data-toggle="settings-pane" data-animate="true">
             &times;
         </a>
-        
         <div class="settings-pane-inner">
 
             <div class="row">
@@ -64,7 +63,7 @@
                             <h3>
                                 <a href="extra-profile.html">John Smith</a>
 
-
+                                <!-- Available statuses: is-online, is-idle, is-busy and is-offline -->
                                 <span class="user-status is-online"></span>
                             </h3>
 
@@ -193,7 +192,7 @@
                             <i class="linecons-cog"></i>
                         </a>
                     </div>
-						-->
+						  -->
 
                 </header>
 
@@ -202,18 +201,18 @@
                 <ul id="main-menu" class="main-menu">
                     <!-- add class "multiple-expanded" to allow multiple submenus to open -->
                     <!-- class "auto-inherit-active-class" will automatically add "active" class for parent elements who are marked already with class "active" -->
-                    <li  class="opened active">
+                    <li class="opened active">
                         <a href="tables-basic.html">
                             <i class="linecons-database"></i>
                             <span class="title">主动测量</span>
                         </a>
                         <ul>
-                            <li>
+                            <li class="active">
                                 <a href="/tcp/">
                                     <span class="title">TCP 协议</span>
                                 </a>
                             </li>
-                            <li   class="active">
+                            <li>
                                 <a href="/udp/">
                                     <span class="title">UDP 协议</span>
                                 </a>
@@ -474,7 +473,7 @@
                             <i class="fa-bars"></i>
                         </a>
                     </li>
-						
+
                     <li class="dropdown hover-line">
                     <!--
                         <a href="#" data-toggle="dropdown">
@@ -609,12 +608,12 @@
                     </li>
 
                     <li class="dropdown hover-line">
-                    <!--
+                    		<!--
                         <a href="#" data-toggle="dropdown">
                             <i class="fa-bell-o"></i>
                             <span class="badge badge-purple">7</span>
                         </a>
-							-->
+							   -->
                         <ul class="dropdown-menu notifications">
                             <li class="top">
                                 <p class="small">
@@ -725,9 +724,9 @@
 
                 <!-- Right links for user info navbar -->
                 <ul class="user-info-menu right-links list-inline list-unstyled">
-						<!--
+						  <!--
                     <li class="search-form">
-                       
+                        
 
                         <form method="get" action="extra-search.html">
                             <input type="text" name="s" class="form-control search-field" placeholder="Type to search..." />
@@ -794,30 +793,30 @@
             <div class="page-title">
 
                 <div class="title-env">
-                    <h1 class="title">UDP主动测量</h1>
-                    <p class="description">利用UDP协议测量当前网络状况，通过主动向网络中注入探测包来获取网络当前性能：如带宽、时延、抖动，拥塞，可用性等网络指标</p>
+                    <h1 class="title">TCP主动测量</h1>
+                    <p class="description">利用TCP协议测量当前网络状况，通过主动向网络中注入探测包来获取网络当前性能：如带宽、时延、抖动，拥塞，可用性等网络指标</p>
                 </div>
 
                 <div class="breadcrumb-env">
 
                     <ol class="breadcrumb bc-1">
                         <li>
-                            <a href="/udp/"><i class="fa-home"></i>主动测量</a>
+                            <a href="/tcp/"><i class="fa-home"></i>主动测量</a>
                         </li>
                         <li>
 
-                            <a href="/udp/">UDP</a>
+                            <a href="/tcp/">TCP</a>
                         </li>
                         <li class="active">
 
-                            <strong>UDP 协议</strong>
+                            <strong>TCP 协议</strong>
                         </li>
                     </ol>
 
                 </div>
 
             </div>
-             <!-- Selection Option -->
+            <!-- Selection Option -->
             <div class="row">
                 <div class="col-md-12">
 
@@ -880,8 +879,8 @@
                                 </div>
                             </form>
                             <div class="form-group">
-                                <button type="submit" class="btn btn-success" id="id_btn_single" value="UDP">端到端测量</button>
-                                <button type="submit" class="btn btn-success" id="id_btn_overall" value = "UDP">全局测量</button>
+                                <button type="submit" class="btn btn-success" id="id_btn_single" value="TCP">端到端测量</button>
+                                <button type="submit" class="btn btn-success" id="id_btn_overall" value="TCP">全局测量</button>
                                 <!--
                                 <script language="javascript">
                                     function nodeTestFunc() {
@@ -904,6 +903,7 @@
 				<!-- to display tips -->
 				<div id="id_div_tip"></div>
                             </div>
+			
 
                         </div>
 
@@ -1017,15 +1017,15 @@
                                 </table>
 
                             </div>
-			    <div>
-				<ul>
-					<li>带宽：当前网络可达的最大发送带宽</li>
-					<li>延迟：发送时延(包大小/发送速度)+排队时延+传播时延（长度/速度）</li>
-					<li>抖动：数据流中不同数据包时延的变化</li>
-					<li>丢包率：成功发送数据包数/发送数据包总数</li>
-					<li>可用性：当前网络是否可用：连通、可达</li>
-				</ul>
-			    </div>
+            			    <div>
+            				<ul>
+            					<li>带宽：当前网络可达的最大发送带宽</li>
+            					<li>延迟：发送时延(包大小/发送速度)+排队时延+传播时延（长度/速度）</li>
+            					<li>抖动：数据流中不同数据包时延的变化；可以所有包延迟的方差来计算</li>
+            					<li>丢包率：成功发送数据包数/发送数据包总数</li>
+            					<li>可用性：当前网络是否可用：连通、可达</li>
+            				</ul>
+            			    </div>
 
                             <script type="text/javascript">
                                 // This JavaScript Will Replace Checkboxes in dropdown toggles
@@ -1070,10 +1070,10 @@
                             </div>
                         </div>
                         <!--  liaohui, display active charts:we get latest 10 times bandwidth of startNode from db -->
-			<div class="panel-body">
-                        <h1>网络带宽统计</h1>
-                        <div id="id_div_activeChart"></div>
-			</div>
+    			<div class="panel-body">
+                            <h1>网络带宽统计</h1>
+                            <div id="id_div_activeChart"></div>
+    			</div>
                     </div>
                 </div>
                 
@@ -1126,7 +1126,7 @@
             </div>
             
             <!-- Overall Result Display Table -->
-            <div class="row" id="OverallDisplayID" style="display:none">
+            <div class="row" id="OverallDisplayID"  style="display:none;">
                 <div class="col-md-12">
 
                     <div class="panel panel-default">

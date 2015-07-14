@@ -1,9 +1,9 @@
 import socket
+import sys
 import time
 import threading
-import sys
 from GlobleVariable import *
-from networkmeasurement.action.SocketModule import *
+from SocketModule import *
 
 '''        
 if __name__ == '__main__':
@@ -37,11 +37,16 @@ if __name__ == '__main__':
         print 'Connection server failed:%s,errno=%d'%(err_msg,errno)
 '''
  
-def Client(protocol,st_IP,end_IP):
-    #we must start server  Server.py  Iperf -u -c  udpClientTest.py
-    tp = TCPClient(st_IP,SOCKET_TCP_PORT)
+if __name__ == '__main__':
+#def client(st_ip,dest_ip,protocol):
+    protocol = sys.argv[1]
+    st_ip = sys.argv[2]
+    dest_ip = sys.argv[3]
+    tp = TCPClient(st_ip,SOCKET_TCP_PORT)
+    
+
     if tp.StartConnection():
-        msg = {NETWORK_IP:end_IP,NETWORK_PROTOCOL:protocol}
+        msg = {NETWORK_IP:dest_ip,NETWORK_PROTOCOL:protocol}
         tp.SendMsg(SetSocketMsg(msg))
         rsg = tp.RecvMsg()
         print 'Get Info from server:'
@@ -50,8 +55,6 @@ def Client(protocol,st_IP,end_IP):
             print key,value
             
         tp.Close()
-    else:
-        rsgDic = -1
-    return rsgDic
+    print 'end'
 
     

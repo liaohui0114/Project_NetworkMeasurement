@@ -1,0 +1,44 @@
+#!/usr/bin/env python
+
+from TCPSocket import *
+from GlobleVariable import *
+import threading
+
+#define our own thread to deal with 
+def MyThread(clientSocket,clientAddr):
+    print 'MyThread to deal with connection from %s:%s'%(clientAddr)
+    print type(clientAddr),len(clientAddr)
+    msg =  clientSocket.recv(SOCKET_BUFFER_SIZE)
+    detailMsg = GetSocketMsg(msg)  #formmat msg to dict we have defined in GlobleVariable
+    print detailMsg
+    if detailMsg['protocol'] == 'TCP':
+        print "TCP operation--iperf"
+    elif detailMsg['protocol'] == 'UDP':
+        print 'UDP operation--iperf'
+    elif detailMsg['protocol'] == 'ICMP':
+        print 'ICMP operation--ping'
+    else:
+        pass
+    clientSocket.send('We have connection')
+#     while True:
+#         data = mySocket.recv(1024)
+#         time.sleep(2)
+#         if data=='exit' or not data:
+#             break;
+#         mySocket.send(data)
+#     mySocket.close()
+    clientSocket.close()
+    print 'End MyThread to deal with connection from %s:%s'%(clientAddr)
+
+if __name__ == '__main__':
+    tpServer = TCPServer(SOCKET_SERVER_IP,SOCKET_SERVER_PORT)
+    if tpServer.StartBind():
+        while True:
+            clientSocket,clientAddr = tpServer.AcceptConnection()
+            if clientAddr==None and clientAddr==None:
+                continue #if we get none info
+            #create new thread to deal with every connetion from different Client
+            
+            t = threading.Thread(target=MyThread,args=(clientSocket,clientAddr))
+            t.start()
+        tpServer.CloseServer()    

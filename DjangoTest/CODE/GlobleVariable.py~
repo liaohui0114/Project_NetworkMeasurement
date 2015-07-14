@@ -1,0 +1,31 @@
+#!/usr/bin/env python
+
+PROTOCOL_UDP = 'UDP'
+PROTOCOL_TCP = 'TCP'
+PROTOCOL_ICMP = 'ICMP'
+
+SOCKET_SERVER_IP = '127.0.0.1'
+SOCKET_SERVER_PORT = 9999
+
+SOCKET_BUFFER_SIZE = 1024
+SOCKET_TIME_OUT = 8
+
+SOCKET_MAX_CLIENT = 10
+
+
+#func,deal with string
+def SetSocketMsg(ipAddr,protocol):
+    msg = "ip:%s,protocol:%s"%(ipAddr,protocol)
+    print msg
+    return msg
+
+def GetSocketMsg(msg):
+    socketMsg = {}
+    print 'socketMsg:',socketMsg
+    tmpList = msg.split(',')
+    for i in tmpList:
+        tmp = i.split(':')
+        socketMsg[tmp[0]] = tmp[1]
+        if tmp[1] == "":
+            print 'tmp[1] == None'
+    print socketMsg

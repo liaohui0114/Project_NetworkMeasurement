@@ -1,0 +1,37 @@
+1432541307042 TCP loss:0.00 %  jitter:1.08 ms  delay:0.50 ms  bandwidth:14.6 Gbits/sec  congestion:NO  availability:YES 
+1432541308034 TCP loss:0.00 %  jitter:4.73 ms  delay:1.93 ms  bandwidth:8.00 Gbits/sec  congestion:NO  availability:YES 
+1432541309005 TCP loss:0.00 %  jitter:3.59 ms  delay:1.48 ms  bandwidth:7.96 Gbits/sec  congestion:NO  availability:YES 
+1432541310023 TCP loss:0.00 %  jitter:4.28 ms  delay:1.74 ms  bandwidth:6.76 Gbits/sec  congestion:NO  availability:YES 
+1432541311011 TCP loss:0.00 %  jitter:4.74 ms  delay:2.41 ms  bandwidth:7.97 Gbits/sec  congestion:NO  availability:YES 
+1432541312029 TCP loss:0.00 %  jitter:4.47 ms  delay:2.68 ms  bandwidth:7.75 Gbits/sec  congestion:NO  availability:YES 
+1432541313037 TCP loss:0.00 %  jitter:2.37 ms  delay:1.07 ms  bandwidth:7.96 Gbits/sec  congestion:NO  availability:YES 
+1432541314087 TCP loss:0.00 %  jitter:1.94 ms  delay:0.94 ms  bandwidth:6.66 Gbits/sec  congestion:NO  availability:YES 
+1432541315044 TCP loss:0.00 %  jitter:3.58 ms  delay:1.61 ms  bandwidth:7.63 Gbits/sec  congestion:NO  availability:YES 
+1432541316017 TCP loss:0.00 %  jitter:5.81 ms  delay:2.67 ms  bandwidth:12.0 Gbits/sec  congestion:NO  availability:YES 
+1432541671010 UDP loss:0.36%  jitter:0.005ms  delay:0.158 (ms)  bandwidth:778Mbits/sec  congestion:NO  availability:YES 
+1432541681030 UDP loss:0.54%  jitter:0.000ms  delay:0.171 (ms)  bandwidth:693Mbits/sec  congestion:NO  availability:YES 
+1432541691039 UDP loss:0.4%  jitter:0.004ms  delay:0.128 (ms)  bandwidth:737Mbits/sec  congestion:NO  availability:YES 
+1432541701044 UDP loss:0.6%  jitter:0.004ms  delay:0.183 (ms)  bandwidth:723Mbits/sec  congestion:NO  availability:YES 
+1432541711053 UDP loss:1.2%  jitter:0.004ms  delay:0.481 (ms)  bandwidth:770Mbits/sec  congestion:NO  availability:YES 
+1432541721064 UDP loss:1.3%  jitter:0.005ms  delay:0.139 (ms)  bandwidth:772Mbits/sec  congestion:NO  availability:YES 
+1432541731059 UDP loss:0.76%  jitter:0.003ms  delay:0.122 (ms)  bandwidth:754Mbits/sec  congestion:NO  availability:YES 
+1432541741065 UDP loss:0.89%  jitter:0.000ms  delay:0.348 (ms)  bandwidth:784Mbits/sec  congestion:NO  availability:YES 
+1432541751079 UDP loss:0.6%  jitter:0.741ms  delay:0.193 (ms)  bandwidth:785Mbits/sec  congestion:NO  availability:YES 
+1432541761091 UDP loss:1.1%  jitter:0.005ms  delay:0.148 (ms)  bandwidth:770Mbits/sec  congestion:NO  availability:YES 
+1432541995441 UDP loss:43%  jitter:0.000ms  delay:0.198 (ms)  bandwidth:373Mbits/sec  congestion:NO  availability:YES 
+1432541996434 UDP loss:15%  jitter:0.000ms  delay:0.349 (ms)  bandwidth:387Mbits/sec  congestion:NO  availability:YES 
+1432541997442 UDP loss:41%  jitter:0.000ms  delay:0.154 (ms)  bandwidth:212Mbits/sec  congestion:NO  availability:YES 
+1432541998404 UDP loss:28%  jitter:0.964ms  delay:0.133 (ms)  bandwidth:202Mbits/sec  congestion:NO  availability:YES 
+1432541999505 UDP loss:67%  jitter:0.058ms  delay:0.724 (ms)  bandwidth:102Mbits/sec  congestion:NO  availability:YES 
+1432542000396 UDP delay:0.150 (ms) 
+1432542001690 UDP delay:0.274 (ms) 
+1432542002700 UDP delay:0.351 (ms) 
+1432542005950 UDP loss:  jitter:  delay:0.153 (ms)  bandwidth:  congestion:  availability:NO 
+1432542006967 UDP loss:  jitter:  delay:0.357 (ms)  bandwidth:  congestion:  availability:NO 
+1432542031992 UDP loss:  jitter:  delay:1.219 (ms)  bandwidth:  congestion:  availability:NO 
+1433051753777 UDP loss:7.8%  jitter:0.007ms  delay:0.231 (ms)  bandwidth:748Mbits/sec  congestion:NO  availability:YES 
+1433051767805 ICMP loss:0.0  jitter:0.00403609  delay:0.0409  bandwidth:-5443330000.0Mps  congestion:yes  availability:yes 
+1433051773664 UDP loss:8.1%  jitter:0.002ms  delay:0.192 (ms)  bandwidth:747Mbits/sec  congestion:NO  availability:YES 
+1433051803684 UDP loss:14%  jitter:0.016ms  delay:0.217 (ms)  bandwidth:700Mbits/sec  congestion:NO  availability:YES 
+1433051827675 ICMP loss:0.0  jitter:0.0337248  delay:0.0602  bandwidth:-5443330000.0Mps  congestion:yes  availability:yes 
+1433051843783 UDP loss:12%  jitter:0.000ms  delay:0.257 (ms)  bandwidth:707Mbits/sec  congestion:NO  availability:YES 

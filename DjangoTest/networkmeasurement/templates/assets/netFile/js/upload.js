@@ -51,7 +51,7 @@ $(document).ready(function(){
 			// 	//msg += "value:"+value+"\n";
 			// 	alert('ok');
 			// });
-			alert("success!\n"+data);
+			//alert("success!\n"+data);
 			//$("#id_upload_status").html("<font color='red'>success</font>");
 			$el.find("td:last").html("<font color='red'>success</font>");
 
@@ -60,7 +60,7 @@ $(document).ready(function(){
 		// 	alert("cancel upload!");
 		// },
 		'onUploadError':function(file, errorCode, errorMsg, errorString) {
-		alert('The file ' + file.name + ' could not be uploaded: ' + errorString);
+		//alert('The file ' + file.name + ' could not be uploaded: ' + errorString);
 		//$("#id_upload_status").html("<font color='red'>"+errorString+"</font>");
 		$el.find("td:last").html("<font color='red'>"+errorString+"</font>");
 	}

@@ -9,7 +9,7 @@ PROTOCOL_ICMP = 'ICMP'
 PROTOCOL_PROTOCOL = 'protocol'
 PROTOCOL_IP = 'ip'
 
-HOST = '192.168.1.177'
+#HOST = '192.168.1.177'
 DEST = '192.168.1.152'
 HOST_NAME = 'HOST'
 #DEST_NAME = ['sjtu','fudan','shangda']
@@ -36,6 +36,7 @@ DELAY_TCP_PORT = 10003
 SOCKET_UDP_IP = '127.0.0.1'
 #SOCKET_UDP_PORT = 11111
 SOCKET_UDP_PORT = 10002
+SOCKET_UDP_IPERF_PORT = 10009
 
 SOCKET_BUFFER_SIZE = 1024  #packet size of socket(send/receive) 
 SOCKET_TIME_OUT = 8
@@ -78,6 +79,7 @@ def SetPassiveMsg(dicMsg):
     
 def GetPassiveMsg(msg):
     socketMsg={}
+    print 'msg:',msg
     tmpList = msg.split(';')
     for i in tmpList:
         tmp = i.split(':')
@@ -123,14 +125,8 @@ def SetSocketMsg(dicMsg):
 def GetSocketMsg(msg):
     print 'GetSocketMsg'
     socketMsg = {}
-    print msg
-    if msg == None:
-	msg = {NETWORK_BANDWITH:'0 (Mbs)',NETWORK_DELAY:'0 (ms)',NETWORK_JITTER:'0 (ms)',NETWORK_LOSS:'0 (%)',NETWORK_CONGESTION:'NO',NETWORK_AVAIL:'NO'}
-        print msg
-	return msg
- 
-    #proList = msg.split(':')
-    '''if proList[-1] == 'PASSIVE':
+    proList = msg.split(':')
+    if proList[-1] == 'PASSIVE':
         socketMsg = {}
         #tmpList = sdmsg.split(',')
         tmpList = msg.split(':')
@@ -139,15 +135,15 @@ def GetSocketMsg(msg):
         socketMsg[list_ip[-1]] = tmpList[-1]
         list_ip = list_ip[0:-1]
         socketMsg[tmpList[0]] = list_ip
-        print socketMsg'''
-
-    tmpList = msg.split(',')
-    for i in tmpList:
-        tmp = i.split(':')
-        socketMsg[tmp[0]] = tmp[1]
-        if tmp[1] == "":
-            print "[key:%s],value is ''"%tmp[0]
-	    print 'End GetSocketMsg,msg is:',socketMsg
+        print socketMsg
+    else:
+        tmpList = msg.split(',')
+        for i in tmpList:
+            tmp = i.split(':')
+            socketMsg[tmp[0]] = tmp[1]
+            if tmp[1] == "":
+                print "[key:%s],value is ''"%tmp[0]
+                print 'End GetSocketMsg,msg is:',socketMsg
     return socketMsg
 
 #get time stamp which is type(float) ,we only keep 9 bin after .,return type(str)

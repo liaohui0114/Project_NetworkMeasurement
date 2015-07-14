@@ -200,4 +200,63 @@ def operateDB(request):
 def OtherHyperLink(request,targetHtml):
     print targetHtml
     return HttpResponseRedirect("http://www.baidu.com")
+	
+def TcpFunc(request):
+    print 'view:tcpFunc'
+#     t = Context({'liao':'liao'})
+#     return render_to_response("active-udp.html",t)
+    if request.method == 'POST':
+            print 'liaohui,get post from json'
+            form = FormModule.UDPForm(request.POST)
+            if form.is_valid():                
+                print "liaohui,isvalid",form
+                return HttpResponse(json.dumps({"LIAOHUI":"LIAOHUI"}), content_type="application/json")
+                #username = uf.cleaned_data["username"]
+                #passwd = uf.cleaned_data["passwd"]
+                #print username,passwd
+                #b operation
+    #             user = User.objects.filter(username__exact=username,password__exact=passwd) #to judge if there exist same username in db
+    #             if user:
+    #                 #set cookies,use HttpResponse instance
+    #                 response =  HttpResponseRedirect('/index/')                
+    #                 response.set_cookie('username', username, 3600)
+    #                 return response
+    #             else:
+    #                 return HttpResponseRedirect('/login/')
+    else:
+        print 'view:tcpFunc,else!'
+        form = FormModule.UDPForm()  #only call once??
+        print 'view:tcpFunc,else end!'
         
+    return render_to_response("active-tcp.html",{'form':form})
+
+
+def IcmpFunc(request):
+    print 'view:icmpFunc'
+#     t = Context({'liao':'liao'})
+#     return render_to_response("active-udp.html",t)
+    if request.method == 'POST':
+            print 'liaohui,get post from json'
+            form = FormModule.UDPForm(request.POST)
+            if form.is_valid():                
+                print "liaohui,isvalid",form
+                return HttpResponse(json.dumps({"LIAOHUI":"LIAOHUI"}), content_type="application/json")
+                #username = uf.cleaned_data["username"]
+                #passwd = uf.cleaned_data["passwd"]
+                #print username,passwd
+                #b operation
+    #             user = User.objects.filter(username__exact=username,password__exact=passwd) #to judge if there exist same username in db
+    #             if user:
+    #                 #set cookies,use HttpResponse instance
+    #                 response =  HttpResponseRedirect('/index/')                
+    #                 response.set_cookie('username', username, 3600)
+    #                 return response
+    #             else:
+    #                 return HttpResponseRedirect('/login/')
+    else:
+        print 'view:icmpFunc,else!'
+        form = FormModule.UDPForm()  #only call once??
+        print 'view:icmpFunc,else end!'
+        
+    return render_to_response("active-icmp.html",{'form':form})
+    

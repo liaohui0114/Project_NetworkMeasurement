@@ -11,6 +11,7 @@ $(document).ready(function(){
 		'method':'post',
 		'buttonText': '选择文件',
 		'fileObjName':'uploadFile',
+		'fileSizeLimit':'100MB',
 		'auto':true,
 		'removeCompleted':false,
 		'fileTypeExts':'^*.*', //filter file type like *.exe

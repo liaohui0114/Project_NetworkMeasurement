@@ -27,7 +27,7 @@ def Measure(st_ip,ed_ips):
                 conn = MySQLdb.connect(host = 'localhost',user = 'root',passwd = 'root',port = 3306,charset='utf8')
                 cur = conn.cursor()
         
-                conn.select_db('liaohui')
+                conn.select_db('network')
             
                 
                 cmd = "select * from networkmeasurement_schoolnode where nodeIp = %s"%st_ip
@@ -74,7 +74,7 @@ def passiveClient():
         conn = MySQLdb.connect(host = 'localhost',user = 'root',passwd = 'root',port = 3306,charset='utf8')
         cur = conn.cursor()
         
-        conn.select_db('liaohui')
+        conn.select_db('network')
         cur.execute('select * from networkmeasurement_schoolnode')
         
         nodes = cur.fetchall()

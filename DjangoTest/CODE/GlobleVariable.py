@@ -230,7 +230,7 @@ def ReadIperfUDPFile(filename):
 
         bandwidth = tmpList[2]+' '+tmpList[3]  #get bandwidth
         jitter =  tmpList[4] + ' ' +tmpList[5]  #get jitter
-        loss = tmpList[7][1:-1]   #delete ( and ) to get loss
+        loss = tmpList[-1][1:-1]   #delete ( and ) to get loss
         networkDict[NETWORK_BANDWITH] = bandwidth
 
         networkDict[NETWORK_JITTER] = jitter
@@ -238,7 +238,7 @@ def ReadIperfUDPFile(filename):
         networkDict[NETWORK_LOSS] = loss[0:-1]+' '+loss[-1]
 
     #print networkDict    
-
+    #print networkDict
     print 'End StartReadIperfUDPFile'
 
     return networkDict

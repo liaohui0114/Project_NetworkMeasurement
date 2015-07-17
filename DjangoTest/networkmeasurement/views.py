@@ -30,7 +30,7 @@ def IsLogin(request):
 def LoginFunc(request):
     print 'view:LoginFunc'
     if IsLogin(request):
-        return HttpResponseRedirect("/passive/")  #if user have login already,then redirect to passive.html
+        return HttpResponseRedirect("/tcp/")  #if user have login already,then redirect to passive.html
     else:
         if request.method == 'POST':
             form = FormModule.LoginForm(request.POST)
@@ -41,7 +41,7 @@ def LoginFunc(request):
                 # operation
                 if username=="liaohui" and passwd=="liaohui":
                      #set cookies,use HttpResponse instance
-                     response =  HttpResponseRedirect('/passive/')                
+                     response =  HttpResponseRedirect('/tcp/')                
                      response.set_cookie('username', username, 3600)  #set cookie imply that we have login
                      return response
                 else:
@@ -88,27 +88,36 @@ def UDPFunc(request):
     
 def UploadFunc(request):
     print 'view.Uploadfunc'
-    t = Context({'liao':'liao'})
-    return render_to_response("updown-upload.html",t)
+    if IsLogin(request):
+        t = Context({'liao':'liao'})
+        return render_to_response("updown-upload.html",t)
+    else:
+        return HttpResponse("Please login first,<a href='/login/'>Login</a>")
 
 def DownloadFunc(request):
-    t = Context({'liao':'liao'})
-    return render_to_response("updown-download.html",t)
+    if IsLogin(request):
+        t = Context({'liao':'liao'})
+        return render_to_response("updown-download.html",t)
+    else:
+        return HttpResponse("Please login first,<a href='/login/'>Login</a>")
 
 def PassiveFunc(request):
     print 'view:PassiveFunc'
 #     t = Context({'liao':'liao'})
 #     return render_to_response("active-udp.html",t)
-    if request.method == 'POST':
-            print 'liaohui,get post from json'
-            form = FormModule.PassiveForm(request.POST)
-            if form.is_valid():                
-                print "liaohui,isvalid",form
-                return HttpResponse(json.dumps({"LIAOHUI":"LIAOHUI"}), content_type="application/json")
+    if IsLogin(request):
+        if request.method == 'POST':
+                print 'liaohui,get post from json'
+                form = FormModule.PassiveForm(request.POST)
+                if form.is_valid():                
+                    print "liaohui,isvalid",form
+                    return HttpResponse(json.dumps({"LIAOHUI":"LIAOHUI"}), content_type="application/json")
+        else:
+            form = FormModule.PassiveForm()  #only call once??
+        
+        return render_to_response("passive.html",{'form':form})
     else:
-        form = FormModule.PassiveForm()  #only call once??
-    
-    return render_to_response("passive.html",{'form':form})
+        return HttpResponse("Please login first,<a href='/login/'>Login</a>")
     
         
         
@@ -205,58 +214,63 @@ def TcpFunc(request):
     print 'view:tcpFunc'
 #     t = Context({'liao':'liao'})
 #     return render_to_response("active-udp.html",t)
-    if request.method == 'POST':
-            print 'liaohui,get post from json'
-            form = FormModule.UDPForm(request.POST)
-            if form.is_valid():                
-                print "liaohui,isvalid",form
-                return HttpResponse(json.dumps({"LIAOHUI":"LIAOHUI"}), content_type="application/json")
-                #username = uf.cleaned_data["username"]
-                #passwd = uf.cleaned_data["passwd"]
-                #print username,passwd
-                #b operation
-    #             user = User.objects.filter(username__exact=username,password__exact=passwd) #to judge if there exist same username in db
-    #             if user:
-    #                 #set cookies,use HttpResponse instance
-    #                 response =  HttpResponseRedirect('/index/')                
-    #                 response.set_cookie('username', username, 3600)
-    #                 return response
-    #             else:
-    #                 return HttpResponseRedirect('/login/')
+    if IsLogin(request):
+        if request.method == 'POST':
+                print 'liaohui,get post from json'
+                form = FormModule.UDPForm(request.POST)
+                if form.is_valid():                
+                    print "liaohui,isvalid",form
+                    return HttpResponse(json.dumps({"LIAOHUI":"LIAOHUI"}), content_type="application/json")
+                    #username = uf.cleaned_data["username"]
+                    #passwd = uf.cleaned_data["passwd"]
+                    #print username,passwd
+                    #b operation
+        #             user = User.objects.filter(username__exact=username,password__exact=passwd) #to judge if there exist same username in db
+        #             if user:
+        #                 #set cookies,use HttpResponse instance
+        #                 response =  HttpResponseRedirect('/index/')                
+        #                 response.set_cookie('username', username, 3600)
+        #                 return response
+        #             else:
+        #                 return HttpResponseRedirect('/login/')
+        else:
+            print 'view:tcpFunc,else!'
+            form = FormModule.UDPForm()  #only call once??
+            print 'view:tcpFunc,else end!'
+            
+        return render_to_response("active-tcp.html",{'form':form})
     else:
-        print 'view:tcpFunc,else!'
-        form = FormModule.UDPForm()  #only call once??
-        print 'view:tcpFunc,else end!'
-        
-    return render_to_response("active-tcp.html",{'form':form})
-
+        return HttpResponse("Please login first,<a href='/login/'>Login</a>")
 
 def IcmpFunc(request):
     print 'view:icmpFunc'
 #     t = Context({'liao':'liao'})
 #     return render_to_response("active-udp.html",t)
-    if request.method == 'POST':
-            print 'liaohui,get post from json'
-            form = FormModule.UDPForm(request.POST)
-            if form.is_valid():                
-                print "liaohui,isvalid",form
-                return HttpResponse(json.dumps({"LIAOHUI":"LIAOHUI"}), content_type="application/json")
-                #username = uf.cleaned_data["username"]
-                #passwd = uf.cleaned_data["passwd"]
-                #print username,passwd
-                #b operation
-    #             user = User.objects.filter(username__exact=username,password__exact=passwd) #to judge if there exist same username in db
-    #             if user:
-    #                 #set cookies,use HttpResponse instance
-    #                 response =  HttpResponseRedirect('/index/')                
-    #                 response.set_cookie('username', username, 3600)
-    #                 return response
-    #             else:
-    #                 return HttpResponseRedirect('/login/')
+    if IsLogin(request):
+        if request.method == 'POST':
+                print 'liaohui,get post from json'
+                form = FormModule.UDPForm(request.POST)
+                if form.is_valid():                
+                    print "liaohui,isvalid",form
+                    return HttpResponse(json.dumps({"LIAOHUI":"LIAOHUI"}), content_type="application/json")
+                    #username = uf.cleaned_data["username"]
+                    #passwd = uf.cleaned_data["passwd"]
+                    #print username,passwd
+                    #b operation
+        #             user = User.objects.filter(username__exact=username,password__exact=passwd) #to judge if there exist same username in db
+        #             if user:
+        #                 #set cookies,use HttpResponse instance
+        #                 response =  HttpResponseRedirect('/index/')                
+        #                 response.set_cookie('username', username, 3600)
+        #                 return response
+        #             else:
+        #                 return HttpResponseRedirect('/login/')
+        else:
+            print 'view:icmpFunc,else!'
+            form = FormModule.UDPForm()  #only call once??
+            print 'view:icmpFunc,else end!'
+            
+        return render_to_response("active-icmp.html",{'form':form})
     else:
-        print 'view:icmpFunc,else!'
-        form = FormModule.UDPForm()  #only call once??
-        print 'view:icmpFunc,else end!'
-        
-    return render_to_response("active-icmp.html",{'form':form})
+        return HttpResponse("Please login first,<a href='/login/'>Login</a>")
     

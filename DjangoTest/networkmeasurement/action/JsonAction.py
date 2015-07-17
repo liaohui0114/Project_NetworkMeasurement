@@ -1,8 +1,9 @@
 # -*- coding:utf-8 -*- 
+#!/usr/bin/env python
 
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
-import json,os,datetime,time
+import json,os,sys,datetime,time
 from  GlobleVariable import *
 from Client import *
 from datetime import *
@@ -48,7 +49,7 @@ def GetSingleChart(protocol,st_ip):
 #to change netMsg(str) to float/bool
 def readNetMsg(netMsg):
     data = {}
-    print netMsg
+    print 'readNetMsg',netMsg
     #bandwidth = netMsg[NETWORK_BANDWITH]
     #print bandwidth
     #if bandwidth == '':
@@ -141,7 +142,6 @@ def SingleAction(request):
     if request.method == "POST":
         print 'SingleAction,if request.method == POST '
         tmp = request.POST
-        print tmp
         ##在apache部署后需要注释下面两行才能继续执行，在/var/log/apache2/error.log只打印一行就卡住了？？？？下面的一些在for循环中的print也是，注释后才能正常执行
         #for i,j in tmp.items():
         #    print i,j  #print msg from front page
@@ -220,7 +220,7 @@ def SingleAction(request):
             if protocol_id == 1:
                 data[NETWORK_LOSS] = loss
 
-            print data
+            print 'data',data
 
             value = (st_id,ed_id,protocol_id,datetime.now(),data[NETWORK_BANDWITH],data[NETWORK_DELAY],data[NETWORK_JITTER],data[NETWORK_LOSS],data[NETWORK_CONGESTION],data[NETWORK_AVAIL])
             #print value
@@ -403,18 +403,21 @@ def UploadAction(request):
     #we prefer to use chunk to upload files
     print 'UploadAction'
     if request.method == "POST":
-#         print str(request.FILES["uploadFile"])
+        print 'in ,request.method=post'
+        #print str(request.FILES["uploadFile"])
         baseDir = os.path.dirname(os.path.dirname(__file__))
 #         print baseDir
         file = request.FILES["uploadFile"]
-        print file.name
+        #print file.name.decode('utf-8')
         if file:
-            filePath = baseDir+'/templates/upload/'+str(file)
-            print filePath
-            print file.size
+            
+            filePath = baseDir+'/templates/upload/'+str(int(time.time()*1000))+'_'+str(file)
+            #add timestamp to identify every file
+            #print filePath,file.size
             with open (filePath,'wb+') as f:
                 for chunk in file.chunks():
                     f.write(chunk)
+            os.system('rm -rf %s'%filePath) #delete file in web server when file uploading was finished
         else:
             pass
         #return HttpResponse({"liaohui":"hui"},content_type="text/javascript")

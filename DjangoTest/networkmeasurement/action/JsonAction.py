@@ -16,6 +16,8 @@ from networkmeasurement.models import SchoolNode,Active,Passive,NetProtocol
 #DEFAULT SETTING
 DEFAULT_UDP_COND = {NETWORK_BANDWITH:'100(Mbs)',NETWORK_DELAY:'0(ms)',NETWORK_JITTER:'0.1(ms)',NETWORK_LOSS:'0(%)',NETWORK_CONGESTION:'NO',NETWORK_AVAIL:'YES'}
 DEFAULT_OVERALL_COND = {NETWORK_BANDWITH:'',NETWORK_DELAY:'',NETWORK_JITTER:'',NETWORK_LOSS:'',NETWORK_CONGESTION:'',NETWORK_AVAIL:''}
+TAG_UNREACHABLE = '*' #当网络不可达时，在网页显示
+TAG_CONGESTION = '20 %'  #当丢包率超过TAG_CONGESTION是，表示网络用赛
 
 #function:获取图标信息，即获取各个节点的最近十条记录
 def GetSingleChart(protocol,st_ip):
@@ -158,22 +160,33 @@ def SingleAction(request):
         end_IP = tmp['endNodeIp']
         st_name = tmp['startNodeName']
         ed_name = tmp['endNodeName']
-        print st_IP
-        print end_IP
-        netMsg = Client(protocol.upper(),st_IP,end_IP);
+        print st_IP,end_IP
+        netMsg = Client(protocol.upper(),st_IP,end_IP); # to get network condition using action.Client.py
         print 'netMsg:',netMsg
         
+        isReachable = True  #判断网络是否可达
         # st_ip不可达
         if netMsg == -1:
-            netMsg = {NETWORK_BANDWITH:'0 (Mbs)',NETWORK_DELAY:'0 (ms)',NETWORK_JITTER:'0 (ms)',NETWORK_LOSS:'0 (%)',NETWORK_CONGESTION:'NO',NETWORK_AVAIL:'开始主机不可达'}
+            netMsg = {NETWORK_BANDWITH:'0 (Mbs)',NETWORK_DELAY:'0 (ms)',NETWORK_JITTER:'0 (ms)',NETWORK_LOSS:'0 (%)',NETWORK_CONGESTION:'NO',NETWORK_AVAIL:'起始主机故障'}
+            #netMsg = {NETWORK_BANDWITH:TAG_UNREACHABLE,NETWORK_DELAY:TAG_UNREACHABLE,NETWORK_JITTER:TAG_UNREACHABLE,NETWORK_LOSS:TAG_UNREACHABLE,NETWORK_CONGESTION:TAG_UNREACHABLE,NETWORK_AVAIL:'起始结点故障'}
+            isReachable = False #起始结点不可达
 
-        ###end client######3
+        ###end_ip不可达
         if netMsg[NETWORK_AVAIL] == 'NO':
-            netMsg = {NETWORK_BANDWITH:'0 (Mbs)',NETWORK_DELAY:'0 (ms)',NETWORK_JITTER:'0 (ms)',NETWORK_LOSS:'0 (%)',NETWORK_CONGESTION:'NO',NETWORK_AVAIL:'NO'}
+            netMsg = {NETWORK_BANDWITH:'0 (Mbps)',NETWORK_DELAY:'0 (ms)',NETWORK_JITTER:'0 (ms)',NETWORK_LOSS:'0 (%)',NETWORK_CONGESTION:'YES',NETWORK_AVAIL:'目标结点不可达'}
+            isReachable = False #目标结点结点不可达
+            #netMsg = {NETWORK_BANDWITH:TAG_UNREACHABLE,NETWORK_DELAY:TAG_UNREACHABLE,NETWORK_JITTER:TAG_UNREACHABLE,NETWORK_LOSS:TAG_UNREACHABLE,NETWORK_CONGESTION:TAG_UNREACHABLE,NETWORK_AVAIL:'目标结点不可达'}
 
-
+        #设置返回给.js文件的数据
         for key,value in netMsg.items():
             DEFAULT_UDP_COND[key] = value #set true attribute
+            #added by liaohui
+            if isReachable == False and key != NETWORK_AVAIL:
+                DEFAULT_UDP_COND[key] = TAG_UNREACHABLE #设置不可达时页面显示的结果
+        
+        #判断：如果丢包率过高，我们认为网络拥塞   
+        if isReachable == True and DEFAULT_UDP_COND[NETWORK_LOSS] >= TAG_UNREACHABLE:
+            DEFAULT_UDP_COND[NETWORK_CONGESTION] = 'YES'
         print DEFAULT_UDP_COND
         
         
@@ -210,16 +223,16 @@ def SingleAction(request):
                     loss = 0
                 else:
                     loss = index[4]
-                DEFAULT_UDP_COND[NETWORK_LOSS] = str(loss) + ' %'
-                print DEFAULT_UDP_COND[NETWORK_LOSS]
+                if isReachable:
+                    DEFAULT_UDP_COND[NETWORK_LOSS] = str(loss) + ' %'  #tcp格式，默认无%
+                #print DEFAULT_UDP_COND[NETWORK_LOSS]
 
             cur.execute('select * from networkmeasurement_active')
 
-            data = readNetMsg(netMsg)
+            data = readNetMsg(netMsg)   #将获取的各个指标转化成数据库对应的存储格式：str->double
 
             if protocol_id == 1:
                 data[NETWORK_LOSS] = loss
-
             print 'data',data
 
             value = (st_id,ed_id,protocol_id,datetime.now(),data[NETWORK_BANDWITH],data[NETWORK_DELAY],data[NETWORK_JITTER],data[NETWORK_LOSS],data[NETWORK_CONGESTION],data[NETWORK_AVAIL])
@@ -230,6 +243,7 @@ def SingleAction(request):
                    
             '''sql = "insert into networkmeasurement_active(startNode_id,endNode_id,protocol_id,createTime,\
             bandwidth,delay,jitter,loss,congestion,avail) values('%d','%d','%d','%s','%f','%f','%f','%f','%s','%s')"%value'''
+            
             cur.execute('insert into networkmeasurement_active(startNode_id,endNode_id,protocol_id,createTime,\
             bandwidth,delay,jitter,loss,congestion,avail) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',value)
 
@@ -261,40 +275,45 @@ def MyThread(protocol,st_IP,ed_IP,overallDic,start,end):
     if st_IP == '202.120.199.169' and ed_IP == '219.228.12.60':
         print 'tmp_cond:',tmp_cond
     if tmp_cond == -1:
-        tmp_cond = {NETWORK_BANDWITH:'0 (Mbs)',NETWORK_DELAY:'0 (ms)',NETWORK_JITTER:'0 (ms)',NETWORK_LOSS:'0 (%)',NETWORK_CONGESTION:'NO',NETWORK_AVAIL:'开始主机不可达'}
+        #tmp_cond = {NETWORK_BANDWITH:'0 (Mbs)',NETWORK_DELAY:'0 (ms)',NETWORK_JITTER:'0 (ms)',NETWORK_LOSS:'0 (%)',NETWORK_CONGESTION:'NO',NETWORK_AVAIL:'NO,起始结点故障'}
+        tmp_cond = {NETWORK_BANDWITH:TAG_UNREACHABLE,NETWORK_DELAY:TAG_UNREACHABLE,NETWORK_JITTER:TAG_UNREACHABLE,NETWORK_LOSS:TAG_UNREACHABLE,NETWORK_CONGESTION:TAG_UNREACHABLE,NETWORK_AVAIL:'起始结点故障'}
 
         ###end client######3
     if tmp_cond[NETWORK_AVAIL] == 'NO':
-        tmp_cond = {NETWORK_BANDWITH:'0 (Mbs)',NETWORK_DELAY:'0 (ms)',NETWORK_JITTER:'0 (ms)',NETWORK_LOSS:'0 (%)',NETWORK_CONGESTION:'NO',NETWORK_AVAIL:'NO'}
-
+        #tmp_cond = {NETWORK_BANDWITH:'0 (Mbs)',NETWORK_DELAY:'0 (ms)',NETWORK_JITTER:'0 (ms)',NETWORK_LOSS:'0 (%)',NETWORK_CONGESTION:'NO',NETWORK_AVAIL:'NO,目标结点不可达'}
+        tmp_cond = {NETWORK_BANDWITH:TAG_UNREACHABLE,NETWORK_DELAY:TAG_UNREACHABLE,NETWORK_JITTER:TAG_UNREACHABLE,NETWORK_LOSS:TAG_UNREACHABLE,NETWORK_CONGESTION:TAG_UNREACHABLE,NETWORK_AVAIL:'目标结点不可达'}
     #tmp_cond = {NETWORK_BANDWITH:'100(Mbs)',NETWORK_DELAY:'0(ms)',NETWORK_JITTER:'0.1(ms)',NETWORK_LOSS:'0(%)',NETWORK_CONGESTION:'NO',NETWORK_AVAIL:'YES'}
     #do socket func in here
      #tmpNode = {itemB.nodeName:tmp_cond[]}
     if tmp_cond.has_key(NETWORK_BANDWITH):           
         overallDic[NETWORK_BANDWITH][start.nodeName][end.nodeName] = tmp_cond[NETWORK_BANDWITH]
     else:
-        overallDic[NETWORK_BANDWITH][start.nodeName][end.nodeName] = '0 (Mbs)'
+        overallDic[NETWORK_BANDWITH][start.nodeName][end.nodeName] = '*' #'0 (Mbs)'
         
     if tmp_cond.has_key(NETWORK_DELAY):           
         overallDic[NETWORK_DELAY][start.nodeName][end.nodeName] = tmp_cond[NETWORK_DELAY]
     else:
-        overallDic[NETWORK_DELAY][start.nodeName][end.nodeName] = '0 (ms)'
+        overallDic[NETWORK_DELAY][start.nodeName][end.nodeName] = '*' #'0 (ms)'
         
     if tmp_cond.has_key(NETWORK_JITTER):           
         overallDic[NETWORK_JITTER][start.nodeName][end.nodeName] = tmp_cond[NETWORK_JITTER]
     else:
-        overallDic[NETWORK_JITTER][start.nodeName][end.nodeName] = '0 (ms)'
+        overallDic[NETWORK_JITTER][start.nodeName][end.nodeName] = '*' #'0 (ms)'
         
-    if tmp_cond.has_key(NETWORK_LOSS):           
-        overallDic[NETWORK_LOSS][start.nodeName][end.nodeName] = tmp_cond[NETWORK_LOSS]
-    else:
-        overallDic[NETWORK_LOSS][start.nodeName][end.nodeName] = '0 (%)'
         
     if tmp_cond.has_key(NETWORK_CONGESTION):           
         overallDic[NETWORK_CONGESTION][start.nodeName][end.nodeName] = tmp_cond[NETWORK_CONGESTION]
     else:
-        overallDic[NETWORK_CONGESTION][start.nodeName][end.nodeName] = 'NO'
-        
+        overallDic[NETWORK_CONGESTION][start.nodeName][end.nodeName] = '*' #'NO'
+    
+    if tmp_cond.has_key(NETWORK_LOSS):           
+        overallDic[NETWORK_LOSS][start.nodeName][end.nodeName] = tmp_cond[NETWORK_LOSS]
+        #判断，如果丢包率过高，则认为网络当前拥塞
+        if tmp_cond[NETWORK_LOSS] >= TAG_CONGESTION:
+            overallDic[NETWORK_CONGESTION][start.nodeName][end.nodeName] = 'YES'
+    else:
+        overallDic[NETWORK_LOSS][start.nodeName][end.nodeName] = '*' #'0 (%)'
+    
     if tmp_cond.has_key(NETWORK_AVAIL):           
         overallDic[NETWORK_AVAIL][start.nodeName][end.nodeName] = tmp_cond[NETWORK_AVAIL]
     else:

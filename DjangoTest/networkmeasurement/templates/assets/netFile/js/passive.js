@@ -115,7 +115,7 @@ function Udp_ajax_post_passive(startIp,endIp,startNodeName,endNodeName,startTime
 							break;
 
 						case 'rtt':
-							unit = '(%)';
+							unit = '(ms)';
 							break;
 
 						case 'cpu':

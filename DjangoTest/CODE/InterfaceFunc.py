@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*- 
 from GlobleVariable import *
 import string
 import numpy
@@ -26,7 +27,7 @@ def UDPThread_Iperf(ip,sendMsg):
     print 'udp iperf,',sendMsg
     os.system('sudo rm -rf %s'%filename)
     
-    
+'''   
 def UDPThread_Delay(ip,sendMsg):
     print 'UDPThread_Iperf:start get delay info'
     #get delay info
@@ -40,7 +41,38 @@ def UDPThread_Delay(ip,sendMsg):
     #end get delayinfo 
     sendMsg[NETWORK_DELAY] = msg #update delay info
     print 'udp delay,',sendMsg
-
+'''
+##altered to send 5 packets
+def UDPThread_Delay(ip,sendMsg):
+    print 'UDPThread_Delay:start get delay info'
+    #get delay info
+    packetCount = 5  #发送5个包来测量平均时延
+    counter = packetCount
+    sumTime = 0.0
+    isTimeOut = False
+    while counter > 0:
+        if isTimeOut:
+            break  #i如果存在超时出现，则退出
+        ud = UDPClient(ip,SOCKET_UDP_PORT)
+        currentTime = GetTimeStamp() #get current time stamp
+        msg = ''
+        if ud.SendMsg(currentTime):
+            msg = ud.RecvMsg()  #receive offset time between client and server
+            #print 'udp delay msg:',msg
+            if ''==msg:
+                isTimeOut = True  #timeout accur
+            else:
+                sumTime = sumTime + float(msg) #正常接收
+        ud.Close()   
+        counter = counter-1
+        
+    #end get delayinfo 
+    if isTimeOut and packetCount == counter:
+        sendMsg[NETWORK_DELAY] = '' #update delay info
+    else:
+        avgTime = '%.2f'%(sumTime/(packetCount-counter))
+        sendMsg[NETWORK_DELAY] = str(avgTime)+' (ms)' #get avg delay time
+    #print 'udp delay,',sendMsg
 #######################
 
 #override TCP

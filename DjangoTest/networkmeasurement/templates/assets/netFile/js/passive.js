@@ -26,25 +26,45 @@ $(document).ready(function(){
 	});
 	
 	$("#id_btn_passive").on("click",function(){
-		var st =  $("#id_input_startTime").val();
-		var et = $("#id_input_endTime").val();
-		//format time: like 2015-06-16 11:11:11 and make startTime<=endTime
-		if(st <= et)
+		//we define that startnode could not be the endnode，起始结点与目标结点不能一致
+		if($("#id_startNode").val() != $("#id_endNode").val())
 		{
-			st = st + " 00:00:00"
-			et = et + " 23:59:59"
+			var st =  $("#id_input_startTime").val();
+			var et = $("#id_input_endTime").val();
+			//format time: like 2015-06-16 11:11:11 and make startTime<=endTime
+			if(st <= et)
+			{
+				st = st + " 00:00:00"
+				et = et + " 23:59:59"
+			}
+			else
+			{
+				var tmp = st;
+				st = et;
+				et = tmp;
+				st = st + " 00:00:00"
+				et = et + " 23:59:59"
+			}
+			//alert(st+'\n'+et);
+			Udp_ajax_post_passive($("#id_startNode").val(),$("#id_endNode").val(),$("#id_startNode option:selected").text(),$("#id_endNode option:selected").text(),st,et);	
+			
 		}
 		else
 		{
-			var tmp = st;
-			st = et;
-			et = tmp;
-			st = st + " 00:00:00"
-			et = et + " 23:59:59"
-		}
-		//alert(st+'\n'+et);
-		Udp_ajax_post_passive($("#id_startNode").val(),$("#id_endNode").val(),$("#id_startNode option:selected").text(),$("#id_endNode option:selected").text(),st,et);		
+			//显示错误信息
+			$("#id_div_tip").css({
+				'opacity': .5, //透明度
+				'position': 'absolute',
 
+				//'background-color': 'black',
+				'color':'red',
+				'font-weight':700,
+				//'width': '200px',
+				//'height':'100px',
+				'z-index': 5000 //保证这个悬浮层位于其它内容之上
+				}).html("*起始结点与目标结点相同");
+			$("#id_div_tip").show();
+		}
 		
 	});
 	

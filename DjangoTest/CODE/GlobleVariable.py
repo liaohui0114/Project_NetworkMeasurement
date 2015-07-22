@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*- 
 from string import *
 import time
 
@@ -152,14 +153,17 @@ def GetTimeStamp():
 
 #get offset time:between timstampstr and currenttime
 def GetOffsetTime(timeStampStr):
+    print 'GetOffsetTime'
     currentTime = time.time()
-    print '%.9f'%currentTime
+    #print '%.9f'%float(timeStampStr)
+    #print '%.9f'%currentTime
     offsetTime = currentTime - float(timeStampStr)
-    print '%.9f'%offsetTime
-    if offsetTime > 1:
-        return '%.3f (s)'%offsetTime
-    else:
-        return '%.3f (ms)'%(offsetTime*1000)
+    #print 'offsettime:%.9f'%offsetTime
+    return '%.3f'%(offsetTime*1000) #(ms)
+#     if offsetTime > 1:
+#         return '%.3f (s)'%offsetTime
+#     else:
+#         return '%.3f (ms)'%(offsetTime*1000)
     
 
 

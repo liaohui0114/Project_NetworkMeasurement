@@ -42,14 +42,38 @@ $(document).ready(function(){
 	//start single test
 	$("#id_btn_single").on("click",function(){
 		//alert($("#id_btn_single").val());
-		var protocol = $("#id_btn_single").val();//get protocol info
-		Udp_ajax_post_single(protocol,$("#id_startNode").val(),$("#id_endNode").val(),$("#id_startNode option:selected").text(),$("#id_endNode option:selected").text());		
 
-		$("#NodeDisplayID").show();//show table of single table
-		DisplayNodePath();//draw path diagram
-		$("#PathDisplayID").show();
-		$("#ChartDisplayID").show();
-		$("#OverallDisplayID").hide(); //show tables of overall network testing
+		//we define that startnode could not be the endnode，起始结点与目标结点不能一致
+		//alert($("#id_startNode").val() + $("#id_endNode").val());
+		//alert($("#id_startNode").val() ==  $("#id_endNode").val());
+		if($("#id_startNode").val() != $("#id_endNode").val())
+		{
+			var protocol = $("#id_btn_single").val();//get protocol info
+			Udp_ajax_post_single(protocol,$("#id_startNode").val(),$("#id_endNode").val(),$("#id_startNode option:selected").text(),$("#id_endNode option:selected").text());		
+
+			$("#NodeDisplayID").show();//show table of single table
+			DisplayNodePath();//draw path diagram
+			$("#PathDisplayID").show();
+			$("#ChartDisplayID").show();
+			$("#OverallDisplayID").hide(); //show tables of overall network testing
+		}
+		else
+		{
+			//显示错误信息
+			$("#id_div_tip").css({
+				'opacity': .5, //透明度
+				'position': 'absolute',
+
+				//'background-color': 'black',
+				'color':'red',
+				'font-weight':700,
+				//'width': '200px',
+				//'height':'100px',
+				'z-index': 5000 //保证这个悬浮层位于其它内容之上
+				}).html("*起始结点与目标结点相同");
+			$("#id_div_tip").show();
+		}
+		
 	});
 	//start overall test
 	$("#id_btn_overall").click(function(){

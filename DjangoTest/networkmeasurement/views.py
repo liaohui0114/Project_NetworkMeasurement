@@ -12,8 +12,21 @@ from networkmeasurement.action import FormModule
 import time,datetime
 from django.utils.timezone import utc
 from models import *
+import base64,hashlib
 # Create your views here.
 
+VALIDATE_KEY = '28cce32073c56f138d8c328e5ccdf3728fd248d7'
+VALIDATE_URL = 'https://sjtusp.ecnu.edu.cn/secure'
+def IsValid(msg,dateInfo):
+    hashfun = hashlib.md5()
+    value = VALIDATE_KEY+dateInfo
+    hashfun.update(value)
+    if hashfun.hexdigest()==msg:
+        print 'Isvalid,true:',msg
+        return True
+    else:
+        print 'IsValid,false'
+        return False
 
 #function:to judge if the user have login already.If we can get the cookies which imply we have login
 def IsLogin(request):
@@ -51,7 +64,7 @@ def LoginFunc(request):
         return render_to_response("login.html",{"form":form})
     
 def LogoutFunc(request):
-    response = HttpResponse("You have already logout,<a href='login'>Login</a>")
+    response = HttpResponse("You have already logout,<a href=%s>Login</a>"%(VALIDATE_URL))
     if request.COOKIES.get('username'):
         response.delete_cookie('username') #user HttpResponse instance to delete cookies
     return response       
@@ -84,7 +97,8 @@ def UDPFunc(request):
             
         return render_to_response("active-udp.html",{'form':form})
     else:
-        return HttpResponse("Please login first,<a href='/login/'>Login</a>")
+        #return HttpResponse("Please login first,<a href='/login/'>Login</a>")
+        return HttpResponseRedirect(VALIDATE_URL)
     
 def UploadFunc(request):
     print 'view.Uploadfunc'
@@ -92,14 +106,16 @@ def UploadFunc(request):
         t = Context({'liao':'liao'})
         return render_to_response("updown-upload.html",t)
     else:
-        return HttpResponse("Please login first,<a href='/login/'>Login</a>")
+        #return HttpResponse("Please login first,<a href='/login/'>Login</a>")
+        return HttpResponseRedirect(VALIDATE_URL)
 
 def DownloadFunc(request):
     if IsLogin(request):
         t = Context({'liao':'liao'})
         return render_to_response("updown-download.html",t)
     else:
-        return HttpResponse("Please login first,<a href='/login/'>Login</a>")
+        #return HttpResponse("Please login first,<a href='/login/'>Login</a>")
+        return HttpResponseRedirect(VALIDATE_URL)
 
 def PassiveFunc(request):
     print 'view:PassiveFunc'
@@ -117,7 +133,8 @@ def PassiveFunc(request):
         
         return render_to_response("passive.html",{'form':form})
     else:
-        return HttpResponse("Please login first,<a href='/login/'>Login</a>")
+        #return HttpResponse("Please login first,<a href='/login/'>Login</a>")
+        return HttpResponseRedirect(VALIDATE_URL)
     
         
         
@@ -240,7 +257,8 @@ def TcpFunc(request):
             
         return render_to_response("active-tcp.html",{'form':form})
     else:
-        return HttpResponse("Please login first,<a href='/login/'>Login</a>")
+        #return HttpResponse("Please login first,<a href='/login/'>Login</a>")
+        return HttpResponseRedirect(VALIDATE_URL)
 
 def IcmpFunc(request):
     print 'view:icmpFunc'
@@ -272,5 +290,38 @@ def IcmpFunc(request):
             
         return render_to_response("active-icmp.html",{'form':form})
     else:
-        return HttpResponse("Please login first,<a href='/login/'>Login</a>")
-    
+        #return HttpResponse("Please login first,<a href='/login/'>Login</a>")
+        return HttpResponseRedirect(VALIDATE_URL)
+
+def ValidateUrlFunc(request):
+    print 'ValidateUrlFunc'
+    if IsLogin(request):
+        return HttpResponseRedirect('/tcp/')
+    else:
+        #third part validation:when we have login,the server will return url by get method like:
+        #http://202.121.178.195/?uid=bGlhb2h1aQ==&cn=5buW6L6J&domainName=c2p0dS5lZHUuY24=&typeOf=5a2m55SfO3N0dWRlbnQ=&eduPersonStudentID=&employeeNumber=&msg=f71ea8f78b17ef31905e49c0310b1be6&date=2015-07-24|12:10:04
+        # to identify if the following params were existed in urls by GET method
+        urlIdentifier = ['uid','cn','domainName','typeOf','eduPersonStudentID','employeeNumber','msg','date']
+        #to store data from url,default value:''
+        dictIdentifier = {'uid':'','cn':'','domainName':'','typeOf':'','eduPersonStudentID':'','employeeNumber':'','msg':'','date':''}
+        isValidate = True #to judge if the url contains the whole identifier like:uid,cn,domainName...
+        if request.method == 'GET':
+            for item in urlIdentifier:
+                if request.GET.__contains__(item):                
+                    
+                    if item=='msg' or item=='date':
+                        dictIdentifier[item] = request.GET.get(item)  #store infos
+                    else:    
+                        dictIdentifier[item] = base64.decodestring(request.GET.get(item)) #use base64 to decode excepte msg and date
+                        #print dictIdentifier[item]
+                else:
+                    #print item+' does exists'
+                    isValidate = False
+            print 'dictIdentifier:',dictIdentifier       
+            if isValidate and IsValid(dictIdentifier['msg'],dictIdentifier['date']):
+                #set cookies,use HttpResponse instance
+                response =  HttpResponseRedirect('/tcp/')                
+                response.set_cookie('username', dictIdentifier["uid"], 3600)  #set cookie imply that we have login
+                return response
+            else:
+                return HttpResponseRedirect(VALIDATE_URL)

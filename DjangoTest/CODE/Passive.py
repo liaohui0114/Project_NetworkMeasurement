@@ -156,7 +156,7 @@ def getCPU():
     fcpu = open('/proc/stat')
     try:
         lines = fcpu.readlines()
-        line= lines[1].split()
+        line= lines[0].split()
     finally:
         fcpu.close()
     total1 =0.0
@@ -166,11 +166,11 @@ def getCPU():
         if(slide == line[4]):
             idle1 = idle1 + (float)(slide)
 
-    time.sleep(2)
+    time.sleep(5)
     fcpu = open('/proc/stat')
     try:
         lines = fcpu.readlines()
-        line= lines[1].split()
+        line= lines[0].split()
     finally:
         fcpu.close()
     total2 =0.0
@@ -226,7 +226,7 @@ def passive(HOST,ipList):
         rtt = getRTT(HOST,ip)
         loss = getLOSS(HOST,ip)
         throughput = getTHROUGHPUT(HOST,ip)
-        bandwidth = throughput/10
+        bandwidth = throughput/THROUGHPUT_TIME
         cpu_per = getCPU()
         mem_per = getMEM()
         tmp[NETWORK_LOSS] = loss

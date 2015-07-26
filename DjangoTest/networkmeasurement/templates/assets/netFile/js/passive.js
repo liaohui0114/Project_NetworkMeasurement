@@ -127,7 +127,7 @@ function Udp_ajax_post_passive(startIp,endIp,startNodeName,endNodeName,startTime
 							break;
 
 						case 'throughput':
-							unit = '(Mps)';
+							unit = '(Bps)';
 							break;
 
 						case 'loss':

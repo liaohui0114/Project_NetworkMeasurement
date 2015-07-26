@@ -44,10 +44,10 @@ def Client(protocol,st_IP,end_IP):
         msg = {NETWORK_IP:end_IP,NETWORK_PROTOCOL:protocol}
         tp.SendMsg(SetSocketMsg(msg))
         rsg = tp.RecvMsg()
-        print 'Get Info from server:'
+        #print 'Get Info from server:'
         rsgDic = GetSocketMsg(rsg)
-        for key,value in rsgDic.items():
-            print key,value
+        #for key,value in rsgDic.items():
+        #    print key,value
             
         tp.Close()
     else:

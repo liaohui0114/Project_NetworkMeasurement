@@ -52,10 +52,11 @@ $(document).ready(function(){
 			Udp_ajax_post_single(protocol,$("#id_startNode").val(),$("#id_endNode").val(),$("#id_startNode option:selected").text(),$("#id_endNode option:selected").text());		
 
 			$("#NodeDisplayID").show();//show table of single table
-			DisplayNodePath();//draw path diagram
+			//DisplayNodePath();//draw path diagram
 			$("#PathDisplayID").show();
 			$("#ChartDisplayID").show();
 			$("#OverallDisplayID").hide(); //show tables of overall network testing
+			TracerouteDisplay($("#id_startNode").val(),$("#id_endNode").val(),$("#id_startNode option:selected").text(),$("#id_endNode option:selected").text()); 
 		}
 		else
 		{
@@ -337,6 +338,7 @@ function DisplayActiveChart(chartData,chartTime){
     });
 }
 
+/*
 function DisplayNodePath()
 {
 	//alert("DisplayNodePath");
@@ -449,7 +451,7 @@ function DisplayNodePath()
 	
 
 }
-
+*/
 //show div: #id_div_cover；添加遮罩层（该元素弹出在并在最前端显示）
 function showCover()
 {
@@ -485,4 +487,82 @@ function hideCover()
 	setTimeout(function(){$('#id_div_cover').fadeOut('slow')}, 1000); //设置1秒后覆盖层自动淡出
 }
 
+//function:to get trace path info by traceroute command
+function TracerouteDisplay(startIp,endIp,startNodeName,endNodeName)
+{
+	//alert("Udp_ajax_post_single!\n");
+	$.ajax({
+		url:"/action/TracerouteAction",
+		//async: false, //if we want to lock the screen
+		data:{
+			"startNodeIp":startIp,
+			"endNodeIp":endIp,
+			"startNodeName":startNodeName,
+			"endNodeName":endNodeName,
+			"protocol":"TRACEROUTE",
+			//form:$("#id_form_node").serialize()  //using & to connetion,style:startNode=192.168.1.152&endNode=192.168.1.152
+		},
+		type:'POST',//action:post or get
+		dataType:'json',
+		beforeSend:function(){
+			//alert("beforeSend!");
+			//showCover(); //在数据发送前，显示遮罩層，锁定屏幕
+		},
+		success:function(data){
+			var radius = 15;
+			var offet = 200;
+			var st_x = 100;
+			var st_y = 100;
+			var imgWidth = 60; //width 60px
+			///////init  draw pic/////////
+			/////clear canvas///////
+			var can = document.getElementById('id_canvas_router');
+			var clearNode = can.getContext('2d');
+			clearNode.fillStyle = "green";
+			clearNode.strokeStyle = "green";
+			clearNode.lineWidth = 4;
+			clearNode.clearRect(0,0,1024,400);
+			
+			////////draw startNode///////////
+			var img = document.getElementById("id_img_router");
+			var node = can.getContext('2d');
+			node.drawImage(img,st_x,st_y,imgWidth,imgWidth);
 
+			var nodeText = can.getContext('2d');
+			nodeText.font = "10px Arial";
+			var startText = startIp + "\n("+startNodeName+")";
+			nodeText.fillText(startText,st_x-imgWidth/2,st_y+imgWidth);
+
+			var cxt = can.getContext('2d');
+			cxt.beginPath();
+			cxt.moveTo(st_x+imgWidth,st_y+imgWidth/2);
+
+			
+
+			$.each(data,function(i,item){
+				st_x = st_x + offet;
+				node.drawImage(img,st_x,st_y,imgWidth,imgWidth);
+				tmpText = i + "("+item+")";
+				nodeText.fillText(tmpText,st_x-imgWidth/2,st_y+imgWidth);
+
+				cxt.lineTo(st_x,st_y+imgWidth/2);
+				cxt.moveTo(st_x+imgWidth,st_y+imgWidth/2);
+			});
+			
+			//draw end Node
+			st_x = st_x + offet;
+			node.drawImage(img,st_x,st_y,imgWidth,imgWidth);
+			var endText = endIp + "("+endNodeName+")";
+			nodeText.fillText(endText,st_x-imgWidth/2,st_y+imgWidth);
+
+			cxt.lineTo(st_x,st_y+imgWidth/2);
+			cxt.closePath();
+			cxt.stroke();
+
+
+		},
+		error:function(xhr,type){
+			$("#PathDisplayID").hide();
+		}
+	});
+}

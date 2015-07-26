@@ -18,7 +18,15 @@ DEFAULT_UDP_COND = {NETWORK_BANDWITH:'100(Mbs)',NETWORK_DELAY:'0(ms)',NETWORK_JI
 DEFAULT_OVERALL_COND = {NETWORK_BANDWITH:'',NETWORK_DELAY:'',NETWORK_JITTER:'',NETWORK_LOSS:'',NETWORK_CONGESTION:'',NETWORK_AVAIL:''}
 TAG_UNREACHABLE = '*' #当网络不可达时，在网页显示
 TAG_CONGESTION = '20 %'  #当丢包率超过TAG_CONGESTION是，表示网络用赛
-
+TAG_ISCONGESTION = 15.0
+#判断是否拥塞
+def isCongestion(percentStr):
+    tmpArray = percentStr.split('%')
+    print 'tmpArray:',tmpArray
+    if float(tmpArray[0]) >= TAG_ISCONGESTION:
+        return 'YES'
+    else:
+        return 'NO'
 #function:获取图标信息，即获取各个节点的最近十条记录
 def GetSingleChart(protocol,st_ip):
     print 'GetSingleChart'
@@ -185,8 +193,8 @@ def SingleAction(request):
                 DEFAULT_UDP_COND[key] = TAG_UNREACHABLE #设置不可达时页面显示的结果
         
         #判断：如果丢包率过高，我们认为网络拥塞   
-        if isReachable == True and DEFAULT_UDP_COND[NETWORK_LOSS] >= TAG_UNREACHABLE:
-            DEFAULT_UDP_COND[NETWORK_CONGESTION] = 'YES'
+        if isReachable == True:
+            DEFAULT_UDP_COND[NETWORK_CONGESTION] = isCongestion(DEFAULT_UDP_COND[NETWORK_LOSS])
         print DEFAULT_UDP_COND
         
         
@@ -309,8 +317,8 @@ def MyThread(protocol,st_IP,ed_IP,overallDic,start,end):
     if tmp_cond.has_key(NETWORK_LOSS):           
         overallDic[NETWORK_LOSS][start.nodeName][end.nodeName] = tmp_cond[NETWORK_LOSS]
         #判断，如果丢包率过高，则认为网络当前拥塞
-        if tmp_cond[NETWORK_LOSS] >= TAG_CONGESTION:
-            overallDic[NETWORK_CONGESTION][start.nodeName][end.nodeName] = 'YES'
+        #if tmp_cond[NETWORK_LOSS] >= TAG_CONGESTION:
+        overallDic[NETWORK_CONGESTION][start.nodeName][end.nodeName] = isCongestion(tmp_cond[NETWORK_LOSS])
     else:
         overallDic[NETWORK_LOSS][start.nodeName][end.nodeName] = '*' #'0 (%)'
     
@@ -500,4 +508,18 @@ def PassiveAction(request):
         else:
             print 'school node not exists'
             
+def TracerouteAction(request):
+    print 'TracerouteAction'
+    if request.method == "POST":
+        #print 'TracerouteAction,if request.method == POST '
+        tmp = request.POST
+        protocol =  tmp['protocol']
+        st_IP = tmp['startNodeIp']
+        end_IP = tmp['endNodeIp']
+        st_name = tmp['startNodeName']
+        ed_name = tmp['endNodeName']
+        #print st_IP,end_IP
+        traceMsg = Client(protocol.upper(),st_IP,end_IP); # to get network condition using action.Client.py
+        print 'traceroute Msg:',traceMsg
         
+        return HttpResponse(json.dumps(traceMsg), content_type="application/json")    

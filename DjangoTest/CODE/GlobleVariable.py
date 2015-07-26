@@ -64,7 +64,7 @@ FILE_PATH_UDP = 'udpfile.txt'
 NETWORK_TIME_OUT = 10 #10S
 
 #define period for passive throughput
-THROUGHPUT_TIME = 10
+THROUGHPUT_TIME = 1800 #30*60 s
 
 
 def SetPassiveMsg(dicMsg):
@@ -151,6 +151,15 @@ def GetSocketMsg(msg):
 def GetTimeStamp():
     return '%.9f'%time.time()
 
+def GetOffsetTime(startTime,endTime):
+    print 'GetOffsetTime'
+    currentTime = time.time()
+    #print '%.9f'%float(startTime)
+    #print '%.9f'%currentTime
+    offsetTime = float(endTime) - float(startTime)
+    #print 'offsettime:%.9f'%offsetTime
+    return '%.3f'%(offsetTime*1000) #(ms)
+'''
 #get offset time:between timstampstr and currenttime
 def GetOffsetTime(timeStampStr):
     print 'GetOffsetTime'
@@ -164,7 +173,7 @@ def GetOffsetTime(timeStampStr):
 #         return '%.3f (s)'%offsetTime
 #     else:
 #         return '%.3f (ms)'%(offsetTime*1000)
-    
+'''    
 
 
 #to get network condition in udpfile.txt;return dict

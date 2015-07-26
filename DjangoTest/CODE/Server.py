@@ -123,6 +123,10 @@ def MyThread(clientSocket,clientAddr,HOST):
         stopPassive()      
         sendMsg = passive(HOST,detailMsg[PROTOCOL_IP])        
         startPassive()
+    elif detailMsg['protocol'] == 'TRACEROUTE':
+        print 'TRACEROUTE operation'
+        sendMsg = {}
+        sendMsg = GetTracerouteNetworkInfo(detailMsg[PROTOCOL_IP])
         
     else:
         pass

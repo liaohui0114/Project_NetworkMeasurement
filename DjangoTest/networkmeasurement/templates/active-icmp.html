@@ -164,11 +164,11 @@
 
                     <!-- logo -->
                     <div class="logo">
-                        <a href="dashboard-1.html" class="logo-expanded">
-                            <img src="assets/images/logo@2x.png" width="80" alt="" />
+                        <a href="/tcp/" class="logo-expanded">
+                            <img src="assets/images/logo@2x.png" width="150" height="50" alt="" />
                         </a>
 
-                        <a href="dashboard-1.html" class="logo-collapsed">
+                        <a href="/tcp/" class="logo-collapsed">
                             <img src="assets/images/logo-collapsed@2x.png" width="40" alt="" />
                         </a>
                     </div>
@@ -1017,7 +1017,7 @@
                             </div>
 			    <div>
 				<ul>
-					<li>带宽：当前网络可达的最大发送带宽</li>
+					<li>带宽：本地测试服务器至远端测试服务器当前网络可达的最大发送带宽</li>
 					<li>延迟：发送时延(包大小/发送速度)+排队时延+传播时延（长度/速度）</li>
 					<li>抖动：数据流中不同数据包时延的变化；Jitter=( | packet_n - packet_n-1 |+| packet_n-1 - packet_n-2 | + ...+ | packet_2 - packet_1 | )/n</li>
 					<li>丢包率：成功发送数据包数/发送数据包总数</li>
@@ -1154,12 +1154,15 @@
                         <div class="panel-body">                            
                             <div>
                                 <!-- Basic Table -->
-                                <strong>带宽矩阵</strong>
+                                <strong>带宽矩阵</strong></br>
+				<ul>
+					<li>带宽：本地测试服务器至远端测试服务器当前网络可达的最大发送带宽</li>
+				</ul>
 
                                 <table class="table table-hover" id="id_table_bandwidth">
                                     <thead>
                                         <tr>
-                                            <th>带宽</th>
+                                            <th>带宽（起点->终点）</th>
                                             <!-- thead -->
                                             <!--
                                             <th>带宽</th>
@@ -1188,12 +1191,15 @@
                             </div>
                             <div>
                                 <!-- Basic Table -->
-                                <strong>时延矩阵</strong>
+                                <strong>时延矩阵</strong></br>
+				<ul>
+					<li>延迟：发送时延(包大小/发送速度)+排队时延+传播时延（长度/速度）</li>
+				</ul>
 
                                 <table class="table table-hover" id="id_table_delay">
                                     <thead>
                                         <tr>
-                                            <th>delay</th>
+                                            <th>时延（起点->终点）</th>
                                             <!-- thead -->
                                             <!--
                                             <th>带宽</th>
@@ -1222,12 +1228,15 @@
                             </div>
                             <div>
                                 <!-- Basic Table -->
-                                <strong>抖动矩阵</strong>
+                                <strong>抖动矩阵</strong></br>
+				<ul>
+					<li>抖动：数据流中不同数据包时延的变化;Jitter=( | packet_n - packet_n-1 |+| packet_n-1 - packet_n-2 | + ...+ | packet_2 - packet_1 
+				</ul>
 
                                 <table class="table table-hover" id="id_table_jitter">
                                     <thead>
                                         <tr>
-                                            <th>Jitter</th>
+                                            <th>抖动（起始->终止）</th>
                                             <!-- thead -->
                                             <!--
                                             <th>带宽</th>
@@ -1256,12 +1265,15 @@
                             </div>
                             <div>
                                 <!-- Basic Table -->
-                                <strong>丢包矩阵</strong>
+                                <strong>丢包矩阵</strong></br>
+				<ul>				
+					<li>丢包率：成功发送数据包数/发送数据包总数</li>
+				</ul>
 
                                 <table class="table table-hover" id="id_table_loss">
                                     <thead>
                                         <tr>
-                                            <th>Loss</th>
+                                            <th>丢包率（起点->终点）</th>
                                             <!-- thead -->
                                             <!--
                                             <th>带宽</th>
@@ -1290,12 +1302,15 @@
                             </div>
                             <div>
                                 <!-- Basic Table -->
-                                <strong>拥塞矩阵</strong>
+                                <strong>拥塞矩阵</strong></br>
+				<ul>
+					<li>拥塞：当前网络是否拥堵</li>
+				</ul>
 
                                 <table class="table table-hover" id="id_table_congestion">
                                     <thead>
                                         <tr>
-                                            <th>Congestion</th>
+                                            <th>拥塞（起点->终点）</th>
                                             <!-- thead -->
                                             <!--
                                             <th>带宽</th>
@@ -1324,12 +1339,15 @@
                             </div>
                             <div>
                                 <!-- Basic Table -->
-                                <strong>可用性矩阵</strong>
+                                <strong>可用性矩阵</strong></br>
+				<ul>
+					<li>可用性：当前网络是否可用：连通、可达</li>
+				</ul>
 
                                 <table class="table table-hover" id="id_table_availability">
                                     <thead>
                                         <tr>
-                                            <th>Availability</th>
+                                            <th>可用性（起点->终点）</th>
                                             <!-- thead -->
                                             <!--
                                             <th>带宽</th>

@@ -31,6 +31,7 @@ def isCongestion(percentStr):
 def GetSingleChart(protocol,st_ip):
     print 'GetSingleChart'
     chartData = [] #return msg
+    createTime = {}
     #to judge if the protocol was exist
     #print protocol
     #protocol = '"'+protocol+'"'
@@ -51,10 +52,16 @@ def GetSingleChart(protocol,st_ip):
                 if cond.exists():
                     tmpDic['data'] = [item.bandwidth for item in cond] #here we only display bandwidth conditions
                     chartData.append(tmpDic)
+                    
+                    #get createTime {'name1':[time1,time2,time3],'name':[...]}
+                    tmpKey = i.nodeName
+                    createTime[tmpKey] = []
+                    for item in cond:
+                        createTime[tmpKey].append(time.mktime(item.createTime.timetuple()))
         
     #print chartData
     print 'end GetSingleChart()'
-    return chartData
+    return chartData,createTime
 
 #to change netMsg(str) to float/bool
 def readNetMsg(netMsg):
@@ -266,9 +273,10 @@ def SingleAction(request):
                      {'name': '复旦大学','data': [3.5, 8.4, 13.5, 17.0, 18.6, 17.9, 14.3, 9.0, 3.9, 1.0]},
                      {'name': '同济大学','data': [5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]}]'''
         
-        chartData = GetSingleChart(protocol.upper(),st_IP)
+        chartData,time = GetSingleChart(protocol.upper(),st_IP)
         chartTime = [1,2,3,4,5,6,7,8,9,10]
-        reMsg = {"single":DEFAULT_UDP_COND,"chart":{"chartData":chartData,"chartTime":chartTime}}   #we will decode this format by .js
+        #print "tttttttime,",time
+        reMsg = {"single":DEFAULT_UDP_COND,"chart":{"chartData":chartData,"chartTime":chartTime,"time":time}}   #we will decode this format by .js
         #time.sleep(4) #for test
         return HttpResponse(json.dumps(reMsg), content_type="application/json")
     print 'end SingleAction'
@@ -363,12 +371,12 @@ def OverallAction(request):
             overallDic[NETWORK_AVAIL][itemA.nodeName]={}
             for itemB in allNodes:
                 #print 'nodeA:',itemA.nodeName,'nodeB:',itemB.nodeName
-                overallDic[NETWORK_BANDWITH][itemA.nodeName][itemB.nodeName]=''
-                overallDic[NETWORK_DELAY][itemA.nodeName][itemB.nodeName]=''
-                overallDic[NETWORK_JITTER][itemA.nodeName][itemB.nodeName]=''
-                overallDic[NETWORK_LOSS][itemA.nodeName][itemB.nodeName]=''
-                overallDic[NETWORK_CONGESTION][itemA.nodeName][itemB.nodeName]=''
-                overallDic[NETWORK_AVAIL][itemA.nodeName][itemB.nodeName]=''
+                overallDic[NETWORK_BANDWITH][itemA.nodeName][itemB.nodeName]='-'
+                overallDic[NETWORK_DELAY][itemA.nodeName][itemB.nodeName]='-'
+                overallDic[NETWORK_JITTER][itemA.nodeName][itemB.nodeName]='-'
+                overallDic[NETWORK_LOSS][itemA.nodeName][itemB.nodeName]='-'
+                overallDic[NETWORK_CONGESTION][itemA.nodeName][itemB.nodeName]='-'
+                overallDic[NETWORK_AVAIL][itemA.nodeName][itemB.nodeName]='-'
                       
         #print overallDic
         print 'end for one'

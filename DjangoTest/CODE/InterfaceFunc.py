@@ -372,7 +372,7 @@ def GetICMPNetworkInfo(ip):
     
     sendMsg = {NETWORK_BANDWITH:bandwidth_to_send,NETWORK_DELAY:delay_to_send,NETWORK_JITTER:jitter_to_send,NETWORK_LOSS:loss_to_send,NETWORK_CONGESTION:congestion_to_send,NETWORK_AVAIL:available_to_send}
    
-    delete_connection_file = "rm "+ connection_file
+    delete_connection_file = "rm -rf"+ connection_file
     os.system(delete_connection_file)
     return sendMsg
 

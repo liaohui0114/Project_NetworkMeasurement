@@ -85,7 +85,7 @@ $(document).ready(function(){
 		$("#NodeDisplayID").hide();
 		$("#PathDisplayID").hide();
 		$("#ChartDisplayID").hide();
-		$("#OverallDisplayID").show();
+		//$("#OverallDisplayID").show();
 	});
 
 })
@@ -119,7 +119,7 @@ function Udp_ajax_post_single(protocol,startIp,endIp,startNodeName,endNodeName)
 			hideCover(); //在成功收到数据，隐藏遮罩層，解锁屏幕
 			//alert("success!\n");
 			//x = eval(data); decode json type
-			var chartData,chartTime;
+			var chartData,chartTime,createTime;
 			$.each(data,function(i,item){
 				//i is key and item is value
 				
@@ -145,13 +145,13 @@ function Udp_ajax_post_single(protocol,startIp,endIp,startNodeName,endNodeName)
 					
 					chartTime = $.parseJSON('['+item["chartTime"]+']');
 					//alert(chartData[1].data); 
-					
+					createTime = eval(item.time);  //to get createTime infos
 
 					
 				}				
 			});
 
-			DisplayActiveChart(chartData,chartTime); // using plug-in:Highcharts  to display charts;
+			DisplayActiveChart(chartData,chartTime,createTime); // using plug-in:Highcharts  to display charts;
 				
 
 			//to display charts
@@ -220,7 +220,8 @@ function Udp_ajax_post_overall(protocol)
 				$("#id_table_"+conditon).find('thead').find('tr').empty();
 				$("#id_table_"+conditon).find('tbody').find('tr').empty();
 
-				$("#id_table_"+conditon).find('thead').find('tr').append("<th>"+conditon+"</th>");
+				//$("#id_table_"+conditon).find('thead').find('tr').append("<th>"+conditon+"</th>");
+				$("#id_table_"+conditon).find('thead').find('tr').append("<th>起点->终点</th>");
 				var isFirst = true;  // to avoid $("#id_table_"+conditon).find('thead').find('tr').append("<th>"+end+"</th>"); running every <th>
 				$.each(startData,function(start,endData){
 					var thTmp = "<th>"+start+"</th>";
@@ -242,6 +243,7 @@ function Udp_ajax_post_overall(protocol)
 				});
 
 			});
+			$("#OverallDisplayID").show();  //show infomations
 
 		},
 		error:function(xhr,type){
@@ -257,7 +259,7 @@ function Udp_ajax_post_overall(protocol)
 }
 
 //to display chart of bandwidth 
-function DisplayActiveChart(chartData,chartTime){
+function DisplayActiveChart(chartData,chartTime,createTime){
 	// var chart = new Highcharts.Chart({
 	// 	chart:{
  //            renderTo:'id_div_activeChart',
@@ -326,7 +328,19 @@ function DisplayActiveChart(chartData,chartTime){
             }]
         },
         tooltip: {
-            valueSuffix: 'Mp/s'
+            //valueSuffix: 'Mp/s'
+
+            //valueSuffix: 'Mp/s'
+            //valueSuffix: unit #defualut
+            //added by liaohui
+            //define format output
+            formatter: function() {
+            	var i = 0;
+                return '<b>'+ this.series.name +':</b>'+ this.y+' Mp/s'
+                +'<br><b>时间:</b>'+(new Date(createTime[this.series.name][this.x-1]*1000).Format("yyyy-MM-dd hh:mm:ss"));
+                //timestamp to CST in jquery,we need to *1000
+
+            }
         },
         legend: {
             layout: 'vertical',
@@ -465,16 +479,16 @@ function showCover()
 	  'position': 'absolute',
 	  'top': 0,
 	  'left': 0,
-	  'background-color': 'black',
+	  //'background-color': 'white',
 	  'width': '100%',
 	  'z-index': 5000 //保证这个悬浮层位于其它内容之上
 	});
 	$('#id_img_cover').css({
 	  'opacity': .9, //透明度
 	  'position': 'absolute',
-	  'top': 200,  //from top
-	  'left': 300,  //from left
-	  'background-color': 'black',
+	  'top': 350,  //from top
+	  'left': 500,  //from left
+	  //'background-color': 'white',
 	});
 
 	$('#id_div_cover').show();   //show the div
@@ -566,3 +580,22 @@ function TracerouteDisplay(startIp,endIp,startNodeName,endNodeName)
 		}
 	});
 }
+
+
+/////////copy from internet to formate Date() like "yyyy-MM-dd hh:mm:ss"
+Date.prototype.Format = function (fmt) { //author: meizz 
+    var o = {
+        "M+": this.getMonth() + 1, //月份 
+        "d+": this.getDate(), //日 
+        "h+": this.getHours(), //小时 
+        "m+": this.getMinutes(), //分 
+        "s+": this.getSeconds(), //秒 
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+        "S": this.getMilliseconds() //毫秒 
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
+///////////end format/////////////////////////

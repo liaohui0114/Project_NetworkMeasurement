@@ -112,7 +112,7 @@ def SetSocketMsg(dicMsg):
     
     else: 
         for k,v in dicMsg.items():
-            print k,v
+            #print k,v
             if msg == '':
                 msg += '%s:%s'%(k,v) #format dict to string which is 'key:value,key:value,key:value...'
             else:

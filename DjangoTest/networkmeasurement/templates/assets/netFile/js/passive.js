@@ -251,16 +251,16 @@ function showCover()
 	  'position': 'absolute',
 	  'top': 0,
 	  'left': 0,
-	  'background-color': 'black',
+	  //'background-color': 'black',
 	  'width': '100%',
 	  'z-index': 5000 //保证这个悬浮层位于其它内容之上
 	});
 	$('#id_img_cover').css({
 	  'opacity': .9, //透明度
 	  'position': 'absolute',
-	  'top': 200,  //from top
-	  'left': 300,  //from left
-	  'background-color': 'black',
+	  'top': 350,  //from top
+	  'left': 500,  //from left
+	  //'background-color': 'black',
 	});
 
 	$('#id_div_cover').show();   //show the div

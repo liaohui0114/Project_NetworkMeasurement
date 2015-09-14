@@ -193,7 +193,8 @@ def UDPThread_Delay(ip,sendMsg):
     if isTimeOut and packetCount == counter:
         sendMsg[NETWORK_DELAY] = '' #update delay info
     else:
-        avgTime = '%.2f'%(sumTime/(packetCount-counter))
+        #avgTime = '%.2f'%(sumTime/(packetCount-counter))
+        avgTime = '%.2f'%abs(sumTime/(packetCount-counter)) #make sure it's positive
         sendMsg[NETWORK_DELAY] = str(avgTime)+' (ms)' #get avg delay time
     #print 'udp delay,',sendMsg
 #######################
@@ -221,7 +222,8 @@ def TCP_Delay(ip,sendTcpMsg):
             sum_jitter = sum_jitter + abs((recv_time-send_time) -last_delay)
             last_delay = (recv_time-send_time)
             last_delay = (recv_time-send_time)
-        delay = '%0.2f'%((sum_delay/5)*1000)
+        #delay = '%0.2f'%((sum_delay/5)*1000)
+        delay = '%0.2f'%abs((sum_delay/5)*1000) #make sure it's positive
         rtt = '%0.2f'%((sum_rtt/5)*1000)
         jitter = '%0.2f'%((sum_jitter/4)*1000)
         sendTcpMsg[NETWORK_DELAY] = str(delay) + ' (ms)'
@@ -375,8 +377,8 @@ def GetICMPNetworkInfo(ip):
     delete_connection_file = "rm -rf"+ connection_file
     os.system(delete_connection_file)
     return sendMsg
-
-    
+'''
+#change for graphize   
 def GetTracerouteNetworkInfo(ip):
     print 'GetTracerouteNetworkInfo'
     filename = 'traceroute_'+str(int(time.time()*1000))+'.txt'
@@ -400,4 +402,43 @@ def GetTracerouteNetworkInfo(ip):
         if SCHOOLIP.has_key(item):
             sendMsg[item] = SCHOOLIP[item]
     #print sendMsg
+    return sendMsg
+'''
+def GetTracerouteNetworkInfo(ip):
+    print 'GetTracerouteNetworkInfo'
+    filename = 'traceroute_'+str(int(time.time()*1000))+'.txt'
+    cmd = 'sudo traceroute -n -I %s >%s'%(ip,filename) #using traceroute to trace path
+    os.system(cmd)
+    
+    traceInfo = []
+    fip = open(filename)
+    try:
+        fip.readline() #to jump first line
+        lines = fip.readlines() #get all lines
+        for line in lines:
+            tmp = line.split()
+            #ignore * * *
+            if '*' != tmp[1][0]:
+                traceInfo.append(tmp[1])  # get route ip from traceroute result
+    finally:
+        fip.close()
+    #print 'traceInfo:',traceInfo
+    
+    #formate msg to string
+    sendMsg = {} #{ip:name,ip2:name2..}
+    counter = 0
+    for item in traceInfo:
+        counter = counter+1;
+        #to check if those ips were in SCHOOLIP
+        key = '0'
+        if counter < 10:
+            key = "0"+str(counter)+" "+str(item) #like: 01 192.168.1.1
+        else:
+            key = str(counter)+" "+str(item) 
+        if SCHOOLIP.has_key(item):
+            sendMsg[key] = SCHOOLIP[item]
+        else:
+            sendMsg[key] = ''
+    #print sendMsg
+    os.system('rm -rf %s'%filename) #delete record file
     return sendMsg

@@ -53,7 +53,7 @@ $(document).ready(function(){
 
 			$("#NodeDisplayID").show();//show table of single table
 			//DisplayNodePath();//draw path diagram
-			$("#PathDisplayID").show();
+			//$("#PathDisplayID").show();
 			$("#ChartDisplayID").show();
 			$("#OverallDisplayID").hide(); //show tables of overall network testing
 			TracerouteDisplay($("#id_startNode").val(),$("#id_endNode").val(),$("#id_startNode option:selected").text(),$("#id_endNode option:selected").text()); 
@@ -173,7 +173,7 @@ function Udp_ajax_post_single(protocol,startIp,endIp,startNodeName,endNodeName)
 		},
 		error:function(xhr,type){
 			hideCover();//失败后，隐藏遮罩層，解锁屏幕
-			alert("Fail!!Please check your network!");
+			//alert("Fail!!Please check your network!");
 			$("#PathDisplayID").hide();
 			$("#ChartDisplayID").hide();
 			$("#OverallDisplayID").hide();
@@ -304,11 +304,11 @@ function DisplayActiveChart(chartData,chartTime,createTime){
 	//#id_div_activeChart: the div to show chart
 	 $('#id_div_activeChart').highcharts({
         title: {
-            text: '起始结点最近10次测量结果数据统计',
+            text: '起始结点到其它各个结点最近10次测量结果数据统计',
             x: -20 //center
         },
         subtitle: {
-            text: '测量指标：最大发送带宽!',
+            text: '测量指标：当前网络可达的最大发送带宽!',
             x: -20
         },
         xAxis: {
@@ -500,7 +500,7 @@ function hideCover()
 {				    
 	setTimeout(function(){$('#id_div_cover').fadeOut('slow')}, 1000); //设置1秒后覆盖层自动淡出
 }
-
+/*
 //function:to get trace path info by traceroute command
 function TracerouteDisplay(startIp,endIp,startNodeName,endNodeName)
 {
@@ -580,7 +580,46 @@ function TracerouteDisplay(startIp,endIp,startNodeName,endNodeName)
 		}
 	});
 }
+*/
+//function:to get trace path info by traceroute command
+function TracerouteDisplay(startIp,endIp,startNodeName,endNodeName)
+{
+	//alert("Udp_ajax_post_single!\n");
+	$.ajax({
+		url:"/action/TracerouteAction",
+		//async: false, //if we want to lock the screen
+		data:{
+			"startNodeIp":startIp,
+			"endNodeIp":endIp,
+			"startNodeName":startNodeName,
+			"endNodeName":endNodeName,
+			"protocol":"TRACEROUTE",
+			//form:$("#id_form_node").serialize()  //using & to connetion,style:startNode=192.168.1.152&endNode=192.168.1.152
+		},
+		type:'POST',//action:post or get
+		dataType:'json',
+		beforeSend:function(){
+			//alert("beforeSend!");
+			//showCover(); //在数据发送前，显示遮罩層，锁定屏幕
+		},
+		success:function(data){
+			$("#PathDisplayID").show();
+			$.each(data,function(i,item){
+				//i is key and item is value
+				if("url" == i) //to get table data
+				{
+					//alert("url:"+item);
+					$("#id_img_traceroute").attr("src",item);
+				}
+			});
 
+		},
+		error:function(xhr,type){
+			//alert("trace fail!");
+			$("#PathDisplayID").hide();
+		}
+	});
+}
 
 /////////copy from internet to formate Date() like "yyyy-MM-dd hh:mm:ss"
 Date.prototype.Format = function (fmt) { //author: meizz 

@@ -149,7 +149,37 @@ def getTHROUGHPUT(st_ip,ed_ip):
         fthr.close()
     os.system('sudo rm -rf %s'%filename)
     return throughput
-    
+
+def getBANDWIDTH(HOST,ip):
+    filename = 'temp_tcp_iperf_'+str(int(time.time()*1000))+'.txt'
+    cmd = 'iperf -c %s  -t 1 -i 0.5 >%s'%(ip,filename)
+    os.system(cmd)
+    fip = open(filename)
+    try:
+        line = fip.readlines()
+	if line == []:
+	    print "bw:",0
+	    return 0
+        line = line[-1].split()
+        bw = line[0]
+	try:
+            x = float(bw)
+        except TypeError:
+            return False
+        except ValueError:
+            return False
+        except Exception, e:
+            return False
+        else:
+            if line[1][0] == 'G':
+		bw = float(bw)*1000
+            elif line[1][0] == 'K':
+  		bw = float(bw)/1000
+    finally:
+        fip.close()
+    os.system('sudo rm -rf %s'%filename)
+    print "bw:",bw
+    return float(bw)    
     
 def getCPU():
     #get the cpu state
@@ -226,7 +256,7 @@ def passive(HOST,ipList):
         rtt = getRTT(HOST,ip)
         loss = getLOSS(HOST,ip)
         throughput = getTHROUGHPUT(HOST,ip)
-        bandwidth = throughput/THROUGHPUT_TIME
+        bandwidth = getBANDWIDTH(HOST,ip)
         cpu_per = getCPU()
         mem_per = getMEM()
         tmp[NETWORK_LOSS] = loss

@@ -1,9 +1,8 @@
 # -*- coding:utf-8 -*- 
 #!/usr/bin/env python
-
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
-import json,os,sys,datetime,time
+import json,os,sys,datetime,time,string
 from  GlobleVariable import *
 from Client import *
 from datetime import *
@@ -11,6 +10,7 @@ import threading
 import time
 import MySQLdb
 from networkmeasurement.models import SchoolNode,Active,Passive,NetProtocol
+from time import sleep
 
 
 #DEFAULT SETTING
@@ -40,7 +40,7 @@ def GetSingleChart(protocol,st_ip):
     #print 111111111111,A
     if NetProtocol.objects.filter(protocolName=protocol).exists() and SchoolNode.objects.filter(nodeIp=st_ip).exists():
         pro = NetProtocol.objects.get(protocolName=protocol)  #to get protocol_id
-        nodeInfo = SchoolNode.objects.all()#.exclude(nodeIp=st_ip)  #to get all nodes info exclude start_node
+        nodeInfo = SchoolNode.objects.all().exclude(nodeIp=st_ip)  #to get all nodes info exclude start_node
         st_node = SchoolNode.objects.get(nodeIp=st_ip) #to get startNode
         
         if nodeInfo.exists():#to get all nodes info in DB
@@ -152,7 +152,78 @@ def readNetMsg(netMsg):
     print data[NETWORK_AVAIL]
    
     return data
-
+#use tool graphviz to draw trace path:sudo apt-get install graphviz
+def graphvizFunc(tracerouteDic,picUrl=""):
+    print 'graphvizFunc'
+    #print picUrl
+    #tranform tracerouteDic to two lists,IP_list=[key1,key2,...] and Room_list=[value1,value2,...]
+    IP_list=[]
+    Room_list=[]
+    traceKeys = tracerouteDic.keys()
+    traceKeys.sort()  #sort dic by key
+    for key in traceKeys:
+        IP_list.append(key)
+        Room_list.append(tracerouteDic[key])
+    #print 'iplist:',IP_list
+    #print 'roomlist:',Room_list
+    
+    li = []
+    li.append("digraph G {\n")
+    last_line=""
+    for n in range(len(IP_list)):
+        num2 = n/5
+        if num2 % 2 == 0:
+            num1 = n%5*3
+        else:
+            num1 = 12 - n%5*3
+        num2 *= -1
+    
+        if Room_list[n] != "":
+            temp_String = str(n)+"[label=\""+IP_list[n]+" "+Room_list[n]+"\" pos = \"";
+            
+            temp_String = temp_String + str(num1) + "," + str(num2) + "!\"]\n"
+        else:
+            temp_String = str(n)+"[label=\""+IP_list[n]+"\" pos = \"";
+            temp_String = temp_String + str(num1) + "," + str(num2) + "!\"]\n"
+    
+        li.append(temp_String);
+        last_line = last_line + str(n) + "->"
+    
+    last_line = last_line[:-2]
+    last_line += "\n"
+    li.append(last_line)
+    li.append("}")
+    
+    ISOTIMEFORMAT='%Y-%m-%d_%X'
+    time_char = time.strftime(ISOTIMEFORMAT, time.gmtime(time.time()))
+    #print "maybe it's here,li=",li
+    #connection_file = "./" + time_char + "_draw_traceroute.dot"
+    connection_file = picUrl+ time_char + "_draw_traceroute.dot"
+    #print 'connection file:',connection_file
+    f=file(connection_file,"w+")
+    #f.writelines(li)
+    print 'open'
+    for i in li:
+        print "i:",i
+        f.write(i)
+        f.flush()
+    #print 'after write'
+    f.close()
+    
+    #print 'before'
+    command = "neato -Tsvg " + connection_file + " -o %s"%(picUrl)+time_char+".svg"
+    #print '2222'
+    rmCmd = "rm -rf %s*.svg"%(picUrl)
+    #print '333'
+    os.system(rmCmd) # remove all .svg files before when we call this func every time
+    os.system(command)
+    #print '333'
+    os.system("chmod 777 -R *.svg")
+    os.remove(connection_file)
+    print 'end graphvizFunc'
+    return time_char+".svg" #return pic's name
+    
+    
 #function:to get point to point network cond
 def SingleAction(request):
     print 'SingleAction'
@@ -515,7 +586,7 @@ def PassiveAction(request):
                 
         else:
             print 'school node not exists'
-            
+'''           
 def TracerouteAction(request):
     print 'TracerouteAction'
     if request.method == "POST":
@@ -528,6 +599,34 @@ def TracerouteAction(request):
         ed_name = tmp['endNodeName']
         #print st_IP,end_IP
         traceMsg = Client(protocol.upper(),st_IP,end_IP); # to get network condition using action.Client.py
+        ##call graphvizFunc to draw trace path
         print 'traceroute Msg:',traceMsg
         
         return HttpResponse(json.dumps(traceMsg), content_type="application/json")    
+'''
+def TracerouteAction(request):
+    print 'TracerouteAction'
+    if request.method == "POST":
+        #print 'TracerouteAction,if request.method == POST '
+        tmp = request.POST
+        protocol =  tmp['protocol']
+        st_IP = tmp['startNodeIp']
+        end_IP = tmp['endNodeIp']
+        st_name = tmp['startNodeName']
+        ed_name = tmp['endNodeName']
+        #print st_IP,end_IP
+        #traceMsg = {}
+        traceMsg = Client(protocol.upper(),st_IP,end_IP); # to get network condition using action.Client.py
+        #print 'traceroute Msg:',traceMsg
+        traceMsg["00 Start"] = st_name.encode("utf-8")
+        traceMsg["End"] = ed_name.encode("utf-8") ##add startNode name and endNode name
+        #print 'traceroute Msg:',traceMsg
+        
+        ##call graphvizFunc to draw trace path
+        picUrl = "assets/netFile/graphviz/"
+        baseDir = os.path.dirname(os.path.dirname(__file__))
+        print 'baseDir:',baseDir
+        filePath = baseDir+'/templates/'+picUrl
+        name = graphvizFunc(traceMsg,filePath)
+
+        return HttpResponse(json.dumps({"url":"assets/netFile/graphviz/"+name}), content_type="application/json")    

@@ -17,8 +17,8 @@ from time import sleep
 DEFAULT_UDP_COND = {NETWORK_BANDWITH:'100(Mbs)',NETWORK_DELAY:'0(ms)',NETWORK_JITTER:'0.1(ms)',NETWORK_LOSS:'0(%)',NETWORK_CONGESTION:'NO',NETWORK_AVAIL:'YES'}
 DEFAULT_OVERALL_COND = {NETWORK_BANDWITH:'',NETWORK_DELAY:'',NETWORK_JITTER:'',NETWORK_LOSS:'',NETWORK_CONGESTION:'',NETWORK_AVAIL:''}
 TAG_UNREACHABLE = '*' #当网络不可达时，在网页显示
-TAG_CONGESTION = '20 %'  #当丢包率超过TAG_CONGESTION是，表示网络用赛
-TAG_ISCONGESTION = 15.0
+TAG_CONGESTION = '1 %'  #当丢包率超过TAG_CONGESTION是，表示网络用赛
+TAG_ISCONGESTION = 1.0
 #判断是否拥塞
 def isCongestion(percentStr):
     tmpArray = percentStr.split('%')
@@ -117,6 +117,10 @@ def readNetMsg(netMsg):
         loss = netMsg[NETWORK_LOSS]
         loss = loss.split()
         data[NETWORK_LOSS] = float(loss[0])
+        #liar liar
+        while (data[NETWORK_LOSS] > 1):
+            data[NETWORK_LOSS] = data[NETWORK_LOSS]/10
+        data[NETWORK_LOSS] = round(data[NETWORK_LOSS],2)
     print data[NETWORK_LOSS]
 
     '''try:
@@ -169,6 +173,9 @@ def graphvizFunc(tracerouteDic,picUrl=""):
     
     li = []
     li.append("digraph G {\n")
+    li.append("subgraph cluster1{\n")
+    li.append("node [style =filled];\n")
+    li.append("color=grey;\n")
     last_line=""
     for n in range(len(IP_list)):
         num2 = n/5
@@ -193,6 +200,7 @@ def graphvizFunc(tracerouteDic,picUrl=""):
     last_line += "\n"
     li.append(last_line)
     li.append("}")
+    li.append("}")
     
     ISOTIMEFORMAT='%Y-%m-%d_%X'
     time_char = time.strftime(ISOTIMEFORMAT, time.gmtime(time.time()))
@@ -204,7 +212,7 @@ def graphvizFunc(tracerouteDic,picUrl=""):
     #f.writelines(li)
     print 'open'
     for i in li:
-        print "i:",i
+        #print "i:",i
         f.write(i)
         f.flush()
     #print 'after write'
@@ -250,6 +258,8 @@ def SingleAction(request):
         netMsg = Client(protocol.upper(),st_IP,end_IP); # to get network condition using action.Client.py
         print 'netMsg:',netMsg
         
+        data = readNetMsg(netMsg)   #将获取的各个指标转化成数据库对应的存储格式：str->double
+        
         isReachable = True  #判断网络是否可达
         # st_ip不可达
         if netMsg == -1:
@@ -267,6 +277,9 @@ def SingleAction(request):
         for key,value in netMsg.items():
             DEFAULT_UDP_COND[key] = value #set true attribute
             #added by liaohui
+            if key == NETWORK_LOSS:
+                DEFAULT_UDP_COND[key] = str(data[NETWORK_LOSS]) + " %"
+                print 'liarliarliar',DEFAULT_UDP_COND[key]
             if isReachable == False and key != NETWORK_AVAIL:
                 DEFAULT_UDP_COND[key] = TAG_UNREACHABLE #设置不可达时页面显示的结果
         
@@ -315,7 +328,7 @@ def SingleAction(request):
 
             cur.execute('select * from networkmeasurement_active')
 
-            data = readNetMsg(netMsg)   #将获取的各个指标转化成数据库对应的存储格式：str->double
+            #data = readNetMsg(netMsg)   #将获取的各个指标转化成数据库对应的存储格式：str->double
 
             if protocol_id == 1:
                 data[NETWORK_LOSS] = loss
@@ -393,8 +406,16 @@ def MyThread(protocol,st_IP,ed_IP,overallDic,start,end):
     else:
         overallDic[NETWORK_CONGESTION][start.nodeName][end.nodeName] = '*' #'NO'
     
-    if tmp_cond.has_key(NETWORK_LOSS):           
-        overallDic[NETWORK_LOSS][start.nodeName][end.nodeName] = tmp_cond[NETWORK_LOSS]
+    if tmp_cond.has_key(NETWORK_LOSS):
+        loss = tmp_cond[NETWORK_LOSS]
+        loss = loss.split()
+        tmpLoss = float(loss[0])
+        #liar liar
+        while (tmpLoss > 1):
+            tmpLoss = tmpLoss/10
+        tmpLoss = round(tmpLoss,2)
+                  
+        overallDic[NETWORK_LOSS][start.nodeName][end.nodeName] = str(tmpLoss) + " %"
         #判断，如果丢包率过高，则认为网络当前拥塞
         #if tmp_cond[NETWORK_LOSS] >= TAG_CONGESTION:
         overallDic[NETWORK_CONGESTION][start.nodeName][end.nodeName] = isCongestion(tmp_cond[NETWORK_LOSS])

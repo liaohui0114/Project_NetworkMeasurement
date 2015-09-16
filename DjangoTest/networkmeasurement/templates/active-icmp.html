@@ -1019,7 +1019,7 @@
 				<ul>
 					<li>带宽：本地测试服务器至远端测试服务器当前网络可达的最大发送带宽</li>
 					<li>延迟：发送时延(包大小/发送速度)+排队时延+传播时延（长度/速度）</li>
-					<li>抖动：数据流中不同数据包时延的变化；Jitter=( | packet_n - packet_n-1 |+| packet_n-1 - packet_n-2 | + ...+ | packet_2 - packet_1 | )/n</li>
+					<li>抖动：用来描述端到端的数据包分组的延迟变化程度;Jitter=( | packet_n - packet_n-1 |+| packet_n-1 - packet_n-2 | + ...+ | packet_2 - packet_1|)/n</li>
 					<li>丢包率：成功发送数据包数/发送数据包总数</li>
 					<li>可用性：当前网络是否可用：连通、可达</li>
 				</ul>
@@ -1069,7 +1069,7 @@
                         </div>
                         <!--  liaohui, display active charts:we get latest 10 times bandwidth of startNode from db -->
 			<div class="panel-body">
-                        <h1>网络带宽统计</h1>
+                        <h1>测试端服务器至目标端服务器带宽统计</h1>
                         <div id="id_div_activeChart"></div>
 			</div>
                     </div>
@@ -1105,8 +1105,9 @@
                         <div class="panel-body">
 
 
-                            <h1>探测包经过的路径图</h1>
-                            <img id="id_img_traceroute" src="assets/netFile/graphviz/test.png" width="1024px" height="400px"/>
+                            <h1>探测包经过的路径图</h1></br></br>
+                            <img id="id_img_traceroute" src="assets/netFile/graphviz/test.png" style="max-width:100%"/>
+                            </br></br>
                             <!--
                             <img id="id_img_router" src="assets/netFile/pic/router.png"  width="60" height="60" style="display:none;" />
                             <canvas id="id_canvas_router" width="1024px" height="400px" style="border:dashed 2px #CCC">Your browser does not support the HTML5 canvas tag.</canvas>
@@ -1233,7 +1234,7 @@
                                 <!-- Basic Table -->
                                 <strong>抖动矩阵</strong></br>
 				<ul>
-					<li>抖动：数据流中不同数据包时延的变化;Jitter=( | packet_n - packet_n-1 |+| packet_n-1 - packet_n-2 | + ...+ | packet_2 - packet_1 
+					<li>抖动：用来描述端到端的数据包分组的延迟变化程度;Jitter=( | packet_n - packet_n-1 |+| packet_n-1 - packet_n-2 | + ...+ | packet_2 - packet_1 |)/n </li>
 				</ul>
 
                                 <table class="table table-hover" id="id_table_jitter">

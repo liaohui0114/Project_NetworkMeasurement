@@ -25,6 +25,7 @@ urlpatterns = patterns('',
     #url(r'/assets/(?P<path>.*)$','django.views.static.serve',{'document_root':settings.STATIC_PATH}),
     #liaohui,it can not find resouces like:css etc if we change / to ^
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^index/$','networkmeasurement.views.IndexFunc'),
     url(r'^udp/$','networkmeasurement.views.UDPFunc'),
 	url(r'^tcp/$','networkmeasurement.views.TcpFunc'),
 	url(r'^icmp/$','networkmeasurement.views.IcmpFunc'),

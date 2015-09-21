@@ -1,0 +1,83 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>网络性能测量</title>
+<style>
+body, div, h1, h2, h3, h4, h5, h6, p, ul, li { margin: 0; padding: 0;}
+body { font: 12px/1.33 "Microsoft Yahei",tahoma,"宋体",sans-serif}
+.hide { display: none;}
+.inner { width: 1000px; margin: 0 auto;}
+.hd { height: 65px; background-color: #282828;}
+.hd .inner { height: 95px;}
+.hd h1, .hd h1 a { float: left;}
+.hd h1 { margin-left: -60px;}
+.hd h1 a { width: 260px; height: 55px; background-image: url(assets/images/images/logo.jpg); text-indent: -9999px; overflow: hidden;}
+.hd p { float: right; margin: 38px 40px 0 0; font-size: 14px; color: #fff;}
+.hd p a { margin: 0 10px; color: #fff; text-decoration: none;}
+
+.bd { height: 507px; border-bottom: 312px solid #d3d3d4; background: #f4f4f4 url(assets/images/images/bg.jpg) 50% 0 no-repeat;}
+.bd .inner { position: relative; height: 507px;}
+.bd .down { position: absolute; left: 654px; top: 280px; width: 225px; height: 83px; text-indent: -9999px; overflow: hidden;}
+.bd .date { position: absolute; left: 654px; top: 375px; color: #676767;}
+.bd .date em { font-style: normal; color: #5f9b04;}
+.bd ul { position: absolute; left: 0; top: 507px; height: 210px; padding-top: 42px; list-style-type: none;}
+.bd li { float: left; width: 158px; height: 210px; padding: 0 20px; text-align:justify;}
+.bd h3 { margin-bottom: 10px; text-align: center; font: 18px/1 "Microsoft Yahei";}
+.bd i { display: block; width: 96px; height: 96px; margin: 0 auto 10px; background-image: url(assets/images/images/spr.png);}
+.bd i:hover { -moz-transform:rotate(20deg); -webkit-transform:rotate(20deg); -o-transform:rotate(20deg);}
+.bd .i-2 { background-position: 0 -96px;}
+.bd .i-3 { background-position: 0 -192px;}
+.bd .i-4 { background-position: 0 -288px;}
+.bd .i-5 { width: 101px; background-position: 0 bottom;}
+.bd ul p { margin: 0 auto; line-height: 1.6; color: #656565;}
+.bd .w-1 { width: 126px;}
+.bd .w-2 { width: 120px;}
+.bd .w-3 { width: 133px;}
+
+.ft { padding: 30px 0; border-top: 1px solid #bebdbd; line-height: 28px; text-align: center; color: #9a9b9b; background-color: #d3d3d4;}
+</style>
+</head>
+
+<body>
+<div class="hd">
+	<div class="inner">
+		<h1><a href="/" target="_blank">网络性能测量矩阵</a></h1>
+		
+	</div>
+</div>
+<div class="bd">
+	<div class="inner">
+		
+		<a class="down" href="/">进入测量</a>
+		
+		<ul>
+			<li>
+				<h3><i class="i-1"></i>流量测量</h3>
+				<p>测量网络的<strong>带宽</strong>、<strong>拥塞</strong>，检测网络速度。</p>
+			</li>
+			<li>
+				<h3><i class="i-2"></i>性能测量</h3>
+				<p class="w-1">实时监测网络的<strong>可用性</strong>、<strong>时延</strong>、<strong>抖动</strong>、<strong>丢包</strong>情况，了解网络是否正常运行。</p>
+			</li>
+			<li>
+				<h3><i class="i-3"></i>多协议实现</h3>
+				<p class="w-2">所有功能以<strong>TCP</strong>、<strong>UDP</strong>、<strong>ICMP</strong>三种协议实现，检测结果更准确。</p>
+			</li>
+			<li>
+				<h3><i class="i-4"></i>被动测量</h3>
+				<p class="w-2">后台运行基于<strong>SNMP</strong>的被动测量模块，随时随地抓取网络性能指标。</p>
+			</li>
+			<li>
+				<h3><i class="i-5"></i>预测</h3>
+				<p class="w-3">基于所得的网络性能参数，做出对将来一段时间内网络流量与性能的<strong>合理预测</strong>。</p>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="ft">
+	<p>Copyright &copy; 2014 - 2015 SJTU. All Rights Reserved.</p>
+	<p>上海交通大学 版权所有</p>
+</div>
+</body>
+</html>

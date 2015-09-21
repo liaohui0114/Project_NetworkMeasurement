@@ -142,7 +142,7 @@ def UDPThread_Iperf(ip,sendMsg):
     print 'UDPThread_Iperf:start iperf'
     filename = 'temp_udp_iperf_' + str(int(time.time()*1000))+'.txt'
     #os.system('iperf -u -c %s -t 5 -i 1 -b 10000M> udpfile.txt'%ip)
-    os.system('iperf -u -c %s -t 1 -i 0.5 -b 100M -p 10009> %s'%(ip,filename))  #40M is close to thresh_hold
+    os.system('iperf -u -c %s -t 1 -i 0.5 -b 60M -p 10009> %s'%(ip,filename))  #40M is close to thresh_hold
     print 'end iperf'
     msg = ReadIperfUDPFile(filename)
     for key,value in msg.items():
@@ -349,6 +349,7 @@ def GetICMPNetworkInfo(ip):
     s_bandwidth_raw = "10"
     command = "./ICMP/ICMP_Positive " + IP + " " + num_to_send_string + " " + c_rate_raw + " " + s_bandwidth_raw + " " + time_char
     os.system(command)
+    #print command
 
     connection_file = "./" + time_char + "_result.txt"
     f=open(connection_file)

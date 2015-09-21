@@ -38,7 +38,8 @@ def IsLogin(request):
     else:
         print 'not login'
         return False
-
+def IndexFunc(request):
+    return render_to_response("index.html",{})
 
 def LoginFunc(request):
     print 'view:LoginFunc'

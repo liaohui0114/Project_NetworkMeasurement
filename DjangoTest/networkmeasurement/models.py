@@ -13,7 +13,7 @@ class SchoolNode(models.Model):
   
     def __unicode__(self):
         return self.nodeName
-
+    
 #protocol:TCP,UDP,ICMP,SNMP
 class NetProtocol(models.Model):
     protocolName = models.CharField(max_length=10)
@@ -44,3 +44,10 @@ class Passive(models.Model):
     rtt = models.FloatField(default=0)
     cpu = models.FloatField(default=0)
     memory = models.FloatField(default=0)
+    ip_bandwidth = models.IPAddressField(default="127.0.0.1")
+    ip_throughput = models.IPAddressField(default="127.0.0.1")
+    ip_cpu = models.IPAddressField(default="127.0.0.1")
+    ip_memory = models.IPAddressField(default="127.0.0.1")
+    
+
+

@@ -786,12 +786,17 @@ body {
     font-size: 12px;
   }
 }
+/*network
+#width: 340px;
+background: #2c2e2f;
+*/
 .sidebar-menu {
   display: table-cell;
   position: relative;
-  width: 340px;
+  width: 260px; 
   background: #2c2e2f;
   z-index: 1;
+  font-size: 15px; #added by network
 }
 .sidebar-menu .logo-env {
   padding: 30px 45px;

@@ -103,11 +103,34 @@ function Udp_ajax_post_passive(startIp,endIp,startNodeName,endNodeName,startTime
 
 			$("#ChartDisplayID").show();//show table of single table
 			var createTime;
+			var bottleneckIPs;
+			var bandwidthIPs;
+			var throughputIPs;
+			var cpuIPs;
+			var memoryIPs;
 			$.each(data,function(i,item){
 				if(i == "time")
 				{
 					createTime = eval(item);  //to get createTime infos
-				}					
+				}
+				else if(i == "ip_bandwidth")
+				{
+					bandwidthIPs = eval(item);  //to get routerIPs infos
+					bottleneckIPs = eval(item); // in case NULL == bottleneckIPs
+				}
+				else if(i == "ip_throughput"){
+					throughputIPs = eval(item);
+					bottleneckIPs = eval(item); // in case NULL == bottleneckIPs
+				}
+				else if(i == "ip_cpu")
+				{
+					cpuIPs = eval(item);  //to get routerIPs infos
+					bottleneckIPs = eval(item); // in case NULL == bottleneckIPs
+				}
+				else if(i == "ip_memory"){
+					memoryIPs = eval(item);
+					bottleneckIPs = eval(item); // in case NULL == bottleneckIPs
+				}						
 			});
 
 			//x = eval(data); decode json type
@@ -124,10 +147,12 @@ function Udp_ajax_post_passive(startIp,endIp,startNodeName,endNodeName,startTime
 					{
 						case 'bandwidth':
 							unit = '(Mps)';
+							bottleneckIPs = bandwidthIPs;
 							break;
 
 						case 'throughput':
 							unit = '(Bps)';
+							bottleneckIPs = throughputIPs;
 							break;
 
 						case 'loss':
@@ -140,10 +165,12 @@ function Udp_ajax_post_passive(startIp,endIp,startNodeName,endNodeName,startTime
 
 						case 'cpu':
 							unit = '(%)';
+							bottleneckIPs = cpuIPs;
 							break;
 
 						case 'memory':
 							unit = '(%)';
+							bottleneckIPs = memoryIPs;
 							break;
 
 						default:
@@ -154,7 +181,7 @@ function Udp_ajax_post_passive(startIp,endIp,startNodeName,endNodeName,startTime
 						var chartData = eval(item); //it's important that we must use 'eval()',why???  check up eval().It is said to avoid using eval() in Interne
 						var chartId = '#id_div_chart_'+i;
 						var chartTitle = i;
-						DisplayActiveChart(chartId,chartTitle,chartData,createTime,startTime,endTime,unit); // using plug-in:Highcharts  to display charts;
+						DisplayActiveChart(chartId,chartTitle,chartData,createTime,bottleneckIPs,startTime,endTime,unit); // using plug-in:Highcharts  to display charts;
 				}
 				else
 				{
@@ -170,7 +197,7 @@ function Udp_ajax_post_passive(startIp,endIp,startNodeName,endNodeName,startTime
 		},
 		error:function(xhr,type){
 			hideCover();//失败后，隐藏遮罩層，解锁屏幕
-			alert("Fail!");
+			//alert("Fail!");
 		}
 	});
 
@@ -182,9 +209,10 @@ chartId:to get element by $(chartId)
 chartTitle:bandwidth,throughput,cpu etc.
 chartData:data for chart
 createTime: createTime of every point
+routerIP:bottle ips in each link
 unit:Mps mps ,% or others
 */
-function DisplayActiveChart(chartId,chartTitle,chartData,createTime,startTime,endTime,unit){
+function DisplayActiveChart(chartId,chartTitle,chartData,createTime,bottleneckIPs,startTime,endTime,unit){
 
 	 $(chartId).highcharts({
 	 	chart: {
@@ -222,7 +250,8 @@ function DisplayActiveChart(chartId,chartTitle,chartData,createTime,startTime,en
             //define format output
             formatter: function() {
                 return '<b>'+ this.series.name +':</b>'+ this.y+unit
-                +'<br><b>time:</b>'+(new Date(createTime[this.x]*1000).Format("yyyy-MM-dd hh:mm:ss"));
+                +'<br><b>time:</b>'+(new Date(createTime[this.x]*1000).Format("yyyy-MM-dd hh:mm:ss"))
+                +'<br><b>bottleneck IP:</b>'+bottleneckIPs[this.x];
                 //timestamp to CST in jquery,we need to *1000
 
             }

@@ -315,7 +315,7 @@ def SingleAction(request):
 
             if protocol_id ==1:#for TCP,we get the data loss from passive data
                 cmd = "select * from networkmeasurement_passive where startNode_id = %d and endNode_id = %d order by id desc"%(st_id,ed_id)
-                print cmd
+                #print cmd
                 cur.execute(cmd)
                 index = cur.fetchone()
                 if index == None:
@@ -588,9 +588,13 @@ def PassiveAction(request):
                 rtt = {'name':'rtt','data':[]}
                 cpu = {'name':'cpu','data':[]}
                 memory = {'name':'memory','data':[]}
-                createTime = []
+                createTime = [] #to get time when the data was stored
+                ip_bandwidth = []  #to get the bottleneckIP
+                ip_throughput = []
+                ip_cpu = []
+                ip_memory = []
                 for item in msg:
-                    print item.id,item.startNode,item.endNode,item.createTime
+                    #print item.id,item.startNode,item.endNode,item.createTime
                     bandwidth['data'].append(item.bandwidth)
                     throughput['data'].append(item.throughput)
                     loss['data'].append(item.loss)
@@ -598,9 +602,13 @@ def PassiveAction(request):
                     memory['data'].append(item.memory)
                     cpu['data'].append(item.cpu)
                     createTime.append(time.mktime(item.createTime.timetuple())) #change to timestamp:time.mktime(item.createTime.timetuple())
+                    ip_bandwidth.append(item.ip_bandwidth)
+                    ip_throughput.append(item.ip_throughput)
+                    ip_cpu.append(item.ip_cpu)
+                    ip_memory.append(item.ip_memory)
                     
-                chartData = {'bandwidth':[bandwidth],'throughput':[throughput],'loss':[loss],'rtt':[rtt],'cpu':[cpu],'memory':[memory],'time':createTime}
-                print chartData
+                chartData = {'bandwidth':[bandwidth],'throughput':[throughput],'loss':[loss],'rtt':[rtt],'cpu':[cpu],'memory':[memory],'time':createTime, 'ip_bandwidth':ip_bandwidth,'ip_throughput':ip_throughput,'ip_cpu':ip_cpu,'ip_memory':ip_memory}
+                #print chartData
                 return HttpResponse(json.dumps(chartData), content_type="application/json")
             else:
                 print 'passive objects not exists'

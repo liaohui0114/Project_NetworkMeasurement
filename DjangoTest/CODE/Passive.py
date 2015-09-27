@@ -19,7 +19,25 @@ def getTrace():
     cmd = 'captcp socketstatistic -o output'
     os.system(cmd)
     
-
+def GetPassiveTracerouteNetworkInfo(ip):
+    print 'GetPassiveTracerouteNetworkInfo'
+    filename = 'traceroute_'+str(int(time.time()*1000))+'.txt'
+    cmd = 'sudo traceroute -n -I %s >%s'%(ip,filename) #using traceroute to trace path
+    os.system(cmd)
+    
+    traceInfo = []
+    fip = open(filename)
+    try:
+        fip.readline() #to jump first line
+        lines = fip.readlines() #get all lines
+        for line in lines:
+            tmp = line.split()
+            #ignore * * *
+            if '*' != tmp[1][0]:
+                traceInfo.append(tmp[1])  # get route ip from traceroute result
+    finally:
+        fip.close()
+    return traceInfo
 
 
 def readRTT(path):
@@ -122,9 +140,15 @@ def getLOSS(st_ip,ed_ip):
     return loss
 
 
-def getTHROUGHPUT(st_ip,ed_ip):
-    
-    part1 = "'%(network-layer-byte)d'"
+def getTHROUGHPUT(ips):
+    throughput = 0
+    for ip in ips:
+	tmp = 1
+	if tmp > throughput:
+	    throughput = tmp
+    return throughput
+	
+    '''part1 = "'%(network-layer-byte)d'"
     part2 = '%s:*-%s:*'%(st_ip,ed_ip)
     part3 = "'"+part2+"'"
     filename = 'throughput_'+st_ip+'_'+ed_ip+'.txt'
@@ -148,7 +172,7 @@ def getTHROUGHPUT(st_ip,ed_ip):
     finally:
         fthr.close()
     os.system('sudo rm -rf %s'%filename)
-    return throughput
+    return throughput'''
 
 def getBANDWIDTH(HOST,ip):
     filename = 'temp_tcp_iperf_'+str(int(time.time()*1000))+'.txt'
@@ -238,24 +262,12 @@ def passive(HOST,ipList):
     #while(True):
     #ipList = ['127.0.0.1', '192.168.1.2', '192.168.1.177']
     sendMsg = {}
-    '''os.system('sudo rm -r output')
-    os.system('mkdir output')
-    p = Process(target = getTrace)
-    p.start()
-    time.sleep(5)
-    fid = open('pid.txt') #captcp will create a new process, we need to get the pid
-                              #of it and "kill -2 pid" to complete it
-    pid = (int)(fid.read())
-    fid.close()
-    print pid
-    os.system('kill -2 %d'%pid)
-    p.terminate()
-    time.sleep(5)#wait for generating data'''
     for ip in ipList:
         tmp = {}
-        rtt = getRTT(HOST,ip)
+	routerIps = GetPassiveTracerouteNetworkInfo(ip)
+        '''rtt = getRTT(HOST,ip)
         loss = getLOSS(HOST,ip)
-        throughput = getTHROUGHPUT(HOST,ip)
+        throughput = getTHROUGHPUT(routerIps)
         bandwidth = getBANDWIDTH(HOST,ip)
         cpu_per = getCPU()
         mem_per = getMEM()
@@ -264,58 +276,15 @@ def passive(HOST,ipList):
         tmp[NETWORK_BANDWITH] = bandwidth
         tmp[NETWORK_DELAY] = rtt
         tmp[NETWORK_CPU] = '%0.2f'%cpu_per
-        tmp[NETWORK_MEM] = '%0.2f'%mem_per
-        sendMsg[ip] = tmp
-        
+        tmp[NETWORK_MEM] = '%0.2f'%mem_per'''
+	tmp[NETWORK_LOSS] = getLOSS(HOST,ip)
+	tmp[NETWORK_DELAY] = getRTT(HOST,ip)
+	tmp['ips'] = routerIps
+	#tmp[NETWORK_LOSS] = 1
+	#tmp[NETWORK_DELAY] = 1
+        sendMsg[ip] = tmp       
     return sendMsg
-    #for node in DEST_NAME:
-    #rtt[node] = getRTT(HOST,DEST_IP[node])
-        
-    #using tcpdump to collect trace
-    '''os.system("sudo rm -r trace2.txt")
-    cmd = 'sudo tcpdump -w trace2.txt'
-    p = Popen(cmd,shell=True,stdout=PIPE,stderr=PIPE)
-    time.sleep(THROUGHPUT_TIME)
-    os.system('sudo killall -2 tcpdump')
-    p.terminate()
-    time.sleep(2)
-    #using captcp to analyse trace
-    loss = getLOSS(HOST,ip)
-    throughput = getTHROUGHPUT(HOST,ip)
-    bandwidth = throughput/10
-    sendMsg[NETWORK_LOSS] = loss
-    sendMsg[NETWORK_THROUGHPUT] = throughput
-    sendMsg[NETWORK_BANDWITH] = bandwidth
-
-    cpu_per = getCPU()
-    mem_per = getMEM()
-    sendMsg[NETWORK_CPU] = cpu_per
-    sendMsg[NETWORK_MEM] = mem_per
-    #passive()
-    ISOTIMEFORMAT = '%Y-%m-%d %X'
-    #for node in DEST_NAME :
-    try:
-        conn = MySQLdb.connect(host = 'localhost',user = 'root', passwd = 'root',port = 3306)
-        cur = conn.cursor()
-        cur.execute('create database if not exists %s'%HOST_NAME)
-        conn.select_db(HOST_NAME)
-        cur.execute('create table if not exists test(time varchar(30),st_node varchar(30)\
-        ,ed_node varchar(30),st_IP varchar(20),ed_IP varchar(20),rtt varchar(20),\
-        loss varchar(20),throughput varchar(20),bandwidth varchar(20),cpu_per varchar(20),mem_per varchar(20))')
-        cur.execute('create table if not exists test(time varchar(30),st_IP varchar(20),ed_IP varchar(20),rtt varchar(20),\
-        loss varchar(20),throughput varchar(20),bandwidth varchar(20),cpu_per varchar(20),mem_per varchar(20))')
-        value = [time.strftime( ISOTIMEFORMAT, time.localtime( time.time() ) ),HOST,ip,str('%0.2f'%rtt),str(loss), str(throughput),str(bandwidth),str('%0.2f'%cpu_per),str('%0.2f'%mem_per)]
-        value = ['1433229021443','sjtu','sd','127.0.0.1','127.0.0.1','75.12','0.0', '464','46.4','6.03','5.66']
-        cur.execute('insert into test values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',value)
-        conn.commit()
-        cur.close()
-        conn.close()
-        print value
-    except MySQLdb.Error,e:
-        print "Mysql Error %d: %s"%(e.args[0],e.args[1])'''
-        		
-    #return sendMsg		
-        #time.sleep(10)
+    
     
     
     

@@ -71,16 +71,61 @@ def SetPassiveMsg(dicMsg):
     msg = ''
     print dicMsg
     for k,v in dicMsg.items():
+	print k,v
+	msg = msg + k + ':' + str(v[NETWORK_DELAY]) + ',' + str(v[NETWORK_LOSS])
+	for ip in v['ips']:
+	    msg = msg + ',' + ip
+	msg = msg + ';'
+    msg = msg[0:-1]
+    print 'End SetSocketMsg,msg is:',msg
+
+
+
+    '''print dicMsg
+    for k,v in dicMsg.items():
         if msg == '':
             msg += '%s:%s,%s,%s,%s,%s,%s'%(k,v[NETWORK_BANDWITH],v[NETWORK_DELAY],v[NETWORK_LOSS],v[NETWORK_THROUGHPUT],v[NETWORK_CPU],v[NETWORK_MEM]) #format dict to string which is 'key:value,key:value,key:value...'
         else:
             msg += ';%s:%s,%s,%s,%s,%s,%s'%(k,v[NETWORK_BANDWITH],v[NETWORK_DELAY],v[NETWORK_LOSS],v[NETWORK_THROUGHPUT],v[NETWORK_CPU],v[NETWORK_MEM]) #format dict to string which is 'key:value,key:value,key:value...'
-    print 'End SetSocketMsg,msg is:',msg
+    print 'End SetSocketMsg,msg is:',msg'''
     return msg
     
 def GetPassiveMsg(msg):
     socketMsg={}
     print 'msg:',msg
+    if msg == '':
+	return {}
+    tmpList = msg.split(';')
+    
+    for i in tmpList:
+        try:
+            tmp = i.split(':')
+	    if len(tmp)<2:
+	        socketMsg[tmp[0]] = []
+	        continue
+            listPassive = tmp[1]
+            listPassive = listPassive.split(',')
+	    if len(listPassive) < 2:
+		socketMsg[tmp[0]] = []
+	        continue
+	    length = len(listPassive)
+            result = {}
+	    ips = []
+            for j in range(length):
+		if j ==0:
+		    result[NETWORK_DELAY] = float(listPassive[j])
+		elif j == 1:
+		    result[NETWORK_LOSS] = float(listPassive[j])
+		else:
+                    ips.append(listPassive[j])
+	    result['ips'] = ips
+            socketMsg[tmp[0]] = result
+	except:
+            socketMsg[tmp[0]] = []
+
+
+
+    '''print 'msg:',msg
     tmpList = msg.split(';')
     for i in tmpList:
         tmp = i.split(':')
@@ -93,7 +138,7 @@ def GetPassiveMsg(msg):
         for j in range(6):
             result[index[j]] = listPassive[j]
         print result
-        socketMsg[tmp[0]] = result
+        socketMsg[tmp[0]] = result'''
         
     return socketMsg
     

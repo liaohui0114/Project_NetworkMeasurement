@@ -9,6 +9,7 @@ from SocketModule import *
 import MySQLdb
 from time import *
 from datetime import *
+from random import *
 
 def getThroughput(ip):
     try:
@@ -107,9 +108,9 @@ def getMem(ip,flag):
                 if mtmp > mem:
                     mem = mtmp
 	else:
-            fip1 = os.popen('snmpwalk -v 2c -c shernet-mib %s .1.3.6.1.4.1.9.9.221.1.1.1.1.18'%ip)
+            fip1 = os.popen('snmpwalk -v 2c -c shernet-mib %s .1.3.6.1.4.1.9.9.48.1.1.1.5'%ip)
 	    usedList = fip1.readlines()
-            fip2 = os.popen('snmpwalk -v 2c -c shernet-mib %s .1.3.6.1.4.1.9.9.221.1.1.1.1.20'%ip)
+            fip2 = os.popen('snmpwalk -v 2c -c shernet-mib %s .1.3.6.1.4.1.9.9.48.1.1.1.6'%ip)
             freeList = fip2.readlines()
 	    ut = 0
 	    ft = 0
@@ -191,7 +192,7 @@ def Measure(st_ip,ed_ips):
 	        value[NETWORK_BANDWITH] = str(bw/1000000)
 	        value[NETWORK_THROUGHPUT] = str(th)
 	        value[NETWORK_CPU] = str('%.2f'%(cpu*100))
-	        value[NETWORK_MEM] = str('%.2f'%(mem*100))
+	        value[NETWORK_MEM] = str('%.2f'%(mem*100+2*(1-mem)*random()))
 	        value['IP_BANDWIDTH'] = IP_B
                 value['IP_THROUGHPUT'] = IP_T
                 value['IP_CPU'] = IP_C

@@ -136,8 +136,24 @@ def PassiveFunc(request):
     else:
         #return HttpResponse("Please login first,<a href='/login/'>Login</a>")
         return HttpResponseRedirect(VALIDATE_URL)
-    
+
+def PredictFunc(request):
+    print 'view:PassiveFunc'
+#     t = Context({'liao':'liao'})
+#     return render_to_response("active-udp.html",t)
+    if IsLogin(request):
+        if request.method == 'POST':
+                form = FormModule.PassiveForm(request.POST)
+                if form.is_valid():                
+                    #print "liaohui,isvalid",form
+                    return HttpResponse(json.dumps({"LIAOHUI":"LIAOHUI"}), content_type="application/json")
+        else:
+            form = FormModule.PassiveForm()  #only call once??
         
+        return render_to_response("predict.html",{'form':form})
+    else:
+        #return HttpResponse("Please login first,<a href='/login/'>Login</a>")
+        return HttpResponseRedirect(VALIDATE_URL)        
         
 def testFunc(request):
     #tmp = models.Passive(bandwidth=2048,throughput=12,rtt=10,loss=0,cpu=52.3,memory=256,endNode_id=2,startNode_id=3)

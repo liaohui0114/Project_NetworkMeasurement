@@ -33,6 +33,7 @@ urlpatterns = patterns('',
     url(r'^upload/$','networkmeasurement.views.UploadFunc'),
     url(r'^download/$','networkmeasurement.views.DownloadFunc'),
     url(r'^passive/$','networkmeasurement.views.PassiveFunc'),
+    url(r'^predict/$','networkmeasurement.views.PredictFunc'),
     url(r'^login/$','networkmeasurement.views.LoginFunc'),
     url(r'^logout/$','networkmeasurement.views.LogoutFunc'),
     

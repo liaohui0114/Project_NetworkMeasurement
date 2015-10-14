@@ -793,10 +793,10 @@ background: #2c2e2f;
 .sidebar-menu {
   display: table-cell;
   position: relative;
-  width: 260px; 
+  width: 250px; 
   background: #2c2e2f;
   z-index: 1;
-  font-size: 15px; #added by network
+  font-size: 18px; #added by network
 }
 .sidebar-menu .logo-env {
   padding: 30px 45px;

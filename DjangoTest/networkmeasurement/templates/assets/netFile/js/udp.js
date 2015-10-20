@@ -38,6 +38,26 @@ $(document).ready(function(){
 		$("#id_div_tip").hide();
 	});
 
+	//bandwidth tr tips
+	$("#id_table_bandwidth tr").hover(function()
+	{
+		$("#id_div_bandwidth_tips").css({
+	  'opacity': .5, //透明度
+	  'position': 'absolute',
+
+	  //'background-color': 'black',
+	  'color':'red',
+	  'font-weight ':700,
+	  //'width': '200px',
+	  //'height':'100px',
+	  'z-index': 5000 //保证这个悬浮层位于其它内容之上
+	}).html("注意：由于各个学校的网络策略和网络设备的差异，如防火墙、流量控制等原因，可能导致各学校测量结果有所差异，属于正常现象！");
+	  $("#id_div_bandwidth_tips").show();
+	},function()
+	{
+		$("#id_div_bandwidth_tips").hide();
+	});
+
 	//$("#id_btn_single").on("dblclick",function(){
 	//start single test
 	$("#id_btn_single").on("click",function(){
@@ -308,18 +328,18 @@ function DisplayActiveChart(chartData,chartTime,createTime){
             x: -20 //center
         },
         subtitle: {
-            text: '测量指标：当前网络可达的最大发送带宽!',
+            text: '测量指标：测试服务器到其它各个结点可达的最大发送带宽!',
             x: -20
         },
         xAxis: {
             categories: chartTime,  // to show xAxis
             title: {
-                text: 'Index'
+                text: '测量次数'
             }
         },
         yAxis: {
             title: {
-                text: 'Bandwidth (Mbps)'
+                text: '带宽 (Mbps)'
             },
             plotLines: [{
                 value: 0,
@@ -471,6 +491,8 @@ function showCover()
 {
 	var docHeight = $(document).height(); //获取窗口高度
 	//var docWidth = $(document).width();
+	var pageHeight = $(window).scrollTop()+$(document.body).height()/2;  //to get centerY of current page
+	var pageWidth = $(document.body).width()/3; //to get centerX of current page
 			  
 	$('#id_div_cover')
 	.height(docHeight)
@@ -486,8 +508,9 @@ function showCover()
 	$('#id_img_cover').css({
 	  'opacity': .9, //透明度
 	  'position': 'absolute',
-	  'top': 350,  //from top
-	  'left': 500,  //from left
+	  //'top': 350,  //from top
+	  'top': pageHeight,
+	  'left': pageWidth,//500,  //from left
 	  //'background-color': 'white',
 	});
 

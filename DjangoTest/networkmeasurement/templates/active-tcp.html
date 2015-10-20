@@ -257,6 +257,20 @@
                             </li>
                         </ul>
                     </li>
+                    <li>
+                        <a href="tables-basic.html">
+                            <i class="linecons-database"></i>
+                            <span class="title">性能预测</span>
+                        </a>
+                        <ul>
+                            <li  class="active">
+                                <a href="/predict/">
+                                    <span class="title"> 网络预测</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
 						<!--
                     <li>
                         <a href="dashboard-1.html">
@@ -953,7 +967,7 @@
                                         <tr>
                                             <th data-priority="1">目标节点</th>
                                             <th data-priority="3">IP</th>
-                                            <th data-priority="1">带宽</th>
+                                            <th data-priority="1">实测带宽</th>
                                             <th data-priority="3">延迟</th>
                                             <th data-priority="1">抖动</th>
                                             <th data-priority="3">丢包</th>
@@ -1163,10 +1177,12 @@
 				<ul>
 					<li>带宽：本地测试服务器至远端测试服务器当前网络可达的最大发送带宽</li>
 				</ul>
+                <!-- to display bandwidth tips -->
+                <div id="id_div_bandwidth_tips"></div></br>
                                 <table class="table table-hover" id="id_table_bandwidth">
                                     <thead>
                                         <tr>
-                                            <th>带宽（起点->终点）</th>
+                                            <th>实测带宽（起点->终点）</th>
                                             <!-- thead -->
                                             <!--
                                             <th>带宽</th>

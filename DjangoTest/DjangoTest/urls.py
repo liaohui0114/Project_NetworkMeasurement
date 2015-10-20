@@ -47,6 +47,7 @@ urlpatterns = patterns('',
     url(r'action/OverallAction','networkmeasurement.action.JsonAction.OverallAction'),  #overallAction
     url(r'action/PassiveAction','networkmeasurement.action.JsonAction.PassiveAction'),  #PassiveAction 
     url(r'action/TracerouteAction','networkmeasurement.action.JsonAction.TracerouteAction'),  #PassiveAction
+    url(r'action/PredictAction','networkmeasurement.action.JsonAction.PredictAction'),  #PredictAction
     
     
     

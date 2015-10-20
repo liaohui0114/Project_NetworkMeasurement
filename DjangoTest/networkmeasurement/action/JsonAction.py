@@ -13,6 +13,7 @@ from networkmeasurement.models import SchoolNode,Active,Passive,NetProtocol
 from time import sleep
 
 
+
 #DEFAULT SETTING
 DEFAULT_UDP_COND = {NETWORK_BANDWITH:'100(Mbs)',NETWORK_DELAY:'0(ms)',NETWORK_JITTER:'0.1(ms)',NETWORK_LOSS:'0(%)',NETWORK_CONGESTION:'NO',NETWORK_AVAIL:'YES'}
 DEFAULT_OVERALL_COND = {NETWORK_BANDWITH:'',NETWORK_DELAY:'',NETWORK_JITTER:'',NETWORK_LOSS:'',NETWORK_CONGESTION:'',NETWORK_AVAIL:''}
@@ -70,7 +71,7 @@ def readNetMsg(netMsg):
     #bandwidth = netMsg[NETWORK_BANDWITH]
     #print bandwidth
     #if bandwidth == '':
-    print netMsg.has_key(NETWORK_BANDWITH)
+    
     if netMsg.has_key(NETWORK_BANDWITH) == False:
         data[NETWORK_BANDWITH] = 0
     elif netMsg[NETWORK_BANDWITH] == '':
@@ -154,7 +155,7 @@ def readNetMsg(netMsg):
     else:
         data[NETWORK_AVAIL] = False
     print data[NETWORK_AVAIL]
-   
+    
     return data
 #use tool graphviz to draw trace path:sudo apt-get install graphviz
 def graphvizFunc(tracerouteDic,picUrl=""):
@@ -258,7 +259,7 @@ def SingleAction(request):
         netMsg = Client(protocol.upper(),st_IP,end_IP); # to get network condition using action.Client.py
         print 'netMsg:',netMsg
         
-        data = readNetMsg(netMsg)   #将获取的各个指标转化成数据库对应的存储格式：str->double
+        
         
         isReachable = True  #判断网络是否可达
         # st_ip不可达
@@ -272,7 +273,7 @@ def SingleAction(request):
             netMsg = {NETWORK_BANDWITH:'0 (Mbps)',NETWORK_DELAY:'0 (ms)',NETWORK_JITTER:'0 (ms)',NETWORK_LOSS:'0 (%)',NETWORK_CONGESTION:'YES',NETWORK_AVAIL:'目标结点不可达'}
             isReachable = False #目标结点结点不可达
             #netMsg = {NETWORK_BANDWITH:TAG_UNREACHABLE,NETWORK_DELAY:TAG_UNREACHABLE,NETWORK_JITTER:TAG_UNREACHABLE,NETWORK_LOSS:TAG_UNREACHABLE,NETWORK_CONGESTION:TAG_UNREACHABLE,NETWORK_AVAIL:'目标结点不可达'}
-
+        data = readNetMsg(netMsg)   #将获取的各个指标转化成数据库对应的存储格式：str->double
         #设置返回给.js文件的数据
         for key,value in netMsg.items():
             DEFAULT_UDP_COND[key] = value #set true attribute
@@ -286,7 +287,7 @@ def SingleAction(request):
         #判断：如果丢包率过高，我们认为网络拥塞   
         if isReachable == True:
             DEFAULT_UDP_COND[NETWORK_CONGESTION] = isCongestion(DEFAULT_UDP_COND[NETWORK_LOSS])
-        print DEFAULT_UDP_COND
+        print 'DEFAULT_UDP_COND',DEFAULT_UDP_COND
         
         
         try:
@@ -428,12 +429,6 @@ def MyThread(protocol,st_IP,ed_IP,overallDic,start,end):
         overallDic[NETWORK_AVAIL][start.nodeName][end.nodeName] = 'NO'
     
     
-    
-    
-    
-
-    
-
 
 #function:to get overall datas
 def OverallAction(request):
@@ -659,3 +654,61 @@ def TracerouteAction(request):
         name = graphvizFunc(traceMsg,filePath)
 
         return HttpResponse(json.dumps({"url":"assets/netFile/graphviz/"+name}), content_type="application/json")    
+    
+    
+def PredictAction(request):
+    print 'PredictAction'
+    if request.method == "POST":
+        print 'PredictAction,if request.method == POST'
+        tmp = request.POST  #get infos posted from passive.js which datatype=json
+        #print tmp
+        start_ip = tmp["startNodeIp"]
+        end_ip = tmp["endNodeIp"]
+        start_name = tmp["startNodeName"]
+        end_name = tmp["endNodeName"]
+        start_time = tmp["startTime"]
+        end_time = tmp["endTime"]
+        target = tmp["target"] #Is it bandwidth,throughput or rtt?
+        #print 'tttttttttttttttttttt,',target
+        #print start_ip,start_name,start_time,end_ip,end_name,end_time
+        
+        #to judge if node was in db
+        if SchoolNode.objects.filter(nodeName=start_name,nodeIp=start_ip).exists() and SchoolNode.objects.filter(nodeName=end_name,nodeIp=end_ip).exists():
+            start_node = SchoolNode.objects.get(nodeName=start_name,nodeIp=start_ip)
+            end_node = SchoolNode.objects.get(nodeName=end_name,nodeIp=end_ip)
+            print 'start_node',start_node
+            print 'end_node',end_node
+            #get all infos from db where createTime between start_time and end_time
+            msg = Passive.objects.filter(startNode=start_node,endNode=end_node,createTime__range=(start_time,end_time))
+            if msg.exists():
+                
+                bandwidth = {'name':'bandwidth','data':[]}
+                throughput = {'name':'throughput','data':[]}
+                rtt = {'name':'rtt','data':[]}
+                createTime = [] #to get time when the data was stored
+               
+                for item in msg:
+                    #print item.id,item.startNode,item.endNode,item.createTime
+                    bandwidth['data'].append(item.bandwidth)
+                    throughput['data'].append(item.throughput)
+                    rtt['data'].append(item.rtt)
+                    createTime.append(time.mktime(item.createTime.timetuple())) #change to timestamp:time.mktime(item.createTime.timetuple())
+                
+                PredictFunc(rtt['data'], createTime) ##call function
+                print 'bandwidth.data:',bandwidth['data']
+                print 'createTime:',createTime
+                
+                chartData = {target:[bandwidth,throughput],'time':createTime}
+                #print chartData
+                return HttpResponse(json.dumps(chartData), content_type="application/json")
+            else:
+                print 'passive objects not exists'
+                
+        else:
+            print 'school node not exists'
+
+#for zhenxian
+#bandwidths:[],createTimes:[]
+def PredictFunc(historyData,createTimes):
+    #print 'bbbbbbbb',historyData
+    pass

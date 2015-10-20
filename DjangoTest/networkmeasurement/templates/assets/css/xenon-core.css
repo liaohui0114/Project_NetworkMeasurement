@@ -789,14 +789,19 @@ body {
 /*network
 #width: 340px;
 background: #2c2e2f;
+#added by network
+  font-weight:900;
+  font-size: 18px; 
 */
 .sidebar-menu {
   display: table-cell;
   position: relative;
   width: 250px; 
-  background: #2c2e2f;
+  background: #CAE1FF;
   z-index: 1;
-  font-size: 18px; #added by network
+  font-weight:bold;
+  font-size: 18px; 
+  
 }
 .sidebar-menu .logo-env {
   padding: 30px 45px;

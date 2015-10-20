@@ -8,7 +8,7 @@
     <meta name="description" content="Xenon Boostrap Admin Panel" />
     <meta name="author" content="wenhao" />
 
-    <title>被动测量</title>
+    <title>网络预测</title>
 
     <link rel="stylesheet" href="http://fonts.useso.com/css?family=Arimo:400,700,400italic">
     <link rel="stylesheet" href="assets/css/fonts/linecons/css/linecons.css">
@@ -23,7 +23,7 @@
     <!-- by liaohui -->
     <script src="assets/js/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="assets/netFile/js/highcharts.js"></script>
-    <script type="text/javascript" src="assets/netFile/js/passive.js"></script>
+    <script type="text/javascript" src="assets/netFile/js/predict.js"></script>
     <script type="text/javascript" src="assets/netFile/js/jquery-ui.js"></script>
     <link rel="stylesheet" href="assets/netFile/js/jquery-ui.css">
 
@@ -228,7 +228,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="opened active">
+                    <li>
                         <a href="tables-basic.html">
                             <i class="linecons-database"></i>
                             <span class="title">被动测量</span>
@@ -261,7 +261,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li>
+		            <li class="opened active">
                         <a href="tables-basic.html">
                             <i class="linecons-database"></i>
                             <span class="title">性能预测</span>
@@ -275,7 +275,8 @@
 
                         </ul>
                     </li>
-						<!--
+
+		<!--
                     <li>
                         <a href="dashboard-1.html">
                             <i class="linecons-cog"></i>
@@ -813,23 +814,23 @@
             <div class="page-title">
 
                 <div class="title-env">
-                    <h1 class="title">被动测量</h1>
-                    <p class="description">通过被动监听网络上经过结点的数据包，获取网络性能状况，包括：吞吐率，丢包，往返时延，CPU，内存利用率等</p>
+                    <h1 class="title">网络预测</h1>
+                    <p class="description">通过之前一段时间的网络数据并根据一定的预测算法预测之后一段时间内的网络信息</p>
                 </div>
 
                 <div class="breadcrumb-env">
 
                     <ol class="breadcrumb bc-1">
                         <li>
-                            <a href="/passive/"><i class="fa-home"></i>被动测量</a>
+                            <a href="/predict/"><i class="fa-home"></i>网络预测</a>
                         </li>
                         <li>
 
-                            <a href="/passive/">SNMP</a>
+                            <a href="/predict/">带宽预测</a>
                         </li>
                         <li class="active">
 
-                            <strong>SNMP 协议</strong>
+                            <strong>网络预测 算法</strong>
                         </li>
                     </ol>
 
@@ -842,8 +843,8 @@
 
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">被动测量数据统计</h3>
-			     <p class="description" style="font-size:14px">（统计一段时间内起始结点至目标结点之间的被动测量网络性能信息）</p>
+                            <h3 class="panel-title">网络预测</h3>
+			     <p class="description" style="font-size:14px">（通过之前一段时间的网络数据并根据一定的预测算法预测之后一段时间内的网络信息）</p>
                             <div class="panel-options">
                                 <a href="#">
                                     <i class="linecons-cog"></i>
@@ -896,6 +897,16 @@
                                     {{item}}
                                     {% endfor%}
  				                   </br>
+                                   
+                                    <label class="control-label"><strong>预测指标</strong></label>                                
+                                    <select class="form-control" id="id_select_predict" >
+                                            <option value="bandwidth" selected = "selected">带宽</option>
+                                            <option value="throughput">吞吐量</option>
+                                            <option value="rtt">往返时延</option>
+                                        
+                                    </select>
+                                    </br>
+                                    
                                     <label class="control-label"><strong>开始时间</strong></label></br>
                                     <input class="form-control" type="text" id="id_input_startTime" readonly="readonly"/> 
  				                   </br>
@@ -905,7 +916,7 @@
                                 </div>
                             </form>
                             <div class="form-group">
-                                <button type="submit" class="btn btn-success" id="id_btn_passive" style="width:100px">测量</button>
+                                <button type="submit" class="btn btn-success" id="id_btn_predict" style="width:100px">预测</button>
 
 				<!-- to display tips -->
 				<div id="id_div_tip"></div>
@@ -950,34 +961,8 @@
                         </div>
                         <div class="panel-body">
                         <!--  liaohui, display active charts:we get latest 10 times bandwidth of startNode from db -->
-                        <h1>带宽</h1>
-                        <div id="id_div_chart_bandwidth"></div>
-
-                        </div>
-                        <div class="panel-body">
-                        <!--  liaohui, display active charts:we get latest 10 times bandwidth of startNode from db -->
-                        <h1>吞吐量</h1>
-                        <div id="id_div_chart_throughput"></div>
-
-                        <div class="panel-body">
-                        <!--  liaohui, display active charts:we get latest 10 times bandwidth of startNode from db -->
-                        <h1>丢包</h1>
-                        <div id="id_div_chart_loss"></div>
-
-                        <div class="panel-body">
-                        <!--  liaohui, display active charts:we get latest 10 times bandwidth of startNode from db -->
-                        <h1>往返时延RTT</h1>
-                        <div id="id_div_chart_rtt"></div>
-
-                        <div class="panel-body">
-                        <!--  liaohui, display active charts:we get latest 10 times bandwidth of startNode from db -->
-                        <h1>CPU利用率</h1>
-                        <div id="id_div_chart_cpu"></div>
-
-                        <div class="panel-body">
-                        <!--  liaohui, display active charts:we get latest 10 times bandwidth of startNode from db -->
-                        <h1>内存利用率</h1>
-                        <div id="id_div_chart_memory"></div>
+                        <h1>性能预测</h1>
+                        <div id="id_div_chart_predict"></div>
 
                         </div>
                         

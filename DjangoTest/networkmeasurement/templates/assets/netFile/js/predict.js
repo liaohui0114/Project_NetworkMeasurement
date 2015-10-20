@@ -6,7 +6,7 @@ $(document).ready(function(){
 
 	//$("#id_btn_single").on("dblclick",function(){
 	//start single test
-	$("#id_btn_passive").hover(function()
+	$("#id_btn_predict").hover(function()
 	{
 		$("#id_div_tip").css({
 	  'opacity': .5, //透明度
@@ -25,7 +25,9 @@ $(document).ready(function(){
 		$("#id_div_tip").hide();
 	});
 	
-	$("#id_btn_passive").on("click",function(){
+	$("#id_btn_predict").on("click",function(){
+		var target = $("#id_select_predict option:selected").val(); //to get predict target:bandwidth,throughput or delay
+		//alert(target);
 		//we define that startnode could not be the endnode，起始结点与目标结点不能一致
 		if($("#id_startNode").val() != $("#id_endNode").val())
 		{
@@ -46,7 +48,7 @@ $(document).ready(function(){
 				et = et + " 23:59:59"
 			}
 			//alert(st+'\n'+et);
-			Udp_ajax_post_passive($("#id_startNode").val(),$("#id_endNode").val(),$("#id_startNode option:selected").text(),$("#id_endNode option:selected").text(),st,et);	
+			Ajax_post_predict($("#id_startNode").val(),$("#id_endNode").val(),$("#id_startNode option:selected").text(),$("#id_endNode option:selected").text(),st,et,target);	
 			
 		}
 		else
@@ -75,13 +77,13 @@ $(document).ready(function(){
 //endIp:ip of endNode
 //startNodeName:name of start node
 //endNodeName:name of end node
-function Udp_ajax_post_passive(startIp,endIp,startNodeName,endNodeName,startTime,endTime)
+function Ajax_post_predict(startIp,endIp,startNodeName,endNodeName,startTime,endTime,target)
 {
 	//alert("Udp_ajax_post_passive!\n");
 
 	
 	$.ajax({
-		url:"/action/PassiveAction",
+		url:"/action/PredictAction",
 		//async: false, //if we want to lock the screen
 		data:{
 			"startNodeIp":startIp,
@@ -89,7 +91,8 @@ function Udp_ajax_post_passive(startIp,endIp,startNodeName,endNodeName,startTime
 			"startNodeName":startNodeName,
 			"endNodeName":endNodeName,
 			"startTime":startTime,
-			"endTime":endTime
+			"endTime":endTime,
+			"target":target
 		},
 		type:'POST',//action:post or get
 		dataType:'json',
@@ -186,7 +189,7 @@ function Udp_ajax_post_passive(startIp,endIp,startNodeName,endNodeName,startTime
 						//data that we get from json is type string,so we can't get trully data. we need to convert to type object?
 						//eval() can change json string to object type, otherwise you need to parse/decode by yourself using for ..... for ... to get type:int,str,date etc.
 						var chartData = eval(item); //it's important that we must use 'eval()',why???  check up eval().It is said to avoid using eval() in Interne
-						var chartId = '#id_div_chart_'+i;
+						var chartId = '#id_div_chart_predict';
 						//var chartTitle = i;
 						DisplayActiveChart(chartId,chartTitle,chartData,createTime,bottleneckIPs,startTime,endTime,unit); // using plug-in:Highcharts  to display charts;
 				}
@@ -226,11 +229,11 @@ function DisplayActiveChart(chartId,chartTitle,chartData,createTime,bottleneckIP
           type: 'spline'
       },
         title: {
-            text: '被动测量的网络性能状况:'+chartTitle,
+            text: '预测网络性能状况:'+chartTitle,
             x: -20 //center
         },
         subtitle: {
-            text: '统计 '+startTime+' 到 '+endTime+' 时间段内，通过被动测量获取某两个结点之间的网络性能状况',
+            text: '根据 '+startTime+' 到 '+endTime+' 时间段内的数据，预测并对比某两个结点之间的网络性能状况',
             x: -20
         },
         
@@ -257,8 +260,8 @@ function DisplayActiveChart(chartId,chartTitle,chartData,createTime,bottleneckIP
             //define format output
             formatter: function() {
                 return '<b>'+ this.series.name +':</b>'+ this.y+unit
-                +'<br><b>时间:</b>'+(new Date(createTime[this.x]*1000).Format("yyyy-MM-dd hh:mm:ss"))
-                +'<br><b>瓶颈IP（链路上造成网络性能瓶颈的路由IP地址）:</b>'+bottleneckIPs[this.x];
+                +'<br><b>时间:</b>'+(new Date(createTime[this.x]*1000).Format("yyyy-MM-dd hh:mm:ss"));
+                //+'<br><b>bottleneck IP:</b>'+bottleneckIPs[this.x];
                 //timestamp to CST in jquery,we need to *1000
 
             }
@@ -356,7 +359,7 @@ function SetDate()
             
               
             });
-
+/*
 	$("#id_input_endTime").datepicker({//添加日期选择功能  
             numberOfMonths:1,//显示几个月  
             dateFormat: 'yy-mm-dd',//日期格式 
@@ -376,4 +379,5 @@ function SetDate()
             dayNamesMin: ['日','一','二','三','四','五','六']
               
             });
+*/
 }

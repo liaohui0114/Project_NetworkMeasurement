@@ -37,6 +37,7 @@ def GetPassiveTracerouteNetworkInfo(ip):
                 traceInfo.append(tmp[1])  # get route ip from traceroute result
     finally:
         fip.close()
+    os.system('rm -rf %s'%filename) #delete record file
     return traceInfo
 
 

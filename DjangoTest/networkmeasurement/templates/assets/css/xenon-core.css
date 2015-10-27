@@ -818,8 +818,12 @@ background: #2c2e2f;
   position: relative;
   top: 1px;
 }
+/*
+network:;
+color:#979898;
+*/
 .sidebar-menu .logo-env .settings-icon a {
-  color: #979898;
+  color: #4B4B4B;
   line-height: 1;
 }
 .sidebar-menu .logo-env .settings-icon a i {
@@ -842,8 +846,12 @@ background: #2c2e2f;
     margin-bottom: 10px;
   }
 }
+/*
+network:;
+color:#979898;
+*/
 .sidebar-menu .main-menu a {
-  color: #979898;
+  color: #4B4B4B;
   text-decoration: none;
   display: block;
   padding: 13px 5px;

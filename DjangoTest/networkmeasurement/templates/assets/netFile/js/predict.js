@@ -260,7 +260,7 @@ function DisplayActiveChart(chartId,chartTitle,chartData,createTime,bottleneckIP
             //define format output
             formatter: function() {
                 return '<b>'+ this.series.name +':</b>'+ this.y+unit
-                +'<br><b>时间:</b>'+(new Date(createTime[this.x]*1000).Format("yyyy-MM-dd hh:mm:ss"));
+                +'<br><b>时间:</b>'+(createTime[this.x]);
                 //+'<br><b>bottleneck IP:</b>'+bottleneckIPs[this.x];
                 //timestamp to CST in jquery,we need to *1000
 

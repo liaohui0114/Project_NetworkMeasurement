@@ -11,7 +11,11 @@ import time
 import MySQLdb
 from networkmeasurement.models import SchoolNode,Active,Passive,NetProtocol
 from time import sleep
-
+#sudo apt-get intall python-pip python-statsmodels
+#pip install statsmodels numpy pandas matplotlib
+import numpy as np
+import pandas as pd
+import statsmodels.api as sm
 
 
 #DEFAULT SETTING
@@ -655,7 +659,7 @@ def TracerouteAction(request):
 
         return HttpResponse(json.dumps({"url":"assets/netFile/graphviz/"+name}), content_type="application/json")    
     
-    
+ 
 def PredictAction(request):
     print 'PredictAction'
     if request.method == "POST":
@@ -694,11 +698,39 @@ def PredictAction(request):
                     rtt['data'].append(item.rtt)
                     createTime.append(time.mktime(item.createTime.timetuple())) #change to timestamp:time.mktime(item.createTime.timetuple())
                 
-                PredictFunc(rtt['data'], createTime) ##call function
-                print 'bandwidth.data:',bandwidth['data']
-                print 'createTime:',createTime
                 
-                chartData = {target:[bandwidth,throughput],'time':createTime}
+                conData = {'name':'原始数据','data':[]}
+                preData = {'name':'预测数据','data':[]}
+                
+                originalData = []
+                if target=='bandwidth':
+                    originalData = bandwidth['data']
+                elif target=='throughput':
+                    originalData = throughput['data']
+                elif target=='rtt':
+                    originalData = rtt['data']
+                else:
+                    pass
+                
+                conData['data'],conTime,preData['data'],preTime = PredictFunc(originalData, createTime) ##call function
+                #print 'conData.data:',conData['data']
+                #print 'preData.data:',preData['data']
+                #print 'preTime:',preTime
+                dataLen = len(conData['data'])   
+                
+                tmpList = []
+                tmpTime = []
+                
+                # 从最后四个时间戳开始预计，生成实际时间的最后四个数字以及延伸时间6个
+                for i in range(dataLen-4):
+                    tmpList.append('')
+                for i in range(4,len(preTime)):
+                    tmpTime.append(preTime[i])
+    
+                        
+                preData['data'] = tmpList+preData['data']
+                createTime = conTime + tmpTime
+                chartData = {target:[conData,preData],'time':createTime}
                 #print chartData
                 return HttpResponse(json.dumps(chartData), content_type="application/json")
             else:
@@ -707,8 +739,64 @@ def PredictAction(request):
         else:
             print 'school node not exists'
 
+
 #for zhenxian
-#bandwidths:[],createTimes:[]
+#historyData:[],createTimes:[]
 def PredictFunc(historyData,createTimes):
     #print 'bbbbbbbb',historyData
-    pass
+    
+    ts = pd.Series(historyData, index=pd.to_datetime(createTimes, unit='s'))
+    converted = ts.asfreq('30min', method='bfill')
+    arma_mod30 = sm.tsa.ARMA(converted, (3,0)).fit(disp=0)
+    
+    
+    breakpoint = converted.index[-4]
+    rng = pd.date_range(breakpoint, periods=8, freq='30min')
+    predict_bandwidth = arma_mod30.predict(str(rng[0]), str(rng[-1]), dynamic=True) 
+    
+    #ax = converted.ix['2015-07-15 11:06:22':].plot(figsize=(12,8),label='bandwidth')
+    #ax = predict_bandwidth.plot(ax=ax, style='r--', label='prediction')
+    #ax.legend()
+    baseDir = os.path.dirname(os.path.dirname(__file__))
+    filePath = baseDir+'/templates/assets/netFile/predict/'
+    covertedFileName = filePath+'converted.csv'
+    predictFileName = filePath+'predict_bandwidth.csv'
+    ts.to_csv(filePath+'original.csv')
+    converted.to_csv(covertedFileName)
+    predict_bandwidth.to_csv(predictFileName)
+    
+    convertedData,convertedTime = readCSV(covertedFileName)
+    predictData,predictTime = readCSV(predictFileName)
+    
+    #print 'covertedData:',convertedData
+    #print 'covertedTime:',convertedTime
+    
+    #print "predictData:",predictData
+    #print 'predictTime:',predictTime
+    return convertedData,convertedTime,predictData,predictTime
+
+def readCSV(filename):
+    print 'readCSV'
+
+    data=[]
+    timedata = []
+    f = open(filename)       #open file
+    lineStr = f.readline().strip('\n')  #.strip('\n'): to avoid '\n' in the last
+    print lineStr
+    while lineStr:
+
+        tmpList = lineStr.split(',')
+        data.append(float(tmpList[1]))
+        timedata.append(tmpList[0])
+
+        lineStr = f.readline().strip('\n')
+
+
+    f.close()  #close open
+
+    print 'End readCSV'
+    #print 'data:',data
+    #print 'time:',timedata
+    #print timedata[0]
+
+    return data,timedata

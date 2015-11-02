@@ -137,7 +137,8 @@ def MyThread(clientSocket,clientAddr,HOST):
         clientSocket.send(SetSocketMsg(sendMsg))  #send feedback msg to client
         #if there is no bandwith,which mean iperf doesn't work,restart iperf
         if sendMsg.has_key(NETWORK_BANDWITH) == False or sendMsg[NETWORK_BANDWITH] == '':
-            restartIperf()
+            #restartIperf()
+            pass
     clientSocket.close() #close socket
     print 'End MyThread to deal with connection'
 

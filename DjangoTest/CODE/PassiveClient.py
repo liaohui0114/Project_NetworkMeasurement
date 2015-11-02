@@ -289,13 +289,12 @@ def passiveClient():
                 st_ip = DEST_IP[st_node]
                 #ed_ip = DEST_IP[ed_node]
                 ed_ips.append(DEST_IP[ed_node])
-        Measure(st_ip,ed_ips)        
-       # t = threading.Thread(target = Measure,args = (st_ip,ed_ips))
+                t = threading.Thread(target = Measure,args = (st_ip,ed_ips))
                 #t = threading.Thread(target = MyThread,args = (protocol.upper(),st_IP,ed_IP,overallDic,start,end))
-       # threads.append(t)
+                threads.append(t)
                 
-   # for t in threads:
-   #     t.start()
+    for t in threads:
+        t.start()
        # sleep(10)
-   # for t in threads:
-   #     t.join()
+    for t in threads:
+        t.join()

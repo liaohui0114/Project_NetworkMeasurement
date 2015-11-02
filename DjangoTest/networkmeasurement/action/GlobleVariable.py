@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*- 
 from string import *
 import time
 
@@ -60,26 +61,72 @@ NETWORK_PROTOCOL = 'protocol'
 FILE_PATH_UDP = 'udpfile.txt'
 
 #define TIMEOUT
+CONNECTION_TIME_OUT = 5 #5S
 NETWORK_TIME_OUT = 10 #10S
 
 #define period for passive throughput
-THROUGHPUT_TIME = 10
+THROUGHPUT_TIME = 1800 #30*60 s
 
 
 def SetPassiveMsg(dicMsg):
     msg = ''
     print dicMsg
     for k,v in dicMsg.items():
+	print k,v
+	msg = msg + k + ':' + str(v[NETWORK_DELAY]) + ',' + str(v[NETWORK_LOSS])
+	for ip in v['ips']:
+	    msg = msg + ',' + ip
+	msg = msg + ';'
+    msg = msg[0:-1]
+    print 'End SetSocketMsg,msg is:',msg
+
+
+
+    '''print dicMsg
+    for k,v in dicMsg.items():
         if msg == '':
             msg += '%s:%s,%s,%s,%s,%s,%s'%(k,v[NETWORK_BANDWITH],v[NETWORK_DELAY],v[NETWORK_LOSS],v[NETWORK_THROUGHPUT],v[NETWORK_CPU],v[NETWORK_MEM]) #format dict to string which is 'key:value,key:value,key:value...'
         else:
             msg += ';%s:%s,%s,%s,%s,%s,%s'%(k,v[NETWORK_BANDWITH],v[NETWORK_DELAY],v[NETWORK_LOSS],v[NETWORK_THROUGHPUT],v[NETWORK_CPU],v[NETWORK_MEM]) #format dict to string which is 'key:value,key:value,key:value...'
-    print 'End SetSocketMsg,msg is:',msg
+    print 'End SetSocketMsg,msg is:',msg'''
     return msg
     
 def GetPassiveMsg(msg):
     socketMsg={}
     print 'msg:',msg
+    if msg == '':
+	return {}
+    tmpList = msg.split(';')
+    
+    for i in tmpList:
+        try:
+            tmp = i.split(':')
+	    if len(tmp)<2:
+	        socketMsg[tmp[0]] = []
+	        continue
+            listPassive = tmp[1]
+            listPassive = listPassive.split(',')
+	    if len(listPassive) < 2:
+		socketMsg[tmp[0]] = []
+	        continue
+	    length = len(listPassive)
+            result = {}
+	    ips = []
+            for j in range(length):
+		if j ==0:
+		    result[NETWORK_DELAY] = float(listPassive[j])
+		elif j == 1:
+		    result[NETWORK_LOSS] = float(listPassive[j])
+		else:
+                    ips.append(listPassive[j])
+	    result['ips'] = ips
+            socketMsg[tmp[0]] = result
+	except:
+            socketMsg[tmp[0]] = []
+
+
+
+    '''print 'msg:',msg
     tmpList = msg.split(';')
     for i in tmpList:
         tmp = i.split(':')
@@ -92,7 +139,7 @@ def GetPassiveMsg(msg):
         for j in range(6):
             result[index[j]] = listPassive[j]
         print result
-        socketMsg[tmp[0]] = result
+        socketMsg[tmp[0]] = result'''
         
     return socketMsg
     
@@ -150,17 +197,29 @@ def GetSocketMsg(msg):
 def GetTimeStamp():
     return '%.9f'%time.time()
 
+def GetOffsetTime(startTime,endTime):
+    print 'GetOffsetTime'
+    currentTime = time.time()
+    #print '%.9f'%float(startTime)
+    #print '%.9f'%currentTime
+    offsetTime = float(endTime) - float(startTime)
+    #print 'offsettime:%.9f'%offsetTime
+    return '%.3f'%(offsetTime*1000) #(ms)
+'''
 #get offset time:between timstampstr and currenttime
 def GetOffsetTime(timeStampStr):
+    print 'GetOffsetTime'
     currentTime = time.time()
-    print '%.9f'%currentTime
+    #print '%.9f'%float(timeStampStr)
+    #print '%.9f'%currentTime
     offsetTime = currentTime - float(timeStampStr)
-    print '%.9f'%offsetTime
-    if offsetTime > 1:
-        return '%.3f (s)'%offsetTime
-    else:
-        return '%.3f (ms)'%(offsetTime*1000)
-    
+    #print 'offsettime:%.9f'%offsetTime
+    return '%.3f'%(offsetTime*1000) #(ms)
+#     if offsetTime > 1:
+#         return '%.3f (s)'%offsetTime
+#     else:
+#         return '%.3f (ms)'%(offsetTime*1000)
+'''    
 
 
 #to get network condition in udpfile.txt;return dict
@@ -185,39 +244,26 @@ def ReadIperfUDPFile(filename):
         #print 'lastLineStr',lastLineStr
 
         lineStr = f.readline()
-
         if bIsConnect:
-
             lastLineStr = lineStr  #get the line including detail infos which is next the line contains 'Server Report'
-
             break 
 
     f.close()  #close open
-
-    print lastLineStr
-
-    
-
+    #print lastLineStr
     #Init DEFAULT
 
     networkDict = {NETWORK_BANDWITH:'',NETWORK_JITTER:'',NETWORK_LOSS:'',NETWORK_CONGESTION:'NO',NETWORK_AVAIL:'YES'}
-
     #to get network info in lastLineStr
 
     if not bIsConnect:  #connect failed
-
         print 'fail connection'  #if str contains 'datagrams' which means failing connecting to server
-
         networkDict[NETWORK_AVAIL] = 'NO'  #not available to connect
-
         networkDict[NETWORK_CONGESTION] = ''
 
     else:
-
         tmpStr= lastLineStr.split(' sec') #using 'sec' to split lastLineStr
-        print "tmpStr:",tmpStr
+        #print "tmpStr:",tmpStr
         tmpList = tmpStr[1].split()  #split by ' '  to get data that we truely need
-
         ##testtest
 
         #for index,value in enumerate(tmpList):
@@ -225,8 +271,6 @@ def ReadIperfUDPFile(filename):
             #print '[index:%d][value:%s]'%(index,value)
 
         ###
-
-        
 
         bandwidth = tmpList[2]+' '+tmpList[3]  #get bandwidth
         jitter =  tmpList[4] + ' ' +tmpList[5]  #get jitter
@@ -238,7 +282,6 @@ def ReadIperfUDPFile(filename):
         networkDict[NETWORK_LOSS] = loss[0:-1]+' '+loss[-1]
 
     #print networkDict    
-    #print networkDict
     print 'End StartReadIperfUDPFile'
 
     return networkDict

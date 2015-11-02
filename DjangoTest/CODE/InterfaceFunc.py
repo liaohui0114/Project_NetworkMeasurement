@@ -642,9 +642,11 @@ def UDPThread_Iperf(ip,sendMsg):
     os.system('iperf -u -c %s -t 1 -i 0.5 -b 50M -p 10009> %s'%(ip,filename))  #40M is close to thresh_hold
     print 'end iperf'
     msg = ReadIperfUDPFile(filename)
+    
     for key,value in msg.items():
         sendMsg[key] = value #update info like: bandwidth,loss,jitter and so on
-    print 'udp iperf,',sendMsg
+    #print 'udp iperf,',sendMsg
+    
     os.system('sudo rm -rf %s'%filename)
     
 '''   
@@ -666,7 +668,7 @@ def UDPThread_Delay(ip,sendMsg):
 def UDPThread_Delay(ip,sendMsg):
     print 'UDPThread_Delay:start get delay info'
     #get delay info
-    packetCount = 3  #发送3个包来测量平均时延
+    packetCount = 2  #发送3个包来测量平均时延
     counter = packetCount
     sumTime = 0.0
     isTimeOut = False
@@ -731,18 +733,22 @@ def TCP_Delay(ip,sendTcpMsg):
         sendTcpMsg[NETWORK_JITTER] = -1
 
 def TCP_Iperf(ip,sendTcpMsg):
+    print 'TCPThread_Iperf:start iperf'
     filename = 'temp_tcp_iperf_'+str(int(time.time()*1000))+'.txt'
     cmd = 'iperf -c %s  -t 1 -i 0.5 >%s'%(ip,filename)
     os.system(cmd)
-    
+    print 'end iperf'
     fip = open(filename)
     try:
         line = fip.readlines()
         bw = line[-1].strip('\n')
-        sendTcpMsg[NETWORK_BANDWITH]= bw
+        sendTcpMsg[NETWORK_AVAIL] = 'YES'
+    except:
+        bw = ''
     finally:
+        sendTcpMsg[NETWORK_BANDWITH]= bw
         fip.close()
-        os.system('sudo rm -rf %s'%filename)
+    print 'tcp iperf,',sendTcpMsg
     os.system('sudo rm -rf %s'%filename)
             
     
@@ -787,8 +793,7 @@ ta-bytes)d / %%(transport-layer-byte)d' --filter '*:*-*:*' \
 
     
 def GetTCPNetworkInfo(ip):
-    sendTcpMsg={}
-    sendTcpMsg[NETWORK_CONGESTION] = 'NO'
+    sendTcpMsg={'loss': 0, 'jitter': -1, 'delay': -1, 'bandwidth': '', 'congestion': 'NO', 'availability': 'NO'}
     t1 = threading.Thread(target=TCP_Iperf,args=(ip,sendTcpMsg))
     t2 = threading.Thread(target=TCP_Delay,args=(ip,sendTcpMsg))
     t3 = threading.Thread(target=TCP_Loss,args=(ip,sendTcpMsg))

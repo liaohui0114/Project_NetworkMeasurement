@@ -30,13 +30,14 @@ class TCPClient(object):
         try:
             self.m_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)  #define socket,using TCP protocol
             print 'start connection to server'
+            self.m_socket.settimeout(CONNECTION_TIME_OUT) #set timeout == 5
             self.m_socket.connect((self.m_ip,self.m_port)) #connect server
             print 'connection success'
                         
         except socket.error, errorMsg:
             print sys.exc_info() #print exception infomation
-            (errno,err_msg) = errorMsg
-            print 'Connection server failed:%s,errno=%d'%(err_msg,errno)
+            #(errno,err_msg) = errorMsg
+            #print 'Connection server failed:%s,errno=%d'%(err_msg,errno)
             return False #if connection failed!
         
         return True #finish send msg to server
@@ -58,7 +59,7 @@ class TCPClient(object):
     def RecvMsg(self):
         try:
             print 'start recv msg'
-            #self.m_socket.settimeout(NETWORK_TIME_OUT)
+            self.m_socket.settimeout(NETWORK_TIME_OUT)
             #self.m_socket.settimeout(25) #10s
             msg = self.m_socket.recv(SOCKET_BUFFER_SIZE)  #receive msg from server which packet size is SOCKET_BUFFER_SIZE
             print 'end recvMsg'

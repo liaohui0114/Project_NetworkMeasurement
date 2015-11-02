@@ -500,6 +500,18 @@ def OverallAction(request):
                     t = threading.Thread(target = MyThread,args = (protocol.upper(),st_IP,ed_IP,overallDic,start,end))#start thread to get node to node network infos
                     threads.append(t)
                     
+            
+        
+        if protocol == 'UDP':                       
+            for t in threads:
+                t.start()
+                t.join()
+        else:
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join()
+        '''         
         if protocol == 'TCP':          
             for t in threads:
                 t.start()
@@ -514,6 +526,7 @@ def OverallAction(request):
                 t.start()
             for t in threads:
                 t.join()
+        '''
         
         #print overallDic            
                     

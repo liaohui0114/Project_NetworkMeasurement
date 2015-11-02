@@ -61,6 +61,7 @@ NETWORK_PROTOCOL = 'protocol'
 FILE_PATH_UDP = 'udpfile.txt'
 
 #define TIMEOUT
+CONNECTION_TIME_OUT = 5 #10S
 NETWORK_TIME_OUT = 10 #10S
 
 #define period for passive throughput
@@ -251,31 +252,21 @@ def ReadIperfUDPFile(filename):
             break 
 
     f.close()  #close open
-
-    print lastLineStr
-
-    
-
+    #print lastLineStr
     #Init DEFAULT
 
     networkDict = {NETWORK_BANDWITH:'',NETWORK_JITTER:'',NETWORK_LOSS:'',NETWORK_CONGESTION:'NO',NETWORK_AVAIL:'YES'}
-
     #to get network info in lastLineStr
 
     if not bIsConnect:  #connect failed
-
         print 'fail connection'  #if str contains 'datagrams' which means failing connecting to server
-
         networkDict[NETWORK_AVAIL] = 'NO'  #not available to connect
-
         networkDict[NETWORK_CONGESTION] = ''
 
     else:
-
         tmpStr= lastLineStr.split(' sec') #using 'sec' to split lastLineStr
-        print "tmpStr:",tmpStr
+        #print "tmpStr:",tmpStr
         tmpList = tmpStr[1].split()  #split by ' '  to get data that we truely need
-
         ##testtest
 
         #for index,value in enumerate(tmpList):
@@ -283,8 +274,6 @@ def ReadIperfUDPFile(filename):
             #print '[index:%d][value:%s]'%(index,value)
 
         ###
-
-        
 
         bandwidth = tmpList[2]+' '+tmpList[3]  #get bandwidth
         jitter =  tmpList[4] + ' ' +tmpList[5]  #get jitter
@@ -296,7 +285,6 @@ def ReadIperfUDPFile(filename):
         networkDict[NETWORK_LOSS] = loss[0:-1]+' '+loss[-1]
 
     #print networkDict    
-    #print networkDict
     print 'End StartReadIperfUDPFile'
 
     return networkDict

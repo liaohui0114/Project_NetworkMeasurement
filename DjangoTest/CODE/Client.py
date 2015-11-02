@@ -49,8 +49,10 @@ if __name__ == '__main__':
         msg = {NETWORK_IP:dest_ip,NETWORK_PROTOCOL:protocol}
         tp.SendMsg(SetSocketMsg(msg))
         rsg = tp.RecvMsg()
+        rsgDic = {'loss': 0, 'jitter': -1, 'delay': -1, 'bandwidth': '', 'congestion': 'NO', 'availability': 'NO'}
         print 'Get Info from server:'
-        rsgDic = GetSocketMsg(rsg)
+        if not rsg == None:
+            rsgDic = GetSocketMsg(rsg)
         for key,value in rsgDic.items():
             print key,value
             

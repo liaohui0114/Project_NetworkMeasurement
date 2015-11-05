@@ -256,34 +256,39 @@ def getMEM():
     return mem_per
 
     
-    
+def Info(HOST,ip,sendMsg):
+	tmp = {}
+        routerIps = GetPassiveTracerouteNetworkInfo(ip)
+        tmp[NETWORK_LOSS] = getLOSS(HOST,ip)
+        tmp[NETWORK_DELAY] = getRTT(HOST,ip)
+        tmp['ips'] = routerIps
+        #tmp[NETWORK_LOSS] = 1
+        #tmp[NETWORK_DELAY] = 1
+        sendMsg[ip] = tmp
+        
     
 #if __name__ == '__main__':
 def passive(HOST,ipList):   
     #while(True):
     #ipList = ['127.0.0.1', '192.168.1.2', '192.168.1.177']
     sendMsg = {}
+    threads = []
     for ip in ipList:
+	'''
         tmp = {}
 	routerIps = GetPassiveTracerouteNetworkInfo(ip)
-        '''rtt = getRTT(HOST,ip)
-        loss = getLOSS(HOST,ip)
-        throughput = getTHROUGHPUT(routerIps)
-        bandwidth = getBANDWIDTH(HOST,ip)
-        cpu_per = getCPU()
-        mem_per = getMEM()
-        tmp[NETWORK_LOSS] = loss
-        tmp[NETWORK_THROUGHPUT] = throughput
-        tmp[NETWORK_BANDWITH] = bandwidth
-        tmp[NETWORK_DELAY] = rtt
-        tmp[NETWORK_CPU] = '%0.2f'%cpu_per
-        tmp[NETWORK_MEM] = '%0.2f'%mem_per'''
 	tmp[NETWORK_LOSS] = getLOSS(HOST,ip)
 	tmp[NETWORK_DELAY] = getRTT(HOST,ip)
 	tmp['ips'] = routerIps
-	#tmp[NETWORK_LOSS] = 1
-	#tmp[NETWORK_DELAY] = 1
-        sendMsg[ip] = tmp       
+        sendMsg[ip] = tmp
+	'''
+	t = threading.Thread(target=Info,args=(HOST,ip,sendMsg))
+	threads.append(t)
+    for t in threads:
+	t.start()
+    for t in threads:
+	t.join() 
+    print sendMsg      
     return sendMsg
     
     

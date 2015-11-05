@@ -61,7 +61,7 @@ NETWORK_PROTOCOL = 'protocol'
 FILE_PATH_UDP = 'udpfile.txt'
 
 #define TIMEOUT
-CONNECTION_TIME_OUT = 5 #10S
+CONNECTION_TIME_OUT = 6 #6S
 NETWORK_TIME_OUT = 10 #10S
 
 #define period for passive throughput
@@ -244,11 +244,8 @@ def ReadIperfUDPFile(filename):
         #print 'lastLineStr',lastLineStr
 
         lineStr = f.readline()
-
         if bIsConnect:
-
             lastLineStr = lineStr  #get the line including detail infos which is next the line contains 'Server Report'
-
             break 
 
     f.close()  #close open

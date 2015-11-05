@@ -260,8 +260,8 @@ def SingleAction(request):
         st_name = tmp['startNodeName']
         ed_name = tmp['endNodeName']
         print st_IP,end_IP
-        netMsg = Client(protocol.upper(),st_IP,end_IP); # to get network condition using action.Client.py
-        print 'netMsg:',netMsg
+        netMsg = Client(protocol.upper(),st_IP,end_IP,NETWORK_TIME_OUT_SINGLE); # to get network condition using action.Client.py
+        #print 'netMsg:',netMsg
         
         
         
@@ -375,19 +375,19 @@ def SingleAction(request):
 
 def MyThread(protocol,st_IP,ed_IP,overallDic,start,end):
     print 'st_IP:',st_IP,'ed_ip:',ed_IP
-    tmp_cond = Client(protocol.upper(),st_IP,ed_IP);
+    tmp_cond = Client(protocol.upper(),st_IP,ed_IP,NETWORK_TIME_OUT);
     
-    if st_IP == '202.120.199.169' and ed_IP == '219.228.12.60':
-        print 'tmp_cond:',tmp_cond
     if tmp_cond == -1:
         #tmp_cond = {NETWORK_BANDWITH:'0 (Mbs)',NETWORK_DELAY:'0 (ms)',NETWORK_JITTER:'0 (ms)',NETWORK_LOSS:'0 (%)',NETWORK_CONGESTION:'NO',NETWORK_AVAIL:'NO,起始结点故障'}
-        tmp_cond = {NETWORK_BANDWITH:TAG_UNREACHABLE,NETWORK_DELAY:TAG_UNREACHABLE,NETWORK_JITTER:TAG_UNREACHABLE,NETWORK_LOSS:TAG_UNREACHABLE,NETWORK_CONGESTION:TAG_UNREACHABLE,NETWORK_AVAIL:'起始结点故障'}
-
+        #tmp_cond = {NETWORK_BANDWITH:TAG_UNREACHABLE,NETWORK_DELAY:TAG_UNREACHABLE,NETWORK_JITTER:TAG_UNREACHABLE,NETWORK_LOSS:TAG_UNREACHABLE,NETWORK_CONGESTION:TAG_UNREACHABLE,NETWORK_AVAIL:'起始结点故障'}
+        tmp_cond = {NETWORK_AVAIL:'起始结点故障'}
+        
         ###end client######3
     if tmp_cond[NETWORK_AVAIL] == 'NO':
         #tmp_cond = {NETWORK_BANDWITH:'0 (Mbs)',NETWORK_DELAY:'0 (ms)',NETWORK_JITTER:'0 (ms)',NETWORK_LOSS:'0 (%)',NETWORK_CONGESTION:'NO',NETWORK_AVAIL:'NO,目标结点不可达'}
-        tmp_cond = {NETWORK_BANDWITH:TAG_UNREACHABLE,NETWORK_DELAY:TAG_UNREACHABLE,NETWORK_JITTER:TAG_UNREACHABLE,NETWORK_LOSS:TAG_UNREACHABLE,NETWORK_CONGESTION:TAG_UNREACHABLE,NETWORK_AVAIL:'目标结点不可达'}
-    #tmp_cond = {NETWORK_BANDWITH:'100(Mbs)',NETWORK_DELAY:'0(ms)',NETWORK_JITTER:'0.1(ms)',NETWORK_LOSS:'0(%)',NETWORK_CONGESTION:'NO',NETWORK_AVAIL:'YES'}
+        #tmp_cond = {NETWORK_BANDWITH:TAG_UNREACHABLE,NETWORK_DELAY:TAG_UNREACHABLE,NETWORK_JITTER:TAG_UNREACHABLE,NETWORK_LOSS:TAG_UNREACHABLE,NETWORK_CONGESTION:TAG_UNREACHABLE,NETWORK_AVAIL:'目标结点不可达'}
+        tmp_cond = {NETWORK_AVAIL:'目标结点不可达'}
+    
     #do socket func in here
      #tmpNode = {itemB.nodeName:tmp_cond[]}
     if tmp_cond.has_key(NETWORK_BANDWITH):           
@@ -490,8 +490,8 @@ def OverallAction(request):
         '''
         count = 0
         threads = []
-        for start in allNodes:
-            for end in allNodes:
+        for end in allNodes:
+            for start in allNodes:
                 #print 'start:',start.nodeName,'end:',end.nodeName
                 #if two different nodes
                 st_IP = start.nodeIp
@@ -499,18 +499,23 @@ def OverallAction(request):
                 if start.nodeName != end.nodeName:
                     t = threading.Thread(target = MyThread,args = (protocol.upper(),st_IP,ed_IP,overallDic,start,end))#start thread to get node to node network infos
                     threads.append(t)
-                    
+               
+            if protocol == 'ICMP':                      
+                for t in threads:
+                    t.start()
+                    time.sleep(1)
+                for t in threads:
+                    t.join()
+                threads = []
+                   
             
         
-        if protocol == 'UDP':                       
-            for t in threads:
-                t.start()
-                t.join()
-        else:
-            for t in threads:
-                t.start()
-            for t in threads:
-                t.join()
+        for t in threads:
+            t.start()
+            time.sleep(0.5)
+        for t in threads:
+            t.join()
+        
         '''         
         if protocol == 'TCP':          
             for t in threads:
@@ -657,7 +662,7 @@ def TracerouteAction(request):
         ed_name = tmp['endNodeName']
         #print st_IP,end_IP
         #traceMsg = {}
-        traceMsg = Client(protocol.upper(),st_IP,end_IP); # to get network condition using action.Client.py
+        traceMsg = Client(protocol.upper(),st_IP,end_IP,NETWORK_TIME_OUT_SINGLE); # to get network condition using action.Client.py
         #print 'traceroute Msg:',traceMsg
         traceMsg["00 Start"] = st_name.encode("utf-8")
         traceMsg["End"] = ed_name.encode("utf-8") ##add startNode name and endNode name
@@ -686,6 +691,7 @@ def PredictAction(request):
         start_time = tmp["startTime"]
         end_time = tmp["endTime"]
         target = tmp["target"] #Is it bandwidth,throughput or rtt?
+        model = tmp["model"]
         #print 'tttttttttttttttttttt,',target
         #print start_ip,start_name,start_time,end_ip,end_name,end_time
         
@@ -725,7 +731,7 @@ def PredictAction(request):
                 else:
                     pass
                 
-                conData['data'],conTime,preData['data'],preTime = PredictFunc(originalData, createTime) ##call function
+                conData['data'],conTime,preData['data'],preTime = PredictFunc(originalData, createTime,model) ##call function
                 #print 'conData.data:',conData['data']
                 #print 'preData.data:',preData['data']
                 #print 'preTime:',preTime
@@ -755,13 +761,17 @@ def PredictAction(request):
 
 #for zhenxian
 #historyData:[],createTimes:[]
-def PredictFunc(historyData,createTimes):
+def PredictFunc(historyData,createTimes,model):
     #print 'bbbbbbbb',historyData
     
     ts = pd.Series(historyData, index=pd.to_datetime(createTimes, unit='s'))
     converted = ts.asfreq('30min', method='bfill')
-    arma_mod30 = sm.tsa.ARMA(converted, (3,0)).fit(disp=0)
-    
+    if model == "arma":
+        #modle 1: arma
+        arma_mod30 = sm.tsa.ARMA(converted, (3,0)).fit(disp=0)
+    else:
+        #model 2: arima
+        arma_mod30 = sm.tsa.ARIMA(converted, (1,0,0)).fit(disp=0)
     
     breakpoint = converted.index[-4]
     rng = pd.date_range(breakpoint, periods=8, freq='30min')

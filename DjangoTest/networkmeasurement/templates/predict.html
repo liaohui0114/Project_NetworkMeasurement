@@ -906,7 +906,15 @@
                                         
                                     </select>
                                     </br>
-                                    
+
+                                    <label class="control-label"><strong>预测模型</strong></label>                                
+                                    <select class="form-control" id="id_select_predict_model" >
+                                            <option value="arma" selected = "selected">自回归滑动平均模型</option>
+                                            <option value="arima">自回归积分滑动平均模型</option>
+                                        
+                                    </select>
+                                    </br>
+
                                     <label class="control-label"><strong>开始时间</strong></label></br>
                                     <input class="form-control" type="text" id="id_input_startTime" readonly="readonly"/> 
  				                   </br>
@@ -918,8 +926,8 @@
                             <div class="form-group">
                                 <button type="submit" class="btn btn-success" id="id_btn_predict" style="width:100px">预测</button>
 
-				<!-- to display tips -->
-				<div id="id_div_tip"></div>
+        				<!-- to display tips -->
+        				<div id="id_div_tip"></div>
                             </div>
 
                         </div>
@@ -982,9 +990,8 @@
 
                     <!-- Add your copyright text here -->
                     <div class="footer-text">
-                        &copy; 2015
-                        <strong>SJTU</strong>
-                        教育网- <a href="#">网络性能测量</a>
+                        Copyright &copy; 上海市教育委员会信息中心 版权所有 - 
+                        <a href="#">网络性能测量矩阵</a>
                     </div>
 
 

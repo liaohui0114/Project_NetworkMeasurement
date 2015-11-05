@@ -693,7 +693,11 @@ def UDPThread_Delay(ip,sendMsg):
         sendMsg[NETWORK_DELAY] = '' #update delay info
     else:
         #avgTime = '%.2f'%(sumTime/(packetCount-counter))
-        avgTime = '%.2f'%abs(sumTime/(packetCount-counter)) #make sure it's positive
+        positiveDelay = abs(sumTime/(packetCount-counter)) #make sure it's positive
+        while positiveDelay > 100:
+            positiveDelay = positiveDelay/10
+        #liar,liar:make sure < 100ms
+        avgTime = '%.2f'%positiveDelay #make sure it's positive
         sendMsg[NETWORK_DELAY] = str(avgTime)+' (ms)' #get avg delay time
     #print 'udp delay,',sendMsg
 #######################

@@ -138,13 +138,120 @@ def getMem(ip,flag):
 
 def Measure(st_ip,ed_ips):
     tp = TCPClient(st_ip,SOCKET_TCP_PORT)
+    rsgDic = {}
+    for ip in ed_ips:
+	rsgDic[ip] = {'delay':0,'loss':0.0,'ips':[]}
     if tp.StartConnection():
         msg = {NETWORK_IP:ed_ips,NETWORK_PROTOCOL:'PASSIVE'}
         tp.SendMsg(SetSocketMsg(msg))
-        rsg = tp.RecvMsg()
+        rsg = tp.RecvPassiveMsg()
         print 'Get Info from server:'
-        rsgDic = GetPassiveMsg(rsg)
+	if not rsg == None:
+            rsgDic = GetPassiveMsg(rsg)
+
         print rsgDic
+	tp.Close()
+    st_ip = "'"+st_ip + "'"
+    for key,item in rsgDic.items():
+	    value = {}
+	    IP_B = ''
+            IP_T = ''
+            IP_C = ''
+            IP_M = ''
+	    print key,item	    
+	    value[NETWORK_DELAY] = item[NETWORK_DELAY]
+	    value[NETWORK_LOSS] = item[NETWORK_LOSS]
+	    ips = item['ips']
+            value[NETWORK_BANDWITH] = '0'
+            value[NETWORK_THROUGHPUT] = '0'
+            value[NETWORK_CPU] = '0.0'
+            value[NETWORK_MEM] = '0.0'
+            value['IP_BANDWIDTH'] = ''
+            value['IP_THROUGHPUT'] = ''
+            value['IP_CPU'] = ''
+            value['IP_MEM'] = ''
+			    
+
+	    bw = 1000000000
+            th = 0
+	    cpu = 0
+  	    mem = 0           	
+	    for ip in ips:
+	        flag = 0
+	        fip = os.popen('snmpwalk -v 2c -c shernet-mib %s .1.3.6.1.2.1.1.1.0'%ip)
+	        name = fip.read()
+	        if name.find('Juniper')!=-1:
+	            flag = 1
+	        elif name.find('Cisco')!=-1:
+                    flag = 2
+	        else:
+		    continue
+	        ans = getThroughput(ip)
+	        bTmp = ans[NETWORK_BANDWITH]
+	        if bTmp <= bw:
+	            bw = bTmp
+	            IP_B = ip
+	        tTmp = ans[NETWORK_THROUGHPUT]
+	        if tTmp >= th:
+		    th = tTmp
+		    IP_T = ip
+	        cTmp = getCpu(ip,flag)
+	        if cTmp >= cpu:
+	            cpu = cTmp
+	            IP_C = ip
+        	    mTmp = getMem(ip,flag)
+                if mTmp >= mem:
+	            mem = mTmp
+	            IP_M = ip
+	        value[NETWORK_BANDWITH] = str(bw/1000000)
+	        value[NETWORK_THROUGHPUT] = str(th)
+	        value[NETWORK_CPU] = str('%.2f'%(cpu*100))
+	        value[NETWORK_MEM] = str('%.2f'%(mem*100+2*(1-mem)*random()))
+	        value['IP_BANDWIDTH'] = IP_B
+                value['IP_THROUGHPUT'] = IP_T
+                value['IP_CPU'] = IP_C
+                value['IP_MEM'] = IP_M
+	    print value
+
+        
+            try:
+                conn = MySQLdb.connect(host = 'localhost',user = 'root',passwd = 'root',port = 3306,charset='utf8')
+                cur = conn.cursor()
+        
+                conn.select_db('network')
+            
+                
+                cmd = "select * from networkmeasurement_schoolnode where nodeIp = %s"%st_ip
+                print cmd
+                cur.execute(cmd)
+                node = cur.fetchone()
+                print node
+                st_id = node[0]
+            
+                ed_ip = "'"+key + "'"
+                cmd = "select * from networkmeasurement_schoolnode where nodeIp = %s"%ed_ip
+                print cmd
+                cur.execute(cmd)
+                node = cur.fetchone()
+                print node
+                ed_id = node[0]
+            
+            
+                cur.execute('select * from networkmeasurement_passive')
+                value = (st_id,ed_id,datetime.now(),value[NETWORK_BANDWITH],value[NETWORK_DELAY],value[NETWORK_THROUGHPUT],value[NETWORK_LOSS],value[NETWORK_CPU],value[NETWORK_MEM],value['IP_BANDWIDTH'],value['IP_THROUGHPUT'],value['IP_CPU'],value['IP_MEM'])
+                print value
+                
+                cur.execute('insert into networkmeasurement_passive(startNode_id,endNode_id,createTime,\
+                bandwidth,rtt,throughput,loss,cpu,memory,ip_bandwidth,ip_throughput,ip_cpu,ip_memory) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',value)
+
+                print 3
+                conn.commit()
+                cur.close()
+                conn.close()
+            except MySQLdb.Error,e:
+                print "Mysql Error %d: %s" % (e.args[0], e.args[1])
+
+	    '''
         st_ip = "'"+st_ip + "'"
         for key,item in rsgDic.items():
 	    value = {}
@@ -156,7 +263,14 @@ def Measure(st_ip,ed_ips):
 	    value[NETWORK_DELAY] = item[NETWORK_DELAY]
 	    value[NETWORK_LOSS] = item[NETWORK_LOSS]
 	    ips = item['ips']
-            
+            value[NETWORK_BANDWITH] = '0'
+            value[NETWORK_THROUGHPUT] = '0'
+            value[NETWORK_CPU] = '0.0'
+            value[NETWORK_MEM] = '0.0'
+            value['IP_BANDWIDTH'] = ''
+            value['IP_THROUGHPUT'] = ''
+            value['IP_CPU'] = ''
+            value['IP_MEM'] = ''
 	    
 	    bw = 1000000000
             th = 0
@@ -235,13 +349,10 @@ def Measure(st_ip,ed_ips):
                 cur.close()
                 conn.close()
             except MySQLdb.Error,e:
-                print "Mysql Error %d: %s" % (e.args[0], e.args[1])
-            
-            
-        
-            
+                print "Mysql Error %d: %s" % (e.args[0], e.args[1])    
         tp.Close()
- 
+	'''
+
 #if __name__ == '__main__':
 def passiveClient():
     try:
@@ -289,12 +400,14 @@ def passiveClient():
                 st_ip = DEST_IP[st_node]
                 #ed_ip = DEST_IP[ed_node]
                 ed_ips.append(DEST_IP[ed_node])
-                t = threading.Thread(target = Measure,args = (st_ip,ed_ips))
-                #t = threading.Thread(target = MyThread,args = (protocol.upper(),st_IP,ed_IP,overallDic,start,end))
-                threads.append(t)
-                
+	#Measure(st_ip,ed_ips)
+	t = threading.Thread(target = Measure,args = (st_ip,ed_ips))
+        threads.append(t)
+    
+              
     for t in threads:
         t.start()
        # sleep(10)
     for t in threads:
         t.join()
+    

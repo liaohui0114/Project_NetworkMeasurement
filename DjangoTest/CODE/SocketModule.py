@@ -73,6 +73,25 @@ class TCPClient(object):
             return ''
         return msg
     
+
+    def RecvPassiveMsg(self):
+        try:
+            print 'start recv msg'
+            #self.m_socket.settimeout(NETWORK_TIME_OUT)
+            self.m_socket.settimeout(40) #10s
+            msg = self.m_socket.recv(SOCKET_BUFFER_SIZE)  #receive msg from server which packet size is SOCKET_BUFFER_SIZE
+            print 'end recvMsg'
+            #print 'end recv msg,msg=',msg
+        except socket.error,errorMsg:
+            print sys.exc_info() #print exception infomation4
+            #(errno,err_msg) = errorMsg
+            #print 'Connection server failed:%s,errno=%d'%(err_msg,errno)
+            return None
+            #print 'Connection server failed,errorMsg=%s'%(errorMsg)
+            return ''
+        return msg
+
+
         '''try:
             print 'start udp RecvMsg'            
             #SETTING TIMEOUT ??? Function.....

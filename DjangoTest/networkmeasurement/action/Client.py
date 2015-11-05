@@ -37,21 +37,23 @@ if __name__ == '__main__':
         print 'Connection server failed:%s,errno=%d'%(err_msg,errno)
 '''
  
-def Client(protocol,st_IP,end_IP):
+def Client(protocol,st_IP,end_IP,outtime=NETWORK_TIME_OUT):
     #we must start server  Server.py  Iperf -u -c  udpClientTest.py
-    tp = TCPClient(st_IP,SOCKET_TCP_PORT)
+    tp = TCPClient(st_IP,SOCKET_TCP_PORT,outtime)
     if tp.StartConnection():
         msg = {NETWORK_IP:end_IP,NETWORK_PROTOCOL:protocol}
         tp.SendMsg(SetSocketMsg(msg))
         rsg = tp.RecvMsg()
-        rsgDic = {'loss': 0, 'jitter': -1, 'delay': -1, 'bandwidth': '', 'congestion': 'NO', 'availability': 'NO'}
-        print 'Get Info from server:'
+        rsgDic = {'loss': 0, 'jitter': 0, 'delay': 0, 'bandwidth': '', 'congestion': 'NO', 'availability': 'NO'}
+        #print 'Get Info from server:rsg rsg rsg:',rsg
+        print 'Get Info from server:rsg rsg rsg:'
         if not rsg == None:
-            rsgDic = GetSocketMsg(rsg)
-            '''
-            for key,value in rsgDic.items():
-                print key,value
-            '''
+            if not rsg == '':
+                rsgDic = GetSocketMsg(rsg)
+                '''
+                for key,value in rsgDic.items():
+                    print key,value
+                '''
             
         tp.Close()
     else:

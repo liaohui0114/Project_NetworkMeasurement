@@ -99,6 +99,8 @@ def MyThread(clientSocket,clientAddr,HOST):
         
     elif detailMsg['protocol'] == 'UDP':
         print 'UDP operation--iperf'
+        sendMsg = GetUDPNetworkInfo(detailMsg[PROTOCOL_IP])#interface you need to override
+        '''
         global NUM_CON
         global TMP_UDP
         print 'NUM_CON=',NUM_CON
@@ -110,6 +112,7 @@ def MyThread(clientSocket,clientAddr,HOST):
         else:
             print 'TMP_UDP:',TMP_UDP
             sendMsg = TMP_UDP
+        '''
             
         
     elif detailMsg['protocol'] == 'ICMP':

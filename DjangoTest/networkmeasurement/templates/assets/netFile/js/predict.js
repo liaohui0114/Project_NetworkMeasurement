@@ -27,6 +27,7 @@ $(document).ready(function(){
 	
 	$("#id_btn_predict").on("click",function(){
 		var target = $("#id_select_predict option:selected").val(); //to get predict target:bandwidth,throughput or delay
+		var model = $("#id_select_predict_model option:selected").val();
 		//alert(target);
 		//we define that startnode could not be the endnode，起始结点与目标结点不能一致
 		if($("#id_startNode").val() != $("#id_endNode").val())
@@ -48,7 +49,7 @@ $(document).ready(function(){
 				et = et + " 23:59:59"
 			}
 			//alert(st+'\n'+et);
-			Ajax_post_predict($("#id_startNode").val(),$("#id_endNode").val(),$("#id_startNode option:selected").text(),$("#id_endNode option:selected").text(),st,et,target);	
+			Ajax_post_predict($("#id_startNode").val(),$("#id_endNode").val(),$("#id_startNode option:selected").text(),$("#id_endNode option:selected").text(),st,et,target,model);	
 			
 		}
 		else
@@ -77,7 +78,7 @@ $(document).ready(function(){
 //endIp:ip of endNode
 //startNodeName:name of start node
 //endNodeName:name of end node
-function Ajax_post_predict(startIp,endIp,startNodeName,endNodeName,startTime,endTime,target)
+function Ajax_post_predict(startIp,endIp,startNodeName,endNodeName,startTime,endTime,target,model)
 {
 	//alert("Udp_ajax_post_passive!\n");
 
@@ -92,7 +93,8 @@ function Ajax_post_predict(startIp,endIp,startNodeName,endNodeName,startTime,end
 			"endNodeName":endNodeName,
 			"startTime":startTime,
 			"endTime":endTime,
-			"target":target
+			"target":target,
+			"model":model
 		},
 		type:'POST',//action:post or get
 		dataType:'json',

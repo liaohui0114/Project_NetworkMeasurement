@@ -42,7 +42,7 @@ SOCKET_UDP_IPERF_PORT = 10009
 SOCKET_BUFFER_SIZE = 1024  #packet size of socket(send/receive) 
 SOCKET_TIME_OUT = 8
 
-SOCKET_MAX_CLIENT = 10     #max connection num from client
+SOCKET_MAX_CLIENT = 100     #max connection num from client
 
 #define attribute
 NETWORK_BANDWITH = 'bandwidth'   
@@ -61,8 +61,8 @@ NETWORK_PROTOCOL = 'protocol'
 FILE_PATH_UDP = 'udpfile.txt'
 
 #define TIMEOUT
-CONNECTION_TIME_OUT = 5 #5S
-NETWORK_TIME_OUT = 10 #10S
+NETWORK_TIME_OUT_SINGLE = 10 #5S
+NETWORK_TIME_OUT = 20 #10S
 
 #define period for passive throughput
 THROUGHPUT_TIME = 1800 #30*60 s
@@ -147,7 +147,8 @@ def GetPassiveMsg(msg):
 
 #func,deal with string
 def SetSocketMsg(dicMsg):
-    print 'SetSocketMsg,msg:',dicMsg
+    #print 'SetSocketMsg,msg:',dicMsg
+    print 'SetSocketMsg'
     msg = ''
     if dicMsg.has_key(NETWORK_PROTOCOL) and dicMsg[NETWORK_PROTOCOL] == 'PASSIVE':
         listIP = dicMsg[NETWORK_IP]
@@ -164,7 +165,8 @@ def SetSocketMsg(dicMsg):
             else:
                 msg += ',%s:%s'%(k,v)
         
-    print 'End SetSocketMsg,msg is:',msg
+    #print 'End SetSocketMsg,msg is:',msg
+    print 'end SetSocketMsg'
     return msg
 
 
@@ -178,7 +180,7 @@ def GetSocketMsg(msg):
         #tmpList = sdmsg.split(',')
         tmpList = msg.split(':')
         list_ip = tmpList[1].split(',')
-        print list_ip[0:-1]
+        #print list_ip[0:-1]
         socketMsg[list_ip[-1]] = tmpList[-1]
         list_ip = list_ip[0:-1]
         socketMsg[tmpList[0]] = list_ip
@@ -188,9 +190,11 @@ def GetSocketMsg(msg):
         for i in tmpList:
             tmp = i.split(':')
             socketMsg[tmp[0]] = tmp[1]
+            '''
             if tmp[1] == "":
                 print "[key:%s],value is ''"%tmp[0]
                 print 'End GetSocketMsg,msg is:',socketMsg
+            '''
     return socketMsg
 
 #get time stamp which is type(float) ,we only keep 9 bin after .,return type(str)
